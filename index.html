@@ -684,6 +684,21 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .sv-k .qc-o{display:grid;gap:6px}
 .ll-part:has(.part-tag:only-child),.part.extra .part-tag{background:#7048E8;color:#fff}
 .ll-row[data-id^="x"] .ll-num{color:#7048E8}
+.sv-topics{display:flex;flex-direction:column;gap:8px;max-width:900px}
+.sv-wk{font-family:var(--f-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:12px 0 0}
+.sv-card{display:grid;grid-template-columns:3.4em minmax(0,1fr) auto;gap:6px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.sv-card .ll-num{font-family:var(--f-mono);color:var(--accent);font-weight:700}
+.sv-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sv-pv{font-size:.88rem;color:var(--muted);line-height:1.45}
+@media (max-width:600px){.sv-card{grid-template-columns:3em minmax(0,1fr)}.sv-card .ll-btns{grid-column:1/-1;display:flex;gap:8px}.sv-card .ll-btns .btn{flex:1;justify-content:center}}
+.sv-prob{border:2px solid var(--accent);border-radius:12px;padding:10px 14px;margin:0 0 14px;background:var(--surface)}
+.sv-prob>.k{display:block;font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.sv-prob p{margin:4px 0 0;font-weight:600}
+.part.walkpart .part-tag,.ll-part:has(.part-tag) .part-tag{}
+.lesson-list .ll-row[data-id^="s-"] .ll-num{color:#0B7285}
+.try-mc{margin-top:6px}
+.vs .gtag{fill:#0A0F13;font-size:15px;font-weight:800}
+.tbl.map{margin:0 0 16px}.tbl.map td:first-child{color:var(--muted)}
 </style>
 
 <header class="top">
@@ -1012,43 +1027,173 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
     <figure class="fig" data-fig="queue"><div class="ctrls"><label for="q-ports">Input ports sending <input type="range" id="q-ports" min="1" max="4" step="1" value="4"> <b id="q-ports-v">4</b></label></div><div class="stage"></div><div class="figinfo" id="q-info"></div><figcaption><span>Each input sends 400 Mbps. The output sends 1 Gbps.</span></figcaption></figure>
   </article>
 
+
+  <div class="part walkpart"><span class="part-tag">How to solve</span><h3>Video walkthroughs: one problem, solved step by step</h3><span class="when">practice</span></div>
+  <article class="lesson walk" id="s-tdm">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H1.1</span><h4 class="say">How to solve: TDM total time</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. An 800,000-bit file is sent over a TDM link that runs at 2.048 Mbps with 16 slots per frame. Setting up the circuit takes 250 milliseconds. What is the total time?</p></div>
+      <p class="rule say"><span class="k">Slots</span>First keyword: slots. TDM shares the link by taking turns. Each frame has 16 slots, so 16 connections share this link, and you own one slot in every frame.</p>
+      <div class="try" data-opts="16|1|8|32" data-steps="One slot per connection.|16 slots means 16 connections.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A frame has 16 slots. How many connections share the link?</p>
+      </div>
+      <p class="rule say"><span class="k">Link rate</span>Next keyword: link rate. 2.048 Mbps is the speed of the whole link, shared by all 16 connections. To use it in a formula, write it in bits per second: 2,048,000.</p>
+      <div class="try" data-ans="2048000" data-unit="bps" data-hint="Multiply by 1,000,000." data-steps="2.048 × 1,000,000|= 2,048,000 bps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Write 2.048 Mbps in bits per second.</p>
+      </div>
+      <p class="rule say"><span class="k">Slot rate</span>Next keyword: slot rate. That is your own speed, your share of the link. Slot rate equals link rate divided by the number of slots.</p>
+      <p class="formula say" data-say="So here, 2,048,000 divided by 16 gives 128,000 bits per second.">slot rate = 2,048,000 ÷ 16 = <b>128,000 bps</b></p>
+      <div class="try" data-opts="Halve|Double|Stay the same|Become zero" data-steps="Twice as many slots share the same link.|So each slot gets half as much.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">If the link had 32 slots instead of 16, your slot rate would…</p>
+      </div>
+      <p class="rule say"><span class="k">Transmission time</span>Next: transmission time, how long the file takes to send. Divide the file size by your slot rate, not by the link rate, because you only own one slot.</p>
+      <p class="formula say" data-say="800,000 divided by 128,000 is 6.25 seconds.">transmission = 800,000 ÷ 128,000 = <b>6.25 s</b></p>
+      <div class="try" data-ans="10" data-unit="s" data-hint="File size ÷ slot rate." data-steps="1,280,000 ÷ 128,000|= 10 s">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">At the same slot rate of 128,000 bps, how many seconds would a 1,280,000-bit file take?</p>
+      </div>
+      <p class="rule say"><span class="k">Setup time</span>Last keyword: setup time. Before data flows, the circuit is set up. It is given in milliseconds, so divide by 1,000 to get seconds, then add it on.</p>
+      <p class="formula say" data-say="250 milliseconds is 0.25 seconds. 0.25 plus 6.25 gives a total of 6.5 seconds.">setup = 250 ms = 0.25 s · total = 0.25 + 6.25 = <b>6.5 s</b></p>
+      <div class="try" data-ans="3.4" data-unit="s" data-hint="400 ms = 0.4 s." data-steps="400 ms = 0.4 s|0.4 + 3 = 3.4 s">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Setup takes 400 ms and transmission takes 3 s. What is the total, in seconds?</p>
+      </div>
+      <div class="try" data-gen="tdm">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Use the same four steps: slot rate, transmission time, convert the setup, then add.</p>
+      </div>
+      <p class="say">That is how to solve every TDM time question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-lr">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H1.2</span><h4 class="say">How to solve: transmission time, L over R</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A 1,500-byte packet is sent over a 10 Mbps link. What is the transmission time?</p></div>
+      <p class="rule say"><span class="k">L, the packet length</span>First keyword: L, the packet length. It must be in bits, because the link speed is in bits per second. One byte is 8 bits, so multiply by 8.</p>
+      <p class="formula say" data-say="1,500 times 8 is 12,000 bits.">L = 1,500 × 8 = <b>12,000 bits</b></p>
+      <div class="try" data-ans="4000" data-unit="bits" data-hint="Multiply by 8." data-steps="500 × 8|= 4,000 bits">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">How many bits is a 500-byte packet?</p>
+      </div>
+      <p class="rule say"><span class="k">R, the link rate</span>Next keyword: R, the link rate. Mbps means megabits per second, and mega means a million. So 10 Mbps is 10,000,000 bits per second.</p>
+      <div class="try" data-ans="4000000" data-unit="bps" data-hint="Multiply by 1,000,000." data-steps="4 × 1,000,000|= 4,000,000 bps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Write 4 Mbps in bits per second.</p>
+      </div>
+      <p class="rule say"><span class="k">Transmission delay</span>Next keyword: transmission delay. It is the time to push every bit of the packet onto the link, so it is L divided by R.</p>
+      <p class="formula say" data-say="12,000 divided by 10,000,000 is 0.0012 seconds. Multiply by 1,000 to get milliseconds: 1.2 milliseconds.">12,000 ÷ 10,000,000 = 0.0012 s = <b>1.2 ms</b></p>
+      <div class="try" data-opts="Halve|Double|Stay the same|Depend on the distance" data-steps="R is on the bottom of L ÷ R.|Double R and the time halves.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">If the link were twice as fast, the transmission time would…</p>
+      </div>
+      <div class="try" data-gen="lr">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Bytes to bits, Mbps to bits per second, then divide.</p>
+      </div>
+      <p class="say">That is how to solve every L over R question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-saf">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H1.3</span><h4 class="say">How to solve: store-and-forward</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A 1,000-byte packet crosses two links in a row, the first at 2 Mbps and the second at 4 Mbps, using store-and-forward. Ignoring other delays, how long until it fully arrives?</p></div>
+      <p class="rule say"><span class="k">L, the packet length</span>First, the packet length in bits: 1,000 times 8 is 8,000 bits. The packet is the same size on every link.</p>
+      <div class="try" data-opts="No, it is the same packet|Yes, it shrinks|Yes, it grows|Only on the last link" data-steps="The same packet crosses every link.|So L stays the same.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Does L change from one link to the next?</p>
+      </div>
+      <p class="rule say"><span class="k">Store-and-forward</span>Next keyword: store-and-forward. A router must receive the whole packet before sending it on. So each link adds its own transmission time, L over R for that link.</p>
+      <p class="formula say" data-say="Link one: 8,000 divided by 2 million is 4 milliseconds. Link two: 8,000 divided by 4 million is 2 milliseconds.">link 1: 8,000 ÷ 2,000,000 = 4 ms · link 2: 8,000 ÷ 4,000,000 = 2 ms</p>
+      <div class="try" data-ans="1" data-unit="ms" data-hint="8,000 ÷ 8,000,000 seconds, then × 1,000." data-steps="8,000 ÷ 8,000,000 = 0.001 s|= 1 ms">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">An 8,000-bit packet on an 8 Mbps link: what is L ÷ R, in ms?</p>
+      </div>
+      <p class="rule say"><span class="k">Total</span>Finally, add the links together, because the packet crosses them one after another.</p>
+      <p class="formula say" data-say="4 plus 2 gives 6 milliseconds.">total = 4 + 2 = <b>6 ms</b></p>
+      <div class="try" data-ans="6" data-unit="ms" data-hint="One L/R per link." data-steps="2 + 2 + 2|= 6 ms">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Three identical links each take 2 ms. What is the total, in ms?</p>
+      </div>
+      <div class="try" data-gen="saf">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Work out L over R for each link, then add.</p>
+      </div>
+      <p class="say">That is how to solve every store-and-forward question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-circ">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H1.4</span><h4 class="say">How to solve: circuit share of a link</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A 4 Mbps link is divided into 8 circuits. What rate does one connection get, in kbps?</p></div>
+      <p class="rule say"><span class="k">Circuit</span>First keyword: circuit. In circuit switching, the link is split into equal, reserved parts. Each connection gets one circuit for the whole call.</p>
+      <div class="try" data-opts="No, it is reserved for you|Yes, with everyone|Only at busy times|Only on Wi-Fi" data-steps="Circuit switching reserves resources.|Your circuit is yours alone.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Is a circuit shared with other users while you are using it?</p>
+      </div>
+      <p class="rule say"><span class="k">Units</span>The answer is asked in kilobits per second. One Mbps is 1,000 kbps, so 4 Mbps is 4,000 kbps.</p>
+      <div class="try" data-ans="1500" data-unit="kbps" data-hint="Multiply by 1,000." data-steps="1.5 × 1,000|= 1,500 kbps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">How many kbps is 1.5 Mbps?</p>
+      </div>
+      <p class="rule say"><span class="k">Equal share</span>Each circuit gets an equal share: divide the link rate by the number of circuits. 4,000 divided by 8 is 500 kbps.</p>
+      <div class="try" data-ans="500" data-unit="kbps" data-hint="Divide by the number of circuits." data-steps="2,000 ÷ 4|= 500 kbps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A 2,000 kbps link is split into 4 circuits. One circuit gets how many kbps?</p>
+      </div>
+      <div class="try" data-gen="circ">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Convert the units, then divide.</p>
+      </div>
+      <p class="say">That is how to find any circuit share.</p>
+    </div>
+  </article>
+
   <div class="part extra"><span class="part-tag">Extra</span><h3>Extra lectures: the tricky parts, one at a time</h3><span class="when">optional</span></div>
 
   <article class="lesson extra" id="x1-speeds">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E1.1</span><h4 class="say">TDM: link rate, frame rate and slot rate</h4></div>
-      <p class="say">A TDM question can mention three different speeds. This lesson separates them, one at a time.</p>
-      <p class="rule say"><span class="k">Link rate</span>The link rate is the speed of the whole link, for example 1.536 Mbps. It is the total that everyone shares.</p>
-      <p class="rule say"><span class="k">Frame rate</span>The frame rate is how many frames happen each second. You get one slot in every frame, so the frame rate is how many turns you get per second. It never changes, however many connections join.</p>
-      <p class="rule say"><span class="k">Bits per slot</span>The bits per slot is how much you send in each turn. When more connections share the link, the slots get shorter, so each turn carries fewer bits.</p>
-      <p class="rule say"><span class="k">Slot rate</span>The slot rate is your own speed: the bits per second you actually get. It equals the link rate divided by the number of slots. It also equals the frame rate times the bits per slot.</p>
-      <p class="say">Here is one link seen both ways. 8000 frames per second, with 8 bits in your slot, gives 64,000 bits per second. And 1,536,000 bits per second shared by 24 slots also gives 64,000 bits per second.</p>
-      <div class="try" data-ans="100000" data-unit="bps" data-hint="Turns per second times bits per turn." data-steps="Frame rate = 1,000 turns per second.|Bits per slot = 100.|Slot rate = 1,000 × 100 = 100,000 bps.">
+      <div class="lesson-head"><span class="lesson-num">E1.1</span><h4 class="say">TDM: one microphone, many friends</h4></div>
+      <p class="say">Let&#x27;s make TDM click with one story, and keep coming back to it.</p>
+      <p class="say">Four friends sit round a table with one microphone. Only the person holding the mic can speak, so it goes round the table in the same order, again and again.</p>
+      <p class="rule say"><span class="k">The link</span>The microphone is the link. Say it can carry 1,000 words every second in total. That is the link rate: the most the whole mic can carry, shared by everyone.</p>
+      <p class="rule say"><span class="k">Frames and slots</span>The mic goes all the way round the table 10 times every second. One full round is a frame. Your moment holding the mic, inside each round, is your slot.</p>
+      <p class="say">So you get the mic 10 times a second. That is the frame rate, and it is the number of turns you get.</p>
+      <p class="say">Each round carries 1,000 words divided by 10, so 100 words. Split between 4 friends, each turn lets you say 25 words. That is the bits per slot.</p>
+      <p class="say">Your own speed is turns per second times words per turn: 10 times 25, which is 250 words a second. That is your slot rate. It is also just the mic&#x27;s 1,000 words shared four ways.</p>
+      <p class="rule say"><span class="k">Now more friends join</span>Six more friends sit down, so now there are 10. The mic still goes round 10 times a second, so you still get 10 turns. But each round is now split 10 ways, so each turn only fits 10 words.</p>
+      <p class="say">Your speed drops to 10 turns times 10 words, which is 100 words a second. You did not get fewer turns. You got shorter ones.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>the microphone</td><td>the link</td></tr><tr><td>words per second the mic carries</td><td>link rate</td></tr><tr><td>one trip round the table</td><td>one frame</td></tr><tr><td>rounds per second = your turns per second</td><td>frame rate</td></tr><tr><td>your moment with the mic</td><td>your slot</td></tr><tr><td>words you fit in one turn</td><td>bits per slot</td></tr><tr><td>words per second you get</td><td>slot rate</td></tr></table></div>
+      <div class="try" data-ans="200" data-unit="words per second" data-hint="Turns per second × words per turn." data-steps="10 turns per second.|20 words per turn.|10 × 20 = 200 words per second.">
         <span class="k">Your turn</span>
-        <p class="say try-q">A link runs at 1000 frames per second, and you send 100 bits in each slot. What is your slot rate, in bits per second?</p>
+        <p class="say try-q">The mic goes round 10 times a second, and you fit 20 words in each turn. How many words a second do you get?</p>
       </div>
-      <p class="say">The key point: when a question asks how long your file takes, always divide by the slot rate. The link rate is shared with everyone else.</p>
-
+      <p class="say">Now swap words for bits, and that is a real TDM link. A 1.536 Mbps link shared by 24 slots gives each slot 1,536,000 divided by 24, which is 64,000 bits per second.</p>
+      <p class="say">So remember the table: more people never means fewer turns. It means shorter turns, so everyone gets less said each second.</p>
     </div>
-    <figure class="fig" data-fig="tdmsim"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Change the devices: the frame rate stays, your share shrinks.</span></figcaption></figure>
+    <figure class="fig" data-fig="tdmsim"><div class="stage"></div><div class="figinfo"></div><figcaption><span>More devices: same number of turns, shorter turns.</span></figcaption></figure>
   </article>
 
   <article class="lesson extra" id="x1-saf">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E1.2</span><h4 class="say">Store-and-forward: why every link adds L over R</h4></div>
-      <p class="say">Store-and-forward confuses a lot of people, so let's slow it right down.</p>
-      <p class="say">A router cannot send a packet on until it has received the whole packet. It stores every bit first, checks it, and only then forwards it.</p>
-      <p class="say">So on the first link, the source needs L over R seconds to push the whole packet out. The router waits for all of it.</p>
-      <p class="say">Then the router pushes the whole packet onto the second link, which takes another L over R. The packet's size stays the same on every link.</p>
-      <p class="say">That is why the total is one L over R for each link. With two links at the same rate, it takes twice as long as one link. If the links have different rates, work out each one and add them up.</p>
-      <div class="try" data-ans="20" data-unit="ms" data-hint="Each link adds L ÷ R. Add the two." data-steps="Each link: 10,000 ÷ 1,000,000 = 0.01 s = 10 ms.|Two links: 10 + 10.|= 20 ms.">
+      <div class="lesson-head"><span class="lesson-num">E1.2</span><h4 class="say">Store-and-forward: the courier who waits for every box</h4></div>
+      <p class="say">Store-and-forward makes sense once you picture a courier with a rule.</p>
+      <p class="say">You order 8 boxes. A courier carries them from your house to a depot, then from the depot to the shop. The rule is: nothing leaves the depot until every single box has arrived.</p>
+      <p class="rule say"><span class="k">L and R</span>The number of boxes is L, the size of the packet. How many boxes the road can take per minute is R, the link rate. So loading all the boxes onto one road takes L divided by R.</p>
+      <p class="say">On the first road, the courier needs L over R to send all 8 boxes to the depot. The depot waits for the last box.</p>
+      <p class="say">Only then does the second road start, and it takes another L over R for all 8 boxes to reach the shop. Same 8 boxes, so the same L.</p>
+      <p class="rule say"><span class="k">Why it adds up</span>Every road makes you wait for the whole order again. So the total is one L over R for each road. Two roads at the same speed take twice as long as one.</p>
+      <p class="say">If the second road is faster, its R is bigger, so its L over R is smaller. Work each road out separately, then add.</p>
+      <p class="say">Routers are the depots, links are the roads, and the boxes are the bits of one packet.</p>
+      <div class="try" data-ans="20" data-unit="ms" data-hint="One L ÷ R for each link, then add." data-steps="Each link: 10,000 ÷ 1,000,000 = 0.01 s = 10 ms.|Two links: 10 + 10.|= 20 ms.">
         <span class="k">Your turn</span>
-        <p class="say try-q">A 10,000-bit packet crosses two links, each running at 1 Mbps, using store-and-forward. How many milliseconds until it fully arrives?</p>
+        <p class="say try-q">A 10,000-bit packet crosses two links, each at 1 Mbps, using store-and-forward. How many milliseconds until it fully arrives?</p>
       </div>
-      <p class="say">The answer is one L over R per link. Ignore propagation unless the question gives you a distance.</p>
-
+      <p class="say">So picture the depot holding everything until the last box lands. That wait happens at every hop, which is why each link adds its own L over R.</p>
     </div>
-    <figure class="fig" data-fig="saf"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Watch the router wait for the last bit.</span></figcaption></figure>
+    <figure class="fig" data-fig="saf"><div class="stage"></div><div class="figinfo"></div><figcaption><span>The router waits for the last bit, like the depot waits for the last box.</span></figcaption></figure>
   </article>
 
   <div class="quiz-wrap" id="w1-quiz">
@@ -1265,40 +1410,197 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
     <figure class="fig" data-fig="calc"><div class="stage"></div><figcaption><span>Type the numbers from any question and check each step.</span></figcaption></figure>
   </article>
 
+
+  <div class="part walkpart"><span class="part-tag">How to solve</span><h3>Video walkthroughs: one problem, solved step by step</h3><span class="when">practice</span></div>
+  <article class="lesson walk" id="s-wait">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.1</span><h4 class="say">How to solve: queuing behind another packet</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. Packet A, 6,000 bytes, has just started transmitting on a 4 Mbps link. Packet B, 2,000 bytes, is waiting behind it. How long does B wait before it can start?</p></div>
+      <p class="rule say"><span class="k">Queue</span>First keyword: queue. A link sends one packet at a time, so B waits in the queue until every bit of A has gone. B&#x27;s own size does not matter for its wait.</p>
+      <div class="try" data-opts="Packet A, the one in front|Packet B|A and B added together|Neither" data-steps="B waits while A is transmitted.|So only A&#x27;s size matters.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Whose size decides how long B waits?</p>
+      </div>
+      <p class="rule say"><span class="k">A&#x27;s transmission time</span>So the wait is A&#x27;s transmission time. A is 6,000 bytes, which is 48,000 bits. 48,000 divided by 4 million is 0.012 seconds, or 12 milliseconds.</p>
+      <div class="try" data-ans="4" data-unit="ms" data-hint="8,000 bits ÷ 2,000,000 bps." data-steps="1,000 × 8 = 8,000 bits|8,000 ÷ 2,000,000 = 0.004 s|= 4 ms">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A is 1,000 bytes on a 2 Mbps link. How long does B wait, in ms?</p>
+      </div>
+      <div class="try" data-gen="wait">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Find the length of the packet in front, then divide by the link rate.</p>
+      </div>
+      <p class="say">That is how to solve every waiting-in-the-queue question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-fdm">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.2</span><h4 class="say">How to solve: FDM unused capacity</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A 20 Mbps link uses FDM for exactly 10 circuits. Only 7 users are transmitting. How much capacity is unused?</p></div>
+      <p class="rule say"><span class="k">Band</span>First keyword: band. FDM splits the link into equal frequency bands, one per circuit. 20 Mbps split 10 ways gives 2 Mbps per band.</p>
+      <div class="try" data-ans="5" data-unit="Mbps" data-hint="Divide the total by the number of bands." data-steps="30 ÷ 6|= 5 Mbps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A 30 Mbps link is split into 6 FDM bands. How many Mbps per band?</p>
+      </div>
+      <p class="rule say"><span class="k">Reserved</span>Next keyword: reserved. A band stays reserved even when its owner is silent, and nobody else can use it. Here 10 minus 7 leaves 3 idle circuits.</p>
+      <div class="try" data-opts="No, it stays reserved|Yes, automatically|Only at night|Yes, if the router allows it" data-steps="Circuit switching reserves resources.|Idle bands are simply wasted.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Can another user borrow an idle FDM band?</p>
+      </div>
+      <p class="rule say"><span class="k">Unused capacity</span>So the unused capacity is the idle circuits times the size of one band: 3 times 2 is 6 Mbps.</p>
+      <div class="try" data-ans="9" data-unit="Mbps" data-hint="(8 − 5) idle circuits × 3 Mbps." data-steps="8 − 5 = 3 idle|3 × 3 = 9 Mbps">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">8 circuits of 3 Mbps each, and 5 users are active. How many Mbps are unused?</p>
+      </div>
+      <div class="try" data-gen="fdm">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. It may ask for unused capacity, or for the maximum number of users.</p>
+      </div>
+      <p class="say">That is how to solve FDM questions.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-prop">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.3</span><h4 class="say">How to solve: propagation delay</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A link is 2,000 kilometres long, and signals travel at 2 times 10 to the 8 metres per second. What is the propagation delay?</p></div>
+      <p class="rule say"><span class="k">Propagation delay</span>First keyword: propagation delay. It is the time for one bit to travel down the cable. It depends on distance and the medium, not on the packet size.</p>
+      <div class="try" data-opts="Stays the same|Increases|Decreases|Doubles" data-steps="Propagation depends only on distance and medium.|Packet size affects transmission delay instead.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A bigger packet on the same link: the propagation delay…</p>
+      </div>
+      <p class="rule say"><span class="k">Distance in metres</span>The speed is in metres per second, so the distance must be in metres. 2,000 kilometres is 2,000,000 metres.</p>
+      <div class="try" data-ans="300000" data-unit="m" data-hint="Multiply by 1,000." data-steps="300 × 1,000|= 300,000 m">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">How many metres is 300 km?</p>
+      </div>
+      <p class="rule say"><span class="k">d over s</span>Now divide distance by speed. 2 times 10 to the 8 is 200,000,000. 2,000,000 divided by 200,000,000 is 0.01 seconds, which is 10 milliseconds.</p>
+      <div class="try" data-ans="2" data-unit="ms" data-hint="400,000 m ÷ 200,000,000 m/s, then × 1,000." data-steps="400 km = 400,000 m|400,000 ÷ 200,000,000 = 0.002 s|= 2 ms">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A 400 km link at 2 × 10⁸ m/s. What is the propagation delay, in ms?</p>
+      </div>
+      <div class="try" data-gen="prop">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Kilometres to metres, divide by the speed, then seconds to milliseconds.</p>
+      </div>
+      <p class="say">That is how to solve every propagation question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-nodal">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.4</span><h4 class="say">How to solve: total nodal delay</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. At one router: processing 1 millisecond, queuing 5, transmission 4, and propagation 10. What is the total nodal delay?</p></div>
+      <p class="rule say"><span class="k">The four delays</span>Keyword: nodal delay. At every router a packet picks up four delays: processing, checking the packet; queuing, waiting in the buffer; transmission, pushing the bits on; and propagation, travelling the wire.</p>
+      <div class="try" data-opts="Queuing|Propagation|Processing|None of them" data-steps="Congestion means packets wait in the buffer.|That is queuing delay.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Which delay grows when the network is congested?</p>
+      </div>
+      <p class="rule say"><span class="k">Add them up</span>Nodal delay is simply the sum of the four, as long as they are in the same unit. 1 plus 5 plus 4 plus 10 is 20 milliseconds.</p>
+      <div class="try" data-ans="5.5" data-unit="ms" data-hint="Add all four." data-steps="0.5 + 0 + 2 + 3|= 5.5 ms">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Processing 0.5 ms, queuing 0 ms, transmission 2 ms, propagation 3 ms. Total, in ms?</p>
+      </div>
+      <div class="try" data-gen="nodal">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Check the units match, then add.</p>
+      </div>
+      <p class="say">That is how to solve nodal delay questions.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-loss">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.5</span><h4 class="say">How to solve: packet loss</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A sender sends at 15 Mbps into a router whose outgoing link runs at 10 Mbps. The queue holds 200 packets, and each packet is 1,250 bytes. How many packets are dropped in one second?</p></div>
+      <p class="rule say"><span class="k">S, T and Q</span>Keywords: S is the sending rate, T is how fast the link can send onward, and Q is how many packets the queue can hold. Loss happens when S is bigger than T and the queue is full.</p>
+      <div class="try" data-opts="When more arrive than leave and the queue is full|Whenever the link is busy|When packets are large|Never" data-steps="Extra packets wait in the queue.|Once it is full, new ones are dropped.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">When does a router start dropping packets?</p>
+      </div>
+      <p class="rule say"><span class="k">Packets, not bits</span>The queue counts packets, so turn the rates into packets per second. One packet is 1,250 times 8, which is 10,000 bits.</p>
+      <p class="formula say" data-say="15 million divided by 10,000 is 1,500 packets sent. 10 million divided by 10,000 is 1,000 packets forwarded.">sent = 1,500 packets · forwarded = 1,000 packets</p>
+      <div class="try" data-ans="2000" data-unit="packets" data-hint="Rate ÷ bits per packet." data-steps="8,000,000 ÷ 4,000|= 2,000 packets">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A link sends 8 Mbps with 4,000-bit packets. How many packets per second?</p>
+      </div>
+      <p class="rule say"><span class="k">Extra and dropped</span>The extra packets are sent minus forwarded: 1,500 minus 1,000 is 500. The queue keeps 200 of them, so 300 are dropped.</p>
+      <div class="try" data-ans="500" data-unit="packets" data-hint="(sent − forwarded) − queue." data-steps="2,000 − 1,200 = 800 extra|800 − 300 = 500 dropped">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">2,000 packets sent, 1,200 forwarded, and the queue holds 300. How many are dropped?</p>
+      </div>
+      <div class="try" data-gen="loss">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Packet size in bits, packets sent and forwarded, then subtract the queue.</p>
+      </div>
+      <p class="say">That is how to solve every packet loss question.</p>
+    </div>
+  </article>
+  <article class="lesson walk" id="s-bott">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">H2.6</span><h4 class="say">How to solve: bottleneck throughput</h4></div>
+      <div class="sv-prob"><span class="k">The problem</span><p class="say">Here is the problem. A 50 megabyte file crosses three links of 100, 20 and 1000 Mbps. At the bottleneck rate, how long does the transfer take?</p></div>
+      <p class="rule say"><span class="k">Bottleneck</span>First keyword: bottleneck. Data can only move as fast as the slowest link on its path. That slowest link sets the throughput. Here it is 20 Mbps.</p>
+      <div class="try" data-opts="10 Mbps|100 Mbps|1000 Mbps|1110 Mbps" data-steps="The slowest link sets the pace.|min(100, 10, 1000) = 10 Mbps.">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">Links of 100, 10 and 1000 Mbps. The end-to-end throughput is…</p>
+      </div>
+      <p class="rule say"><span class="k">Megabytes and megabits</span>Careful with units: the file is in megabytes, but rates are in megabits. One byte is 8 bits, so 50 megabytes is 400 megabits.</p>
+      <div class="try" data-ans="200" data-unit="Mb" data-hint="Multiply by 8." data-steps="25 × 8|= 200 Mb">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">How many megabits is 25 MB?</p>
+      </div>
+      <p class="rule say"><span class="k">Time</span>Now divide the size by the bottleneck rate: 400 divided by 20 is 20 seconds.</p>
+      <div class="try" data-ans="4" data-unit="s" data-hint="Size ÷ rate." data-steps="160 ÷ 40|= 4 s">
+        <span class="k">Check yourself</span>
+        <p class="say try-q">A 160 Mb file at a 40 Mbps bottleneck takes how many seconds?</p>
+      </div>
+      <div class="try" data-gen="bott">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Now a full problem with new numbers. Find the slowest link first.</p>
+      </div>
+      <p class="say">That is how to solve bottleneck questions.</p>
+    </div>
+  </article>
+
   <div class="part extra"><span class="part-tag">Extra</span><h3>Extra lectures: the tricky parts, one at a time</h3><span class="when">optional</span></div>
 
   <article class="lesson extra" id="x2-delays">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E2.1</span><h4 class="say">Transmission vs propagation: two different delays</h4></div>
-      <p class="say">Transmission delay and propagation delay sound alike, but they measure different things.</p>
-      <p class="rule say"><span class="k">Transmission delay</span>Transmission delay is the time to push every bit of the packet onto the link. It is L over R. A bigger packet, or a slower link, takes longer. Distance does not matter.</p>
-      <p class="rule say"><span class="k">Propagation delay</span>Propagation delay is the time for one bit to travel down the wire to the other end. It is d over s. A longer cable takes longer. Packet size does not matter.</p>
-      <p class="say">Think of cars at a toll booth. Transmission is how long it takes to let the whole line of cars through the booth. Propagation is how long one car takes to drive down the road to the next town.</p>
-      <div class="try" data-ans="2" data-unit="" data-hint="Which one depends on distance?" data-steps="Propagation delay = distance ÷ speed.|Double the distance, double the propagation delay.|Transmission delay does not change.">
+      <div class="lesson-head"><span class="lesson-num">E2.1</span><h4 class="say">Transmission vs propagation: the convoy and the toll booth</h4></div>
+      <p class="say">Transmission delay and propagation delay finally make sense with one picture: a convoy of cars going through a toll booth, then driving to the next town.</p>
+      <p class="say">Ten cars travel together as a convoy. The convoy is one packet, and each car is a bit.</p>
+      <p class="rule say"><span class="k">Transmission delay</span>The toll booth lets one car through every 12 seconds. Getting the whole convoy through takes 10 cars times 12 seconds, so 2 minutes. That is transmission delay: the time to push the whole packet out, L over R.</p>
+      <p class="rule say"><span class="k">Propagation delay</span>After the booth, each car drives 100 kilometres to the next town at 100 kilometres an hour. That takes one hour. That is propagation delay: how long the trip itself takes, d over s.</p>
+      <p class="say">Now connect them. A bigger convoy means more cars at the booth, so a longer transmission delay, but the drive takes exactly as long. A longer road makes the drive longer, but the booth is just as quick.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>the convoy</td><td>one packet</td></tr><tr><td>one car</td><td>one bit</td></tr><tr><td>time to get every car through the booth</td><td>transmission delay, L ÷ R</td></tr><tr><td>time for one car to drive the road</td><td>propagation delay, d ÷ s</td></tr></table></div>
+      <div class="try" data-opts="Propagation|Transmission|Both|Neither" data-steps="A longer road means a longer drive.|The booth is just as fast.|So only propagation doubles.">
         <span class="k">Your turn</span>
-        <p class="say try-q">You double the length of a cable. Which delay doubles? Type 1 for transmission, or 2 for propagation.</p>
+        <p class="say try-q">You double the length of the cable. Which delay doubles?</p>
       </div>
-      <p class="say">The answer is propagation. Distance only affects propagation. Packet size and link speed only affect transmission.</p>
-
+      <div class="try" data-opts="Transmission|Propagation|Both|Neither" data-steps="A bigger convoy takes longer at the booth.|The drive takes the same time.|So only transmission doubles.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">You send a packet twice as big on the same cable. Which delay doubles?</p>
+      </div>
+      <p class="say">So ask yourself: is this about getting the whole convoy through the booth, or about one car driving the road? That tells you which formula to use.</p>
     </div>
     <figure class="fig" data-fig="delays"><div class="stage"></div><div class="figinfo"></div><figcaption><span>The four delays at one hop.</span></figcaption></figure>
   </article>
 
   <article class="lesson extra" id="x2-tput">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E2.2</span><h4 class="say">Bandwidth, throughput and the bottleneck</h4></div>
-      <p class="say">Three words about speed get mixed up all the time: bandwidth, throughput and bottleneck.</p>
-      <p class="rule say"><span class="k">Bandwidth</span>Bandwidth is the most a link could carry, its capacity. It is like the width of a pipe.</p>
-      <p class="rule say"><span class="k">Throughput</span>Throughput is how much data actually arrives each second. It is never more than the bandwidth, and it is often less, because of congestion, loss and delays.</p>
-      <p class="rule say"><span class="k">Bottleneck</span>When data crosses several links, it can only go as fast as the slowest one. That link is the bottleneck, and it sets the end-to-end throughput.</p>
-      <div class="try" data-ans="20" data-unit="Mbps" data-hint="Find the slowest link." data-steps="throughput = min(100, 20, 1000).|= 20 Mbps.">
+      <div class="lesson-head"><span class="lesson-num">E2.2</span><h4 class="say">Bandwidth, throughput and the bottleneck: water through pipes</h4></div>
+      <p class="say">Picture water flowing from a tank, through three pipes joined end to end, out of a tap.</p>
+      <p class="rule say"><span class="k">Bandwidth</span>How wide each pipe is decides the most water it could carry each second. That is bandwidth: capacity, what is possible.</p>
+      <p class="rule say"><span class="k">Throughput</span>How much water actually comes out of the tap each second is throughput: what really arrives.</p>
+      <p class="rule say"><span class="k">Bottleneck</span>Now say the first pipe is wide, the middle one is thin, and the last one is wide again. Water can only come out as fast as it squeezes through the thin pipe. The thin one is the bottleneck.</p>
+      <p class="say">Connect them: the tap&#x27;s throughput equals the thinnest pipe&#x27;s bandwidth. Making the wide pipes even wider changes nothing. Only widening the thin pipe helps.</p>
+      <p class="say">Links are the pipes, data is the water, and end-to-end throughput is the minimum of the link rates.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>width of a pipe</td><td>bandwidth of a link</td></tr><tr><td>water out of the tap per second</td><td>throughput</td></tr><tr><td>the thinnest pipe</td><td>the bottleneck link</td></tr></table></div>
+      <div class="try" data-ans="20" data-unit="Mbps" data-hint="Find the thinnest pipe." data-steps="throughput = min(100, 20, 1000).|= 20 Mbps.">
         <span class="k">Your turn</span>
-        <p class="say try-q">Data crosses three links of 100, 20 and 1000 Mbps. What is the end-to-end throughput, in Mbps?</p>
+        <p class="say try-q">Data crosses links of 100, 20 and 1000 Mbps. What is the end-to-end throughput, in Mbps?</p>
       </div>
-      <p class="say">The answer is 20 Mbps, the slowest link. Making the fast links even faster would not help at all. Only upgrading the bottleneck would.</p>
-
+      <p class="say">So when you see several link rates in a question, look for the thinnest pipe first. Everything else waits for it.</p>
     </div>
-    <figure class="fig" data-fig="bottle"><div class="ctrls"><label for="b-a2">Link A <select id="b-a2"><option>5</option><option>10</option><option selected>100</option><option>1000</option></select> Mbps</label><label for="b-b2">Link B <select id="b-b2"><option>5</option><option selected>20</option><option>100</option><option>1000</option></select> Mbps</label></div><div class="stage"></div><div class="figinfo"></div><figcaption><span>The slowest link sets the pace. Change the links and press play.</span></figcaption></figure>
+    <figure class="fig" data-fig="bottle"><div class="ctrls"><label for="b-a2">Link A <select id="b-a2"><option>5</option><option>10</option><option selected>100</option><option>1000</option></select> Mbps</label><label for="b-b2">Link B <select id="b-b2"><option>5</option><option selected>20</option><option>100</option><option>1000</option></select> Mbps</label></div><div class="stage"></div><div class="figinfo"></div><figcaption><span>The thinnest pipe sets the pace. Change the links and press play.</span></figcaption></figure>
   </article>
 
   <div class="quiz-wrap" id="w2-quiz">
@@ -1559,69 +1861,79 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 
   <article class="lesson extra" id="x3-encap">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E3.1</span><h4 class="say">Encapsulation: what each layer adds</h4></div>
-      <p class="say">Encapsulation means wrapping. On the way down the layers, each layer wraps the data with its own information, like putting a letter into envelopes.</p>
-      <p class="say">The application creates the data. The transport layer adds a header with the port numbers, and the data becomes a segment.</p>
-      <p class="say">The network layer adds a header with the IP addresses, and it becomes a packet. The data link layer adds a header with the MAC addresses and a trailer with the error check, and it becomes a frame.</p>
-      <p class="say">Finally the physical layer sends the frame as bits, as electrical signals, light or radio.</p>
-      <p class="say">At the other end, decapsulation happens: each layer removes its own wrapper, in reverse order, until the application gets the original data.</p>
-      <div class="try" data-ans="3" data-unit="headers" data-hint="Transport adds one, network adds one, data link adds one." data-steps="Transport header (ports).|Network header (IP addresses).|Data link header (MAC addresses), plus a trailer.|3 headers.">
+      <div class="lesson-head"><span class="lesson-num">E3.1</span><h4 class="say">Encapsulation: posting a gift</h4></div>
+      <p class="say">Encapsulation is just packing a gift to post it, one wrapper at a time.</p>
+      <p class="rule say"><span class="k">Data</span>You write a card. That is the data your app creates.</p>
+      <p class="rule say"><span class="k">Segment</span>You put the card in an envelope labelled with the flat number of the person it is for. That label is the port number, so the envelope is a segment.</p>
+      <p class="rule say"><span class="k">Packet</span>You put the envelope in a parcel with the full street address of the building. That address is the IP address, so the parcel is a packet.</p>
+      <p class="rule say"><span class="k">Frame</span>The courier puts the parcel in their own bag, labelled only with the next depot. That label is the MAC address, plus a seal to check nothing was damaged. The bag is a frame.</p>
+      <p class="rule say"><span class="k">Bits</span>Finally the van drives it: the frame travels as bits, as electrical signals, light or radio.</p>
+      <p class="say">At the other end it is unpacked in reverse. The bag comes off, then the parcel, then the envelope, until the person reads the card. That is decapsulation.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>the card</td><td>data</td></tr><tr><td>envelope with a flat number</td><td>segment, port</td></tr><tr><td>parcel with a street address</td><td>packet, IP address</td></tr><tr><td>courier bag to the next depot</td><td>frame, MAC address</td></tr><tr><td>the van driving</td><td>bits on the wire</td></tr></table></div>
+      <div class="try" data-ans="3" data-unit="wrappers" data-hint="Envelope, parcel, bag." data-steps="Envelope = transport header.|Parcel = network header.|Bag = data link header and trailer.|3 wrappers.">
         <span class="k">Your turn</span>
-        <p class="say try-q">How many headers have been added by the time a segment becomes a frame? Count the transport, network and data link headers.</p>
+        <p class="say try-q">How many wrappers have been added by the time the card becomes a frame? Count the envelope, the parcel and the courier bag.</p>
       </div>
-      <p class="say">The answer is three. Remember the order of names: data, segment, packet, frame, bits.</p>
-
+      <p class="say">So when you list the data units, just unwrap the gift in your head: data, segment, packet, frame, bits.</p>
     </div>
     <figure class="fig" data-fig="encap"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Each layer adds its own wrapper.</span></figcaption></figure>
   </article>
 
   <article class="lesson extra" id="x3-ipmac">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E3.2</span><h4 class="say">IP address vs MAC address: which one changes?</h4></div>
-      <p class="say">Every device has two kinds of address, and they do different jobs.</p>
-      <p class="rule say"><span class="k">IP address</span>The IP address is the global address, like a postal address. It says where the data is finally going. It stays the same for the whole journey.</p>
-      <p class="rule say"><span class="k">MAC address</span>The MAC address is the local address, burned into the network card. It only gets the frame across one link, to the next device.</p>
-      <p class="say">So at every router, the frame is unwrapped and a new frame is built, with new MAC addresses for the next link. The IP addresses inside stay the same.</p>
-      <div class="try" data-ans="0" data-unit="times" data-hint="Which address is the end-to-end one?" data-steps="IP addresses identify the original sender and the final receiver.|They stay the same for the whole trip.|So they change 0 times. Only the MAC addresses change at each hop.">
+      <div class="lesson-head"><span class="lesson-num">E3.2</span><h4 class="say">IP vs MAC: your ticket and your boarding passes</h4></div>
+      <p class="say">Think about flying from Cairo to London, with a change in Paris.</p>
+      <p class="rule say"><span class="k">IP address</span>Your ticket says Cairo to London. It never changes, all the way there. That is the IP address: where the data started and where it is finally going.</p>
+      <p class="rule say"><span class="k">MAC address</span>But each flight has its own boarding pass. Cairo to Paris, then a new one for Paris to London. That is the MAC address: it only gets you across one hop, to the next stop.</p>
+      <p class="say">Connect them: at every airport you swap your boarding pass, but your ticket stays the same. At every router, the frame gets new MAC addresses for the next link, but the IP addresses inside stay the same.</p>
+      <p class="say">And this links to encapsulation: the boarding pass is the courier bag, replaced at every depot. The ticket is the parcel&#x27;s address, kept all the way.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>your ticket, Cairo to London</td><td>IP addresses, end to end</td></tr><tr><td>a boarding pass for one flight</td><td>MAC addresses, one hop</td></tr><tr><td>changing planes in Paris</td><td>a router</td></tr></table></div>
+      <div class="try" data-ans="0" data-unit="times" data-hint="Does your ticket change at each airport?" data-steps="IP addresses are the ticket: start to final destination.|They stay the same for the whole trip.|0 times. Only the MAC addresses change at each hop.">
         <span class="k">Your turn</span>
         <p class="say try-q">A packet travels from a laptop through two routers to a server. How many times do the IP addresses change on the way?</p>
       </div>
-      <p class="say">The answer is zero. IP addresses stay the same from end to end. MAC addresses change at every hop. The network tracing practice lets you follow this hop by hop.</p>
-
+      <p class="say">So ask: is this address about the whole journey, or just the next hop? Whole journey means IP. Next hop means MAC.</p>
     </div>
-    <figure class="fig" data-fig="arp"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Finding the MAC address for an IP address on the local network.</span></figcaption></figure>
+    <figure class="fig" data-fig="arp"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Finding the MAC address for the next hop.</span></figcaption></figure>
   </article>
 
   <article class="lesson extra" id="x3-ports">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E3.3</span><h4 class="say">Ports and sockets: which app gets the data?</h4></div>
-      <p class="say">Your computer runs many network apps at once: a browser, email, a game. When data arrives, how does it reach the right one?</p>
-      <p class="say">The IP address gets the data to the right computer. The port number gets it to the right app on that computer. Think of the IP address as the building, and the port as the flat number.</p>
-      <p class="say">Well-known services use fixed ports. Web pages over HTTPS use port 443, and plain HTTP uses port 80. DNS uses port 53.</p>
-      <p class="say">A socket is the full address of one end of a conversation: IP address, plus port, plus protocol, TCP or UDP.</p>
-      <div class="try" data-ans="443" data-unit="" data-hint="HTTPS is the secure version of HTTP." data-steps="HTTP uses port 80.|HTTPS, the secure version, uses port 443.">
+      <div class="lesson-head"><span class="lesson-num">E3.3</span><h4 class="say">Ports and sockets: the building and the flats</h4></div>
+      <p class="say">Imagine a big apartment building. Parcels arrive at the front door all day. How does each one reach the right person?</p>
+      <p class="rule say"><span class="k">IP address</span>The building&#x27;s street address gets the parcel to the right building. That is the IP address: the right computer.</p>
+      <p class="rule say"><span class="k">Port</span>The flat number gets it to the right door inside. That is the port: the right app on that computer.</p>
+      <p class="say">Some flats are always the same service. Flat 443 is always the secure website, flat 80 the plain website, and flat 53 is the directory service, DNS. Those are the well-known ports.</p>
+      <p class="rule say"><span class="k">Socket</span>A socket is the full delivery instruction: the building, the flat, and how it is delivered. Building plus flat plus delivery method means IP address plus port plus TCP or UDP.</p>
+      <p class="say">Connect it to the gift from encapsulation: the flat number is written on the envelope, the street address is on the parcel.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>the building address</td><td>IP address</td></tr><tr><td>the flat number</td><td>port</td></tr><tr><td>a famous flat that never moves</td><td>well-known port</td></tr><tr><td>building + flat + delivery method</td><td>socket</td></tr></table></div>
+      <div class="try" data-ans="443" data-unit="" data-hint="The secure web flat." data-steps="HTTP uses port 80.|HTTPS, the secure version, uses port 443.">
         <span class="k">Your turn</span>
-        <p class="say try-q">A browser connects to a secure website. Which port number does the server listen on?</p>
+        <p class="say try-q">You visit a secure website. Which flat number, which port, does the server listen on?</p>
       </div>
-      <p class="say">The answer is 443. The cheat sheet lists all the port numbers from the lecture.</p>
-
+      <p class="say">So the IP address finds the building, and the port finds the door.</p>
     </div>
     <figure class="fig" data-fig="ports"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Ports send each segment to the right app.</span></figcaption></figure>
   </article>
 
   <article class="lesson extra" id="x3-tcpudp">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">E3.4</span><h4 class="say">TCP or UDP: how to choose</h4></div>
-      <p class="say">Both TCP and UDP work at the transport layer, but they make opposite trade-offs.</p>
-      <p class="rule say"><span class="k">TCP</span>TCP is reliable. It sets up a connection with a three-way handshake, numbers every segment, and resends anything lost. Everything arrives, in order, but a little slower.</p>
-      <p class="rule say"><span class="k">UDP</span>UDP is fast and simple. No handshake, no acknowledgements, no resending. Some data may be lost, but nothing waits.</p>
-      <p class="say">So ask one question: is a missing piece worse than a delay? For a file, an email or a web page, a missing piece is worse, so use TCP. For a live call or a game, a delay is worse, so use UDP.</p>
-      <div class="try" data-ans="3" data-unit="messages" data-hint="SYN, then SYN-ACK, then …" data-steps="Client sends SYN.|Server replies SYN-ACK.|Client answers ACK.|3 messages.">
+      <div class="lesson-head"><span class="lesson-num">E3.4</span><h4 class="say">TCP or UDP: a signed letter or a live radio show</h4></div>
+      <p class="say">TCP and UDP make opposite choices. Two pictures make the difference stick.</p>
+      <p class="rule say"><span class="k">TCP, the signed letter</span>TCP is like sending a long letter as numbered pages by signed-for post. You first ring to check they are ready. Every page is numbered, the receiver signs for each one, and any missing page is sent again. Everything arrives, in order, but it takes a bit longer.</p>
+      <p class="rule say"><span class="k">The handshake</span>That first phone call is the three-way handshake. You say, can you hear me: that is SYN. They say, yes, can you hear me: SYN-ACK. You say, yes: ACK. Now the letter can start.</p>
+      <p class="rule say"><span class="k">UDP, the live radio</span>UDP is like a live radio show. The presenter just talks. Nobody checks who is listening, and if you miss a word, it is gone. But there is no waiting, so it stays live.</p>
+      <p class="say">Connect them with one question: is a missing piece worse than a delay? For a file or a web page, a missing page ruins it, so use the signed letter, TCP. For a call or a game, a delay ruins it, so use the radio, UDP.</p>
+      <div class="tbl map"><table><tr><th>In the story</th><th>In the network</th></tr><tr><td>signed-for, numbered pages</td><td>TCP: acknowledgements and sequence numbers</td></tr><tr><td>resending a lost page</td><td>TCP retransmission</td></tr><tr><td>the opening phone call</td><td>three-way handshake</td></tr><tr><td>live radio</td><td>UDP: no handshake, no resending</td></tr></table></div>
+      <div class="try" data-opts="UDP, because a delay is worse than a missing piece|TCP, because every frame must arrive|Both at once|Neither" data-steps="In a live call, waiting for a lost piece makes you lag.|Losing one tiny piece is barely noticed.|So use UDP.">
         <span class="k">Your turn</span>
-        <p class="say try-q">How many messages are in TCP's handshake, before any data is sent?</p>
+        <p class="say try-q">A live video call should use…</p>
       </div>
-      <p class="say">The answer is three: SYN, SYN-ACK, ACK. UDP skips all of this, which is why it is faster.</p>
-
+      <div class="try" data-ans="3" data-unit="messages" data-hint="SYN, SYN-ACK, then…" data-steps="SYN.|SYN-ACK.|ACK.|3 messages.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">How many messages are in TCP&#x27;s opening handshake, before any data is sent?</p>
+      </div>
+      <p class="say">So picture the letter and the radio, and ask which hurts more: a gap or a wait.</p>
     </div>
     <figure class="fig" data-fig="tcp"><div class="stage"></div><div class="figinfo"></div><figcaption><span>TCP opens a connection with a three-way handshake.</span></figcaption></figure>
   </article>
@@ -1652,9 +1964,8 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 </section>
 
 <section class="tool wrap" id="tool-solve" aria-labelledby="sv-h">
-  <header class="week-head"><p class="wk-label">Practice</p><h2 id="sv-h">How to solve</h2><p>Pick a type of question. You get a problem, then it is solved one step at a time: each idea is explained with a picture, worked out for this problem, and checked with a quick question before you move on. At the end you solve a fresh one on your own.</p></header>
+  <header class="week-head"><p class="wk-label">Practice</p><h2 id="sv-h">How to solve</h2><p>Narrated video walkthroughs. Each one solves a real problem step by step, explains every keyword as it goes, and stops after each one to ask you a question. At the end you solve a new problem on your own.</p></header>
   <div class="sv-topics" id="sv-topics" role="group" aria-label="Question types"></div>
-  <div class="sv-run" id="sv-run"></div>
   <div class="tool-end"><button type="button" class="btn ghost" data-home>← Back to home</button></div>
 </section>
 
@@ -1737,7 +2048,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 </main>
 
 
-<script>window.__AUDIO={"lessons":{"w1-net":{"f":"w1-net.mp3","s":[[0,0,27,0.3],[1,0,164,2.94],[2,0,24,15.18],[2,25,74,16.89],[2,75,137,20.28],[2,138,283,24.63],[3,0,26,36.06],[3,27,121,38.18],[3,122,259,45.11],[3,260,389,54.97],[4,0,67,64.9],[4,68,235,69.62],[-1,0,0,83.08]]},"w1-types":{"f":"w1-types.mp3","s":[[0,0,24,0.3],[1,0,146,2.88],[1,147,192,12.61],[2,0,27,16.29],[3,0,77,18.95],[3,78,176,24.35],[4,0,24,31.64],[5,0,117,34.11],[5,118,188,42.37],[6,0,25,48.23],[7,0,103,50.87],[7,104,207,58.0],[8,0,31,66.38],[9,0,14,69.27],[9,15,107,70.81],[9,108,193,76.87],[10,0,23,83.63],[11,0,67,86.08],[11,68,100,90.26],[11,101,178,92.88],[12,0,8,98.66],[12,8,43,100.05],[12,44,106,102.76],[12,107,133,107.39],[12,134,282,109.56],[-1,0,0,120.46]]},"w1-media":{"f":"w1-media.mp3","s":[[0,0,27,0.3],[1,0,72,3.03],[2,0,77,8.4],[2,78,163,14.09],[-1,0,0,20.28]]},"w1-models":{"f":"w1-models.mp3","s":[[0,0,30,0.3],[1,0,51,2.98],[1,52,191,6.48],[2,0,35,16.08],[2,36,90,18.7],[2,91,145,22.56],[2,146,252,26.34],[2,253,309,33.57],[3,0,162,38.05],[4,0,134,52.1],[4,135,296,61.62],[5,0,62,73.09],[5,63,169,77.55],[6,0,48,84.95],[6,49,120,88.19],[6,121,180,92.67],[6,181,232,96.79],[7,0,203,100.71],[7,204,379,114.83],[-1,0,0,127.22]]},"w1-devices":{"f":"w1-devices.mp3","s":[[0,0,15,0.3],[1,0,11,2.45],[2,0,102,4.34],[2,103,132,11.38],[3,0,14,14.2],[4,0,30,16.15],[4,31,126,18.67],[5,0,14,25.92],[6,0,118,28.01],[7,0,12,36.02],[8,0,68,37.85],[9,0,28,43.4],[10,0,120,46.14],[11,0,8,54.16],[12,0,95,55.73],[12,96,188,62.77],[12,189,391,69.13],[13,0,8,83.83],[13,8,61,85.02],[13,62,119,89.29],[-1,0,0,93.83]]},"w1-protocols":{"f":"w1-protocols.mp3","s":[[0,0,30,0.3],[1,0,92,3.03],[1,93,181,9.58],[2,0,65,15.72],[2,66,151,20.26],[2,152,209,25.83],[3,0,49,30.15],[4,0,35,36.34],[5,0,34,41.0],[6,0,58,45.05],[7,0,32,50.98],[8,0,15,53.66],[9,0,36,55.75],[9,37,94,58.44],[10,0,38,63.47],[11,0,96,66.53],[12,0,37,72.76],[13,0,61,76.15],[-1,0,0,80.86]]},"w1-edge":{"f":"w1-edge.mp3","s":[[0,0,16,0.3],[1,0,127,2.45],[1,128,263,11.11],[2,0,158,20.9],[3,0,157,31.8],[3,158,249,42.51],[4,0,61,49.11],[4,62,132,54.13],[4,133,269,58.78],[4,270,329,68.04],[5,0,15,72.51],[5,15,44,74.05],[5,45,73,76.23],[5,74,144,78.51],[5,145,211,83.38],[-1,0,0,88.28]]},"w1-access":{"f":"w1-access.mp3","s":[[0,0,40,0.3],[1,0,155,4.22],[2,0,3,14.5],[3,0,74,16.24],[3,75,279,21.85],[3,280,347,36.6],[4,0,83,41.8],[4,84,152,53.68],[5,0,153,59.01],[5,154,279,69.1],[6,0,23,78.57],[7,0,93,81.74],[7,94,154,88.53],[7,155,280,92.94],[7,281,384,101.09],[8,0,63,109.05],[8,64,121,114.1],[8,122,262,117.47],[8,263,373,127.76],[9,0,35,135.75],[9,36,154,139.04],[10,0,27,153.8],[11,0,174,156.65],[12,0,11,168.89],[12,11,31,170.34],[12,32,62,172.75],[12,63,163,175.68],[-1,0,0,183.27]]},"w1-circuit":{"f":"w1-circuit.mp3","s":[[0,0,38,0.3],[1,0,92,3.35],[1,93,188,9.36],[2,0,152,15.93],[3,0,45,26.12],[3,46,137,29.24],[3,138,174,34.59],[3,175,303,37.09],[4,0,142,45.94],[4,143,323,55.35],[5,0,76,67.54],[5,77,143,72.64],[6,0,63,80.47],[-1,0,0,92.07]]},"w1-mux":{"f":"w1-mux.mp3","s":[[0,0,32,0.3],[1,0,72,3.62],[1,73,134,8.42],[2,0,74,13.26],[3,0,15,19.19],[3,16,130,20.87],[4,0,23,28.93],[4,24,128,31.2],[5,0,11,37.87],[5,11,76,39.26],[6,0,8,44.43],[6,8,60,45.63],[6,61,112,49.11],[-1,0,0,53.41]]},"w1-packet":{"f":"w1-packet.mp3","s":[[0,0,38,0.3],[1,0,56,3.47],[1,57,163,7.63],[1,164,244,16.04],[2,0,110,21.5],[2,111,181,28.64],[2,182,293,33.42],[3,0,60,42.17],[4,0,56,49.78],[4,57,160,53.53],[5,0,61,60.65],[5,62,101,65.13],[5,102,201,67.84],[5,202,246,74.63],[5,247,329,77.91],[6,0,18,84.52],[6,18,72,86.49],[6,73,120,90.22],[6,121,144,93.87],[-1,0,0,96.4]]},"w1-queue":{"f":"w1-queue.mp3","s":[[0,0,38,0.3],[1,0,98,3.37],[1,99,171,10.3],[1,172,288,15.19],[2,0,43,23.23],[2,44,148,26.15],[2,149,216,33.53],[2,217,271,37.95],[3,0,27,42.4],[3,28,117,44.68],[3,118,138,50.34],[4,0,45,52.45],[4,46,78,56.05],[4,79,158,59.72],[4,159,195,67.27],[5,0,46,70.73],[6,0,52,79.79],[7,0,101,86.25],[8,0,83,98.0],[8,84,145,106.28],[8,146,178,116.11],[9,0,24,118.73],[9,25,86,120.89],[-1,0,0,125.55]]},"w2-metrics":{"f":"w2-metrics.mp3","s":[[0,0,40,0.3],[1,0,127,3.62],[1,128,197,13.05],[2,0,80,19.56],[3,0,17,25.12],[4,0,61,27.33],[5,0,11,31.72],[6,0,61,33.4],[7,0,10,38.03],[8,0,58,39.45],[9,0,179,43.93],[-1,0,0,56.87]]},"w2-delay":{"f":"w2-delay.mp3","s":[[0,0,28,0.3],[1,0,131,3.07],[1,132,170,11.47],[2,0,16,14.61],[3,0,146,16.65],[3,147,163,26.16],[4,0,13,29.36],[5,0,59,31.21],[5,60,129,35.07],[5,130,228,39.79],[5,229,245,47.47],[6,0,18,50.9],[7,0,52,52.96],[7,53,93,56.25],[7,94,209,59.22],[8,0,17,74.02],[9,0,94,76.12],[9,95,140,82.2],[9,141,229,85.38],[10,0,34,99.5],[11,0,22,108.12],[11,22,97,110.02],[11,98,155,114.77],[11,156,225,118.85],[11,226,284,123.78],[11,285,436,127.77],[12,0,122,137.77],[12,123,205,150.01],[13,0,55,155.85],[14,0,71,160.1],[-1,0,0,174.51]]},"w2-loss":{"f":"w2-loss.mp3","s":[[0,0,11,0.3],[1,0,124,1.98],[2,0,40,10.98],[2,41,108,13.75],[2,109,157,18.23],[2,158,206,21.22],[2,207,276,24.61],[3,0,20,30.24],[3,21,95,31.93],[3,96,176,37.13],[3,177,250,42.42],[4,0,46,47.94],[5,0,23,56.22],[5,24,50,59.44],[5,51,86,62.92],[5,87,135,65.97],[5,136,158,70.15],[6,0,46,72.45],[7,0,63,79.4],[8,0,60,87.59],[9,0,90,98.01],[10,0,52,109.47],[10,53,177,112.84],[10,178,234,121.52],[10,235,339,125.81],[-1,0,0,133.14]]},"w2-throughput":{"f":"w2-throughput.mp3","s":[[0,0,37,0.3],[1,0,142,3.11],[1,143,200,12.69],[2,0,90,16.95],[2,91,138,23.03],[3,0,68,26.68],[3,69,162,32.82],[4,0,118,41.22],[4,119,176,48.6],[5,0,38,52.99],[6,0,125,58.13],[6,126,191,69.65],[7,0,259,75.17],[-1,0,0,94.88]]},"w2-models":{"f":"w2-models.mp3","s":[[0,0,28,0.3],[1,0,144,3.11],[1,145,247,14.44],[-1,0,0,21.58]]},"w2-compare":{"f":"w2-compare.mp3","s":[[0,0,41,0.3],[1,0,51,3.69],[1,52,74,7.49],[2,0,19,9.81],[3,0,57,12.0],[4,0,61,16.18],[5,0,10,20.76],[6,0,70,22.5],[7,0,9,27.72],[7,10,40,29.05],[8,0,18,31.77],[9,0,37,33.84],[10,0,49,37.05],[11,0,22,41.02],[12,0,42,43.51],[13,0,51,47.07],[14,0,20,50.95],[15,0,76,53.16],[16,0,59,58.94],[17,0,15,63.16],[18,0,67,65.01],[19,0,57,70.04],[-1,0,0,74.53]]},"w2-units":{"f":"w2-units.mp3","s":[[0,0,37,0.3],[1,0,52,3.56],[1,53,85,7.23],[2,0,9,10.17],[3,0,29,11.98],[3,30,57,14.58],[4,0,26,17.48],[5,0,4,24.53],[6,0,29,26.11],[6,30,77,30.74],[7,0,22,34.49],[8,0,4,39.13],[9,0,43,40.92],[9,44,85,44.74],[10,0,21,48.83],[11,0,187,53.8],[12,0,37,69.64],[13,0,46,72.63],[13,47,98,76.02],[14,0,36,79.79],[14,37,91,82.37],[15,0,112,89.77],[16,0,48,98.38],[17,0,58,102.2],[18,0,36,112.16],[19,0,56,115.05],[20,0,42,120.15],[20,43,73,123.09],[21,0,61,127.27],[21,62,98,131.77],[22,0,99,134.99],[23,0,70,141.94],[-1,0,0,147.8]]},"w2-exercises":{"f":"w2-exercises.mp3","s":[[0,0,39,0.3],[1,0,36,3.99],[1,37,77,6.5],[1,78,173,9.21],[1,174,228,15.27],[2,0,65,19.32],[3,0,79,34.44],[4,0,74,45.98],[5,0,52,63.23],[6,0,48,75.13],[7,0,23,83.36],[8,0,30,88.39],[8,31,117,93.77],[9,0,66,101.34],[10,0,31,113.86],[11,0,43,119.61],[12,0,82,129.33],[13,0,37,145.31],[14,0,37,152.45],[15,0,40,159.61],[16,0,101,169.38],[17,0,20,184.24],[17,21,56,186.08],[18,0,45,191.81],[19,0,68,200.58],[19,69,172,207.98],[20,0,79,215.14],[21,0,36,229.75],[22,0,30,237.24],[23,0,38,241.52],[23,39,86,247.96],[24,0,65,252.01],[25,0,51,268.63],[26,0,34,279.8],[27,0,41,285.41],[28,0,30,293.29],[29,0,61,299.84],[30,0,32,312.72],[30,33,52,318.89],[31,0,45,322.12],[32,0,67,332.29],[33,0,35,346.26],[34,0,37,350.61],[34,38,74,357.29],[34,75,111,364.2],[35,0,29,371.43],[-1,0,0,377.72]]},"w3-osi":{"f":"w3-osi.mp3","s":[[0,0,36,0.3],[1,0,69,3.82],[1,70,162,8.91],[2,0,15,15.33],[3,0,64,17.42],[4,0,15,22.23],[5,0,59,24.11],[6,0,8,28.94],[7,0,79,30.71],[8,0,96,36.02],[9,0,101,43.74],[9,102,212,51.54],[9,213,270,58.93],[10,0,207,63.32],[-1,0,0,81.06]]},"w3-app":{"f":"w3-app.mp3","s":[[0,0,20,0.3],[1,0,39,2.88],[1,40,181,5.54],[2,0,12,15.63],[3,0,16,19.04],[3,17,56,20.81],[4,0,3,24.99],[5,0,16,26.69],[6,0,4,28.69],[7,0,12,30.67],[8,0,4,32.5],[9,0,76,34.05],[10,0,4,39.61],[11,0,50,41.19],[12,0,3,44.9],[13,0,50,46.68],[14,0,6,52.08],[15,0,46,53.52],[16,0,3,57.57],[17,0,48,59.36],[18,0,4,63.66],[19,0,63,65.68],[20,0,14,71.08],[20,14,30,72.76],[20,31,56,74.92],[20,57,106,77.2],[-1,0,0,81.27]]},"w3-pres":{"f":"w3-pres.mp3","s":[[0,0,21,0.3],[1,0,92,2.86],[1,93,243,9.06],[1,244,262,19.75],[2,0,29,21.82],[3,0,35,24.5],[3,36,59,27.06],[4,0,25,29.47],[5,0,111,32.0],[5,112,168,39.55],[5,169,215,45.23],[5,216,275,48.62],[6,0,21,55.44],[7,0,129,57.91],[-1,0,0,69.83]]},"w3-session":{"f":"w3-session.mp3","s":[[0,0,16,0.3],[1,0,103,2.51],[1,104,199,9.87],[2,0,45,16.55],[3,0,7,20.19],[4,0,106,21.74],[5,0,11,29.78],[6,0,63,31.55],[7,0,11,36.28],[8,0,64,38.09],[-1,0,0,42.82]]},"w3-transport":{"f":"w3-transport.mp3","s":[[0,0,31,0.3],[1,0,69,4.07],[1,70,136,9.02],[1,137,163,13.57],[2,0,27,15.89],[3,0,195,18.7],[4,0,12,31.66],[5,0,167,33.41],[6,0,30,44.84],[7,0,85,47.69],[8,0,21,53.83],[9,0,59,56.47],[9,60,169,60.91],[9,170,283,68.19],[9,284,329,75.1],[9,330,372,78.49],[10,0,50,82.39],[10,51,72,86.15],[10,73,100,87.9],[10,101,124,90.82],[10,125,143,92.91],[11,0,3,95.06],[12,0,3,99.05],[13,0,3,102.88],[14,0,3,106.52],[15,0,3,110.44],[16,0,3,114.86],[17,0,17,119.33],[18,0,47,121.82],[18,48,101,125.66],[18,102,190,129.08],[18,191,297,135.31],[-1,0,0,142.79]]},"w3-ports":{"f":"w3-ports.mp3","s":[[0,0,28,0.3],[1,0,44,3.03],[1,45,116,6.35],[1,117,195,11.03],[2,0,161,20.22],[3,0,8,34.31],[4,0,13,43.87],[5,0,15,53.82],[6,0,45,65.6],[6,46,142,68.75],[6,143,236,75.26],[7,0,67,82.47],[7,68,193,86.93],[7,194,356,95.99],[8,0,101,108.02],[8,102,187,116.83],[-1,0,0,122.97]]},"w3-network":{"f":"w3-network.mp3","s":[[0,0,16,0.3],[1,0,143,2.49],[1,144,171,12.03],[2,0,18,14.76],[3,0,32,16.91],[3,33,112,19.42],[4,0,7,25.26],[5,0,26,26.82],[5,27,95,28.97],[6,0,10,35.28],[7,0,117,37.03],[8,0,23,45.47],[9,0,45,47.9],[10,0,88,56.28],[11,0,77,69.54],[11,78,103,75.88],[12,0,135,78.39],[-1,0,0,88.92]]},"w3-datalink":{"f":"w3-datalink.mp3","s":[[0,0,18,0.3],[1,0,124,2.64],[1,125,153,11.5],[2,0,7,14.22],[3,0,56,15.77],[3,57,162,19.62],[4,0,19,27.23],[5,0,104,29.38],[5,105,165,36.8],[5,166,235,40.75],[6,0,15,46.08],[7,0,72,48.06],[8,0,20,53.9],[9,0,34,56.22],[9,35,131,58.78],[9,132,228,66.27],[10,0,19,73.86],[11,0,57,76.26],[11,58,89,81.94],[12,0,58,85.5],[12,59,72,91.49],[13,0,99,94.03],[13,100,193,100.77],[-1,0,0,107.7]]},"w3-physical":{"f":"w3-physical.mp3","s":[[0,0,41,0.3],[1,0,39,3.92],[1,40,187,6.8],[1,188,260,17.02],[2,0,19,22.59],[3,0,95,24.8],[3,96,223,31.14],[3,224,355,40.57],[4,0,13,52.38],[5,0,91,54.36],[5,92,157,60.85],[5,158,177,65.58],[6,0,12,67.84],[7,0,71,69.84],[7,72,236,74.49],[8,0,77,87.39],[8,78,135,94.67],[8,136,219,104.87],[9,0,53,116.4],[-1,0,0,127.53]]},"w3-topo":{"f":"w3-topo.mp3","s":[[0,0,19,0.3],[1,0,72,2.45],[2,0,3,8.12],[3,0,28,9.35],[3,29,59,11.81],[4,0,4,14.79],[5,0,49,16.04],[5,50,74,19.41],[6,0,4,21.88],[7,0,36,23.42],[7,37,69,26.51],[8,0,4,29.49],[9,0,56,31.11],[9,57,112,35.03],[-1,0,0,39.51]]},"w3-encap":{"f":"w3-encap.mp3","s":[[0,0,13,0.3],[1,0,67,2.28],[1,68,170,6.99],[1,171,205,13.84],[2,0,80,16.7],[3,0,81,23.09],[4,0,58,29.25],[5,0,117,33.98],[6,0,117,43.22],[7,0,158,51.79],[8,0,75,62.79],[9,0,113,68.48],[10,0,22,76.09],[10,22,95,78.21],[10,96,128,83.9],[-1,0,0,86.67]]},"w3-tcpip":{"f":"w3-tcpip.mp3","s":[[0,0,16,0.3],[1,0,110,3.03],[1,111,169,11.01],[2,0,11,15.37],[3,0,68,17.23],[3,69,95,22.96],[4,0,9,26.76],[5,0,20,28.37],[5,21,33,30.7],[6,0,8,33.28],[7,0,20,34.98],[7,21,30,37.28],[8,0,14,39.58],[9,0,50,41.6],[9,51,67,46.0],[10,0,16,48.17],[10,16,146,49.77],[10,147,198,58.33],[-1,0,0,61.95]]},"w1-tdm":{"f":"w1-tdm.mp3","s":[[0,0,21,0.3],[1,0,69,3.05],[1,70,131,8.13],[2,0,44,12.71],[2,45,132,15.74],[3,0,33,21.92],[3,34,80,24.35],[4,0,47,28.08],[4,48,97,31.28],[5,0,66,35.14],[6,0,77,40.62],[6,78,117,45.59],[7,0,60,49.0],[7,61,131,53.22],[8,0,57,58.21],[8,58,81,63.56],[8,82,123,65.61],[9,0,8,68.66],[9,9,41,69.85],[9,42,93,72.29],[-1,0,0,76.4]]},"w1-tdmguide":{"f":"w1-tdmguide.mp3","s":[[0,0,34,0.3],[1,0,60,3.88],[1,61,118,8.15],[2,0,6,12.39],[2,6,51,13.56],[2,52,119,16.53],[3,0,32,21.39],[3,33,66,24.18],[4,0,6,26.84],[4,6,59,27.98],[4,60,118,31.33],[5,0,24,36.01],[5,25,62,37.96],[6,0,46,46.74],[6,47,90,52.93],[7,0,6,57.38],[7,6,93,58.6],[7,94,116,64.94],[8,0,42,67.3],[8,43,73,73.55],[9,0,6,76.28],[9,6,57,77.49],[9,58,102,81.08],[10,0,44,84.53],[10,45,100,87.71],[11,0,42,92.48],[11,43,78,97.07],[12,0,110,100.05],[12,111,164,107.2],[13,0,23,110.97],[13,24,43,112.91],[14,0,44,115.02],[14,45,73,117.99],[-1,0,0,120.39]]},"w1-tdmex":{"f":"w1-tdmex.mp3","s":[[0,0,33,0.3],[1,0,71,3.77],[1,72,186,10.34],[2,0,47,22.9],[2,48,96,32.78],[3,0,53,36.62],[4,0,58,46.02],[5,0,85,54.74],[5,86,111,60.5],[6,0,68,63.08],[7,0,76,76.71],[8,0,33,84.83],[9,0,62,87.75],[-1,0,0,93.16]]},"x1-speeds":{"f":"x1-speeds.mp3","s":[[0,0,40,0.3],[1,0,50,4.37],[1,51,93,7.98],[2,0,9,11.45],[2,9,78,12.88],[2,79,116,20.11],[3,0,10,23.31],[3,10,63,24.67],[3,64,152,28.19],[3,153,201,33.85],[4,0,13,37.77],[4,13,65,39.3],[4,66,159,42.93],[5,0,9,49.16],[5,9,79,50.48],[5,80,135,55.11],[5,136,190,59.31],[6,0,32,63.55],[6,33,112,66.11],[6,113,196,72.88],[7,0,74,82.67],[7,75,118,88.72],[8,0,93,92.22],[8,94,137,98.56],[-1,0,0,101.86]]},"x1-saf":{"f":"x1-saf.mp3","s":[[0,0,47,0.3],[1,0,72,4.2],[2,0,72,9.25],[2,73,137,14.14],[3,0,85,18.85],[3,86,117,24.52],[4,0,91,27.18],[4,92,139,33.33],[5,0,52,37.16],[5,53,121,41.09],[5,122,191,45.83],[6,0,87,50.79],[6,88,133,58.45],[7,0,36,61.99],[7,37,97,64.85],[-1,0,0,69.34]]},"x2-delays":{"f":"x2-delays.mp3","s":[[0,0,49,0.3],[1,0,88,4.39],[2,0,18,10.49],[2,18,95,12.15],[2,96,111,17.44],[2,112,160,19.26],[2,161,186,22.71],[3,0,17,25.18],[3,17,100,26.89],[3,101,116,32.57],[3,117,145,34.34],[3,146,174,36.69],[4,0,30,39.33],[4,31,113,41.61],[4,114,192,46.41],[5,0,33,52.23],[5,34,54,54.49],[5,55,101,56.26],[6,0,26,60.23],[6,27,61,62.32],[6,62,114,64.92],[-1,0,0,68.97]]},"x2-tput":{"f":"x2-tput.mp3","s":[[0,0,40,0.3],[1,0,88,3.32],[2,0,9,9.4],[2,9,64,10.53],[2,65,96,14.37],[3,0,10,17.18],[3,10,67,18.21],[3,68,166,22.09],[4,0,10,29.08],[4,10,85,30.3],[4,86,153,35.42],[5,0,50,40.02],[5,51,94,45.91],[6,0,40,50.05],[6,41,97,54.23],[6,98,134,58.16],[-1,0,0,61.18]]},"x3-encap":{"f":"x3-encap.mp3","s":[[0,0,35,0.3],[1,0,29,3.5],[1,30,147,5.84],[2,0,33,13.94],[2,34,122,16.42],[3,0,79,22.54],[3,80,196,27.89],[4,0,90,35.91],[5,0,140,42.52],[6,0,71,52.73],[6,72,123,57.34],[7,0,20,61.48],[7,21,85,63.12],[-1,0,0,68.15]]},"x3-ipmac":{"f":"x3-ipmac.mp3","s":[[0,0,45,0.3],[1,0,66,4.43],[2,0,10,9.38],[2,10,70,10.92],[2,71,111,15.14],[2,112,152,17.94],[3,0,11,20.96],[3,11,78,22.28],[3,79,138,26.68],[4,0,110,31.15],[4,111,149,38.32],[5,0,63,41.52],[5,64,117,45.47],[6,0,19,49.45],[6,20,63,51.22],[6,64,98,54.38],[6,99,160,57.05],[-1,0,0,61.71]]},"x3-ports":{"f":"x3-ports.mp3","s":[[0,0,43,0.3],[1,0,71,3.75],[1,72,123,8.87],[2,0,51,12.77],[2,52,110,16.53],[2,111,184,20.35],[3,0,36,25.67],[3,37,100,28.32],[3,101,118,35.55],[4,0,108,38.43],[5,0,39,47.19],[5,40,84,49.9],[6,0,18,53.35],[6,19,79,56.0],[-1,0,0,60.05]]},"x3-tcpudp":{"f":"x3-tcpudp.mp3","s":[[0,0,25,0.3],[1,0,80,3.52],[2,0,3,9.74],[2,3,19,11.02],[2,20,121,13.07],[2,122,172,19.71],[3,0,3,23.46],[3,3,26,24.8],[3,27,75,27.28],[3,76,117,30.37],[4,0,59,33.78],[4,60,133,38.07],[4,134,190,43.4],[5,0,66,48.07],[6,0,39,53.12],[6,40,89,55.94],[-1,0,0,60.07]]}}}</script>
+<script>window.__AUDIO={"lessons":{"w1-net":{"f":"w1-net.mp3","s":[[0,0,27,0.3],[1,0,164,2.94],[2,0,24,15.18],[2,25,74,16.89],[2,75,137,20.28],[2,138,283,24.63],[3,0,26,36.06],[3,27,121,38.18],[3,122,259,45.11],[3,260,389,54.97],[4,0,67,64.9],[4,68,235,69.62],[-1,0,0,83.08]]},"w1-types":{"f":"w1-types.mp3","s":[[0,0,24,0.3],[1,0,146,2.88],[1,147,192,12.61],[2,0,27,16.29],[3,0,77,18.95],[3,78,176,24.35],[4,0,24,31.64],[5,0,117,34.11],[5,118,188,42.37],[6,0,25,48.23],[7,0,103,50.87],[7,104,207,58.0],[8,0,31,66.38],[9,0,14,69.27],[9,15,107,70.81],[9,108,193,76.87],[10,0,23,83.63],[11,0,67,86.08],[11,68,100,90.26],[11,101,178,92.88],[12,0,8,98.66],[12,8,43,100.05],[12,44,106,102.76],[12,107,133,107.39],[12,134,282,109.56],[-1,0,0,120.46]]},"w1-media":{"f":"w1-media.mp3","s":[[0,0,27,0.3],[1,0,72,3.03],[2,0,77,8.4],[2,78,163,14.09],[-1,0,0,20.28]]},"w1-models":{"f":"w1-models.mp3","s":[[0,0,30,0.3],[1,0,51,2.98],[1,52,191,6.48],[2,0,35,16.08],[2,36,90,18.7],[2,91,145,22.56],[2,146,252,26.34],[2,253,309,33.57],[3,0,162,38.05],[4,0,134,52.1],[4,135,296,61.62],[5,0,62,73.09],[5,63,169,77.55],[6,0,48,84.95],[6,49,120,88.19],[6,121,180,92.67],[6,181,232,96.79],[7,0,203,100.71],[7,204,379,114.83],[-1,0,0,127.22]]},"w1-devices":{"f":"w1-devices.mp3","s":[[0,0,15,0.3],[1,0,11,2.45],[2,0,102,4.34],[2,103,132,11.38],[3,0,14,14.2],[4,0,30,16.15],[4,31,126,18.67],[5,0,14,25.92],[6,0,118,28.01],[7,0,12,36.02],[8,0,68,37.85],[9,0,28,43.4],[10,0,120,46.14],[11,0,8,54.16],[12,0,95,55.73],[12,96,188,62.77],[12,189,391,69.13],[13,0,8,83.83],[13,8,61,85.02],[13,62,119,89.29],[-1,0,0,93.83]]},"w1-protocols":{"f":"w1-protocols.mp3","s":[[0,0,30,0.3],[1,0,92,3.03],[1,93,181,9.58],[2,0,65,15.72],[2,66,151,20.26],[2,152,209,25.83],[3,0,49,30.15],[4,0,35,36.34],[5,0,34,41.0],[6,0,58,45.05],[7,0,32,50.98],[8,0,15,53.66],[9,0,36,55.75],[9,37,94,58.44],[10,0,38,63.47],[11,0,96,66.53],[12,0,37,72.76],[13,0,61,76.15],[-1,0,0,80.86]]},"w1-edge":{"f":"w1-edge.mp3","s":[[0,0,16,0.3],[1,0,127,2.45],[1,128,263,11.11],[2,0,158,20.9],[3,0,157,31.8],[3,158,249,42.51],[4,0,61,49.11],[4,62,132,54.13],[4,133,269,58.78],[4,270,329,68.04],[5,0,15,72.51],[5,15,44,74.05],[5,45,73,76.23],[5,74,144,78.51],[5,145,211,83.38],[-1,0,0,88.28]]},"w1-access":{"f":"w1-access.mp3","s":[[0,0,40,0.3],[1,0,155,4.22],[2,0,3,14.5],[3,0,74,16.24],[3,75,279,21.85],[3,280,347,36.6],[4,0,83,41.8],[4,84,152,53.68],[5,0,153,59.01],[5,154,279,69.1],[6,0,23,78.57],[7,0,93,81.74],[7,94,154,88.53],[7,155,280,92.94],[7,281,384,101.09],[8,0,63,109.05],[8,64,121,114.1],[8,122,262,117.47],[8,263,373,127.76],[9,0,35,135.75],[9,36,154,139.04],[10,0,27,153.8],[11,0,174,156.65],[12,0,11,168.89],[12,11,31,170.34],[12,32,62,172.75],[12,63,163,175.68],[-1,0,0,183.27]]},"w1-circuit":{"f":"w1-circuit.mp3","s":[[0,0,38,0.3],[1,0,92,3.35],[1,93,188,9.36],[2,0,152,15.93],[3,0,45,26.12],[3,46,137,29.24],[3,138,174,34.59],[3,175,303,37.09],[4,0,142,45.94],[4,143,323,55.35],[5,0,76,67.54],[5,77,143,72.64],[6,0,63,80.47],[-1,0,0,92.07]]},"w1-mux":{"f":"w1-mux.mp3","s":[[0,0,32,0.3],[1,0,72,3.62],[1,73,134,8.42],[2,0,74,13.26],[3,0,15,19.19],[3,16,130,20.87],[4,0,23,28.93],[4,24,128,31.2],[5,0,11,37.87],[5,11,76,39.26],[6,0,8,44.43],[6,8,60,45.63],[6,61,112,49.11],[-1,0,0,53.41]]},"w1-packet":{"f":"w1-packet.mp3","s":[[0,0,38,0.3],[1,0,56,3.47],[1,57,163,7.63],[1,164,244,16.04],[2,0,110,21.5],[2,111,181,28.64],[2,182,293,33.42],[3,0,60,42.17],[4,0,56,49.78],[4,57,160,53.53],[5,0,61,60.65],[5,62,101,65.13],[5,102,201,67.84],[5,202,246,74.63],[5,247,329,77.91],[6,0,18,84.52],[6,18,72,86.49],[6,73,120,90.22],[6,121,144,93.87],[-1,0,0,96.4]]},"w1-queue":{"f":"w1-queue.mp3","s":[[0,0,38,0.3],[1,0,98,3.37],[1,99,171,10.3],[1,172,288,15.19],[2,0,43,23.23],[2,44,148,26.15],[2,149,216,33.53],[2,217,271,37.95],[3,0,27,42.4],[3,28,117,44.68],[3,118,138,50.34],[4,0,45,52.45],[4,46,78,56.05],[4,79,158,59.72],[4,159,195,67.27],[5,0,46,70.73],[6,0,52,79.79],[7,0,101,86.25],[8,0,83,98.0],[8,84,145,106.28],[8,146,178,116.11],[9,0,24,118.73],[9,25,86,120.89],[-1,0,0,125.55]]},"w2-metrics":{"f":"w2-metrics.mp3","s":[[0,0,40,0.3],[1,0,127,3.62],[1,128,197,13.05],[2,0,80,19.56],[3,0,17,25.12],[4,0,61,27.33],[5,0,11,31.72],[6,0,61,33.4],[7,0,10,38.03],[8,0,58,39.45],[9,0,179,43.93],[-1,0,0,56.87]]},"w2-delay":{"f":"w2-delay.mp3","s":[[0,0,28,0.3],[1,0,131,3.07],[1,132,170,11.47],[2,0,16,14.61],[3,0,146,16.65],[3,147,163,26.16],[4,0,13,29.36],[5,0,59,31.21],[5,60,129,35.07],[5,130,228,39.79],[5,229,245,47.47],[6,0,18,50.9],[7,0,52,52.96],[7,53,93,56.25],[7,94,209,59.22],[8,0,17,74.02],[9,0,94,76.12],[9,95,140,82.2],[9,141,229,85.38],[10,0,34,99.5],[11,0,22,108.12],[11,22,97,110.02],[11,98,155,114.77],[11,156,225,118.85],[11,226,284,123.78],[11,285,436,127.77],[12,0,122,137.77],[12,123,205,150.01],[13,0,55,155.85],[14,0,71,160.1],[-1,0,0,174.51]]},"w2-loss":{"f":"w2-loss.mp3","s":[[0,0,11,0.3],[1,0,124,1.98],[2,0,40,10.98],[2,41,108,13.75],[2,109,157,18.23],[2,158,206,21.22],[2,207,276,24.61],[3,0,20,30.24],[3,21,95,31.93],[3,96,176,37.13],[3,177,250,42.42],[4,0,46,47.94],[5,0,23,56.22],[5,24,50,59.44],[5,51,86,62.92],[5,87,135,65.97],[5,136,158,70.15],[6,0,46,72.45],[7,0,63,79.4],[8,0,60,87.59],[9,0,90,98.01],[10,0,52,109.47],[10,53,177,112.84],[10,178,234,121.52],[10,235,339,125.81],[-1,0,0,133.14]]},"w2-throughput":{"f":"w2-throughput.mp3","s":[[0,0,37,0.3],[1,0,142,3.11],[1,143,200,12.69],[2,0,90,16.95],[2,91,138,23.03],[3,0,68,26.68],[3,69,162,32.82],[4,0,118,41.22],[4,119,176,48.6],[5,0,38,52.99],[6,0,125,58.13],[6,126,191,69.65],[7,0,259,75.17],[-1,0,0,94.88]]},"w2-models":{"f":"w2-models.mp3","s":[[0,0,28,0.3],[1,0,144,3.11],[1,145,247,14.44],[-1,0,0,21.58]]},"w2-compare":{"f":"w2-compare.mp3","s":[[0,0,41,0.3],[1,0,51,3.69],[1,52,74,7.49],[2,0,19,9.81],[3,0,57,12.0],[4,0,61,16.18],[5,0,10,20.76],[6,0,70,22.5],[7,0,9,27.72],[7,10,40,29.05],[8,0,18,31.77],[9,0,37,33.84],[10,0,49,37.05],[11,0,22,41.02],[12,0,42,43.51],[13,0,51,47.07],[14,0,20,50.95],[15,0,76,53.16],[16,0,59,58.94],[17,0,15,63.16],[18,0,67,65.01],[19,0,57,70.04],[-1,0,0,74.53]]},"w2-units":{"f":"w2-units.mp3","s":[[0,0,37,0.3],[1,0,52,3.56],[1,53,85,7.23],[2,0,9,10.17],[3,0,29,11.98],[3,30,57,14.58],[4,0,26,17.48],[5,0,4,24.53],[6,0,29,26.11],[6,30,77,30.74],[7,0,22,34.49],[8,0,4,39.13],[9,0,43,40.92],[9,44,85,44.74],[10,0,21,48.83],[11,0,187,53.8],[12,0,37,69.64],[13,0,46,72.63],[13,47,98,76.02],[14,0,36,79.79],[14,37,91,82.37],[15,0,112,89.77],[16,0,48,98.38],[17,0,58,102.2],[18,0,36,112.16],[19,0,56,115.05],[20,0,42,120.15],[20,43,73,123.09],[21,0,61,127.27],[21,62,98,131.77],[22,0,99,134.99],[23,0,70,141.94],[-1,0,0,147.8]]},"w2-exercises":{"f":"w2-exercises.mp3","s":[[0,0,39,0.3],[1,0,36,3.99],[1,37,77,6.5],[1,78,173,9.21],[1,174,228,15.27],[2,0,65,19.32],[3,0,79,34.44],[4,0,74,45.98],[5,0,52,63.23],[6,0,48,75.13],[7,0,23,83.36],[8,0,30,88.39],[8,31,117,93.77],[9,0,66,101.34],[10,0,31,113.86],[11,0,43,119.61],[12,0,82,129.33],[13,0,37,145.31],[14,0,37,152.45],[15,0,40,159.61],[16,0,101,169.38],[17,0,20,184.24],[17,21,56,186.08],[18,0,45,191.81],[19,0,68,200.58],[19,69,172,207.98],[20,0,79,215.14],[21,0,36,229.75],[22,0,30,237.24],[23,0,38,241.52],[23,39,86,247.96],[24,0,65,252.01],[25,0,51,268.63],[26,0,34,279.8],[27,0,41,285.41],[28,0,30,293.29],[29,0,61,299.84],[30,0,32,312.72],[30,33,52,318.89],[31,0,45,322.12],[32,0,67,332.29],[33,0,35,346.26],[34,0,37,350.61],[34,38,74,357.29],[34,75,111,364.2],[35,0,29,371.43],[-1,0,0,377.72]]},"w3-osi":{"f":"w3-osi.mp3","s":[[0,0,36,0.3],[1,0,69,3.82],[1,70,162,8.91],[2,0,15,15.33],[3,0,64,17.42],[4,0,15,22.23],[5,0,59,24.11],[6,0,8,28.94],[7,0,79,30.71],[8,0,96,36.02],[9,0,101,43.74],[9,102,212,51.54],[9,213,270,58.93],[10,0,207,63.32],[-1,0,0,81.06]]},"w3-app":{"f":"w3-app.mp3","s":[[0,0,20,0.3],[1,0,39,2.88],[1,40,181,5.54],[2,0,12,15.63],[3,0,16,19.04],[3,17,56,20.81],[4,0,3,24.99],[5,0,16,26.69],[6,0,4,28.69],[7,0,12,30.67],[8,0,4,32.5],[9,0,76,34.05],[10,0,4,39.61],[11,0,50,41.19],[12,0,3,44.9],[13,0,50,46.68],[14,0,6,52.08],[15,0,46,53.52],[16,0,3,57.57],[17,0,48,59.36],[18,0,4,63.66],[19,0,63,65.68],[20,0,14,71.08],[20,14,30,72.76],[20,31,56,74.92],[20,57,106,77.2],[-1,0,0,81.27]]},"w3-pres":{"f":"w3-pres.mp3","s":[[0,0,21,0.3],[1,0,92,2.86],[1,93,243,9.06],[1,244,262,19.75],[2,0,29,21.82],[3,0,35,24.5],[3,36,59,27.06],[4,0,25,29.47],[5,0,111,32.0],[5,112,168,39.55],[5,169,215,45.23],[5,216,275,48.62],[6,0,21,55.44],[7,0,129,57.91],[-1,0,0,69.83]]},"w3-session":{"f":"w3-session.mp3","s":[[0,0,16,0.3],[1,0,103,2.51],[1,104,199,9.87],[2,0,45,16.55],[3,0,7,20.19],[4,0,106,21.74],[5,0,11,29.78],[6,0,63,31.55],[7,0,11,36.28],[8,0,64,38.09],[-1,0,0,42.82]]},"w3-transport":{"f":"w3-transport.mp3","s":[[0,0,31,0.3],[1,0,69,4.07],[1,70,136,9.02],[1,137,163,13.57],[2,0,27,15.89],[3,0,195,18.7],[4,0,12,31.66],[5,0,167,33.41],[6,0,30,44.84],[7,0,85,47.69],[8,0,21,53.83],[9,0,59,56.47],[9,60,169,60.91],[9,170,283,68.19],[9,284,329,75.1],[9,330,372,78.49],[10,0,50,82.39],[10,51,72,86.15],[10,73,100,87.9],[10,101,124,90.82],[10,125,143,92.91],[11,0,3,95.06],[12,0,3,99.05],[13,0,3,102.88],[14,0,3,106.52],[15,0,3,110.44],[16,0,3,114.86],[17,0,17,119.33],[18,0,47,121.82],[18,48,101,125.66],[18,102,190,129.08],[18,191,297,135.31],[-1,0,0,142.79]]},"w3-ports":{"f":"w3-ports.mp3","s":[[0,0,28,0.3],[1,0,44,3.03],[1,45,116,6.35],[1,117,195,11.03],[2,0,161,20.22],[3,0,8,34.31],[4,0,13,43.87],[5,0,15,53.82],[6,0,45,65.6],[6,46,142,68.75],[6,143,236,75.26],[7,0,67,82.47],[7,68,193,86.93],[7,194,356,95.99],[8,0,101,108.02],[8,102,187,116.83],[-1,0,0,122.97]]},"w3-network":{"f":"w3-network.mp3","s":[[0,0,16,0.3],[1,0,143,2.49],[1,144,171,12.03],[2,0,18,14.76],[3,0,32,16.91],[3,33,112,19.42],[4,0,7,25.26],[5,0,26,26.82],[5,27,95,28.97],[6,0,10,35.28],[7,0,117,37.03],[8,0,23,45.47],[9,0,45,47.9],[10,0,88,56.28],[11,0,77,69.54],[11,78,103,75.88],[12,0,135,78.39],[-1,0,0,88.92]]},"w3-datalink":{"f":"w3-datalink.mp3","s":[[0,0,18,0.3],[1,0,124,2.64],[1,125,153,11.5],[2,0,7,14.22],[3,0,56,15.77],[3,57,162,19.62],[4,0,19,27.23],[5,0,104,29.38],[5,105,165,36.8],[5,166,235,40.75],[6,0,15,46.08],[7,0,72,48.06],[8,0,20,53.9],[9,0,34,56.22],[9,35,131,58.78],[9,132,228,66.27],[10,0,19,73.86],[11,0,57,76.26],[11,58,89,81.94],[12,0,58,85.5],[12,59,72,91.49],[13,0,99,94.03],[13,100,193,100.77],[-1,0,0,107.7]]},"w3-physical":{"f":"w3-physical.mp3","s":[[0,0,41,0.3],[1,0,39,3.92],[1,40,187,6.8],[1,188,260,17.02],[2,0,19,22.59],[3,0,95,24.8],[3,96,223,31.14],[3,224,355,40.57],[4,0,13,52.38],[5,0,91,54.36],[5,92,157,60.85],[5,158,177,65.58],[6,0,12,67.84],[7,0,71,69.84],[7,72,236,74.49],[8,0,77,87.39],[8,78,135,94.67],[8,136,219,104.87],[9,0,53,116.4],[-1,0,0,127.53]]},"w3-topo":{"f":"w3-topo.mp3","s":[[0,0,19,0.3],[1,0,72,2.45],[2,0,3,8.12],[3,0,28,9.35],[3,29,59,11.81],[4,0,4,14.79],[5,0,49,16.04],[5,50,74,19.41],[6,0,4,21.88],[7,0,36,23.42],[7,37,69,26.51],[8,0,4,29.49],[9,0,56,31.11],[9,57,112,35.03],[-1,0,0,39.51]]},"w3-encap":{"f":"w3-encap.mp3","s":[[0,0,13,0.3],[1,0,67,2.28],[1,68,170,6.99],[1,171,205,13.84],[2,0,80,16.7],[3,0,81,23.09],[4,0,58,29.25],[5,0,117,33.98],[6,0,117,43.22],[7,0,158,51.79],[8,0,75,62.79],[9,0,113,68.48],[10,0,22,76.09],[10,22,95,78.21],[10,96,128,83.9],[-1,0,0,86.67]]},"w3-tcpip":{"f":"w3-tcpip.mp3","s":[[0,0,16,0.3],[1,0,110,3.03],[1,111,169,11.01],[2,0,11,15.37],[3,0,68,17.23],[3,69,95,22.96],[4,0,9,26.76],[5,0,20,28.37],[5,21,33,30.7],[6,0,8,33.28],[7,0,20,34.98],[7,21,30,37.28],[8,0,14,39.58],[9,0,50,41.6],[9,51,67,46.0],[10,0,16,48.17],[10,16,146,49.77],[10,147,198,58.33],[-1,0,0,61.95]]},"w1-tdm":{"f":"w1-tdm.mp3","s":[[0,0,21,0.3],[1,0,69,3.05],[1,70,131,8.13],[2,0,44,12.71],[2,45,132,15.74],[3,0,33,21.92],[3,34,80,24.35],[4,0,47,28.08],[4,48,97,31.28],[5,0,66,35.14],[6,0,77,40.62],[6,78,117,45.59],[7,0,60,49.0],[7,61,131,53.22],[8,0,57,58.21],[8,58,81,63.56],[8,82,123,65.61],[9,0,8,68.66],[9,9,41,69.85],[9,42,93,72.29],[-1,0,0,76.4]]},"w1-tdmguide":{"f":"w1-tdmguide.mp3","s":[[0,0,34,0.3],[1,0,60,3.88],[1,61,118,8.15],[2,0,6,12.39],[2,6,51,13.56],[2,52,119,16.53],[3,0,32,21.39],[3,33,66,24.18],[4,0,6,26.84],[4,6,59,27.98],[4,60,118,31.33],[5,0,24,36.01],[5,25,62,37.96],[6,0,46,46.74],[6,47,90,52.93],[7,0,6,57.38],[7,6,93,58.6],[7,94,116,64.94],[8,0,42,67.3],[8,43,73,73.55],[9,0,6,76.28],[9,6,57,77.49],[9,58,102,81.08],[10,0,44,84.53],[10,45,100,87.71],[11,0,42,92.48],[11,43,78,97.07],[12,0,110,100.05],[12,111,164,107.2],[13,0,23,110.97],[13,24,43,112.91],[14,0,44,115.02],[14,45,73,117.99],[-1,0,0,120.39]]},"w1-tdmex":{"f":"w1-tdmex.mp3","s":[[0,0,33,0.3],[1,0,71,3.77],[1,72,186,10.34],[2,0,47,22.9],[2,48,96,32.78],[3,0,53,36.62],[4,0,58,46.02],[5,0,85,54.74],[5,86,111,60.5],[6,0,68,63.08],[7,0,76,76.71],[8,0,33,84.83],[9,0,62,87.75],[-1,0,0,93.16]]},"x1-speeds":{"f":"x1-speeds.mp3","s":[[0,0,33,0.3],[1,0,64,3.6],[2,0,51,8.59],[2,52,157,12.11],[3,0,8,19.59],[3,8,35,20.75],[3,36,87,22.94],[3,88,164,27.08],[4,0,16,32.56],[4,16,79,34.27],[4,80,106,38.94],[4,107,168,41.03],[5,0,37,45.38],[5,38,100,48.2],[6,0,59,52.69],[6,60,117,58.16],[6,118,144,62.68],[7,0,98,65.13],[7,99,122,73.43],[7,123,178,75.41],[8,0,21,80.23],[8,21,68,82.0],[8,69,139,85.18],[8,140,209,89.87],[9,0,73,95.09],[9,74,102,100.64],[9,103,124,102.69],[10,0,72,104.88],[10,73,108,110.13],[11,0,53,113.01],[11,54,164,117.19],[12,0,59,132.2],[12,60,123,136.26],[-1,0,0,140.8]]},"x1-saf":{"f":"x1-saf.mp3","s":[[0,0,54,0.3],[1,0,69,4.22],[2,0,18,9.17],[2,19,102,11.04],[2,103,176,16.06],[3,0,7,21.54],[3,7,56,22.9],[3,57,121,26.57],[3,122,182,31.12],[4,0,79,36.25],[4,80,113,41.65],[5,0,102,44.38],[5,103,131,51.31],[6,0,14,54.16],[6,14,66,55.81],[6,67,110,59.16],[6,111,165,62.47],[7,0,74,66.68],[7,75,115,71.74],[8,0,86,74.72],[9,0,79,80.8],[9,80,125,87.92],[10,0,65,91.46],[10,66,143,96.03],[-1,0,0,101.76]]},"x2-delays":{"f":"x2-delays.mp3","s":[[0,0,58,0.3],[1,0,153,4.9],[2,0,37,15.07],[2,38,86,17.91],[3,0,18,21.77],[3,18,71,23.43],[3,72,150,26.95],[3,151,227,32.14],[4,0,17,37.87],[4,17,108,39.58],[4,109,129,47.03],[4,130,198,48.99],[5,0,17,54.19],[5,18,132,55.66],[5,133,202,63.13],[6,0,35,68.27],[6,36,56,70.76],[7,0,49,72.94],[7,50,70,76.5],[8,0,109,78.67],[8,110,146,85.73],[-1,0,0,88.52]]},"x2-tput":{"f":"x2-tput.mp3","s":[[0,0,61,0.3],[1,0,87,4.58],[2,0,9,10.68],[2,9,81,11.81],[2,82,128,16.57],[3,0,10,20.21],[3,10,102,21.24],[4,0,10,27.57],[4,10,97,28.79],[4,98,167,34.48],[4,168,199,38.9],[5,0,72,41.71],[5,73,122,45.93],[5,123,157,49.71],[6,0,99,52.63],[7,0,44,59.2],[7,45,88,64.83],[8,0,83,68.96],[8,84,113,74.13],[-1,0,0,76.64]]},"x3-encap":{"f":"x3-encap.mp3","s":[[0,0,29,0.3],[1,0,71,3.32],[2,0,4,8.89],[2,4,21,10.34],[2,22,56,11.94],[3,0,7,14.67],[3,7,93,15.75],[3,94,154,21.22],[4,0,6,25.67],[4,6,84,26.93],[4,85,143,31.58],[5,0,5,35.97],[5,5,85,37.36],[5,86,158,42.22],[5,159,178,47.07],[6,0,4,49.22],[6,4,96,50.28],[7,0,43,57.34],[7,44,131,60.37],[7,132,154,65.92],[8,0,71,68.24],[8,72,123,72.83],[9,0,103,76.73],[-1,0,0,84.14]]},"x3-ipmac":{"f":"x3-ipmac.mp3","s":[[0,0,47,0.3],[1,0,64,4.41],[2,0,10,9.36],[2,10,43,10.89],[2,44,80,13.33],[2,81,158,15.99],[3,0,11,21.45],[3,11,53,22.77],[3,54,105,25.46],[3,106,181,29.03],[4,0,91,34.27],[4,92,203,39.65],[5,0,95,47.56],[5,96,149,54.08],[6,0,63,57.94],[6,64,117,61.89],[7,0,70,65.87],[7,71,94,70.48],[7,95,114,72.45],[-1,0,0,74.66]]},"x3-ports":{"f":"x3-ports.mp3","s":[[0,0,45,0.3],[1,0,33,4.01],[1,34,75,6.55],[1,76,117,9.49],[2,0,10,12.84],[2,10,78,14.37],[2,79,122,18.49],[3,0,4,22.24],[3,4,53,23.31],[3,54,103,26.55],[4,0,39,30.49],[4,40,148,33.22],[4,149,180,42.89],[5,0,6,45.34],[5,6,97,46.32],[5,98,181,52.51],[6,0,123,59.78],[7,0,27,67.94],[7,28,85,70.25],[8,0,66,74.32],[-1,0,0,79.18]]},"x3-tcpudp":{"f":"x3-tcpudp.mp3","s":[[0,0,48,0.3],[1,0,34,5.03],[1,35,74,8.17],[2,0,22,11.04],[2,22,93,13.26],[2,94,133,18.87],[2,134,226,21.35],[2,227,283,27.37],[3,0,13,31.71],[3,13,62,33.1],[3,63,101,36.24],[3,102,142,38.86],[3,143,161,41.53],[3,162,187,43.32],[4,0,19,45.75],[4,19,49,47.9],[4,50,75,50.61],[4,76,143,52.81],[4,144,186,56.87],[5,0,70,60.25],[5,71,152,64.86],[5,153,215,71.11],[6,0,29,76.29],[7,0,74,78.89],[8,0,79,84.45],[-1,0,0,90.36]]},"s-tdm":{"f":"s-tdm.mp3","s":[[0,0,28,0.3],[1,0,20,3.43],[1,21,113,5.18],[1,114,160,15.4],[1,161,184,19.48],[2,0,5,21.86],[2,5,26,22.8],[2,27,63,24.68],[2,64,160,27.77],[3,0,21,35.04],[3,22,58,37.24],[4,0,9,40.05],[4,9,33,41.48],[4,34,106,43.55],[4,107,170,50.74],[5,0,36,56.9],[6,0,9,61.83],[6,9,33,63.15],[6,34,81,65.24],[6,82,140,68.29],[7,0,40,73.24],[8,0,61,82.02],[9,0,17,87.54],[9,17,74,89.25],[9,75,167,93.28],[10,0,41,100.17],[11,0,87,107.27],[12,0,10,117.76],[12,10,35,119.17],[12,36,77,121.28],[12,78,157,124.31],[13,0,53,130.56],[14,0,46,141.07],[14,47,77,145.87],[15,0,36,148.53],[15,37,120,150.98],[16,0,45,157.06],[-1,0,0,161.15]]},"s-lr":{"f":"s-lr.mp3","s":[[0,0,41,0.3],[1,0,20,3.9],[1,21,69,5.65],[1,70,100,11.54],[2,0,20,14.16],[2,20,56,15.89],[2,57,122,18.55],[2,123,160,22.78],[3,0,27,26.42],[4,0,35,31.0],[5,0,16,34.54],[5,16,47,36.25],[5,48,105,38.79],[5,106,147,43.59],[6,0,32,48.0],[7,0,18,51.71],[7,18,51,53.37],[7,52,138,55.83],[8,0,39,62.16],[9,0,60,73.08],[10,0,36,77.57],[10,37,89,80.03],[11,0,45,84.97],[-1,0,0,88.74]]},"s-saf":{"f":"s-saf.mp3","s":[[0,0,31,0.3],[1,0,20,3.05],[1,21,139,4.8],[1,140,195,15.66],[2,0,20,19.94],[2,20,82,21.67],[2,83,125,26.96],[3,0,40,30.52],[4,0,17,33.95],[4,17,49,35.51],[4,50,110,37.85],[4,111,179,41.93],[5,0,67,47.11],[6,0,60,57.15],[7,0,5,64.36],[7,5,88,65.4],[8,0,20,71.29],[9,0,37,74.52],[9,38,63,77.87],[10,0,36,80.47],[10,37,79,82.93],[11,0,54,86.51],[-1,0,0,90.36]]},"s-circ":{"f":"s-circ.mp3","s":[[0,0,37,0.3],[1,0,20,3.47],[1,21,62,5.22],[1,63,106,9.75],[2,0,7,14.2],[2,7,30,15.27],[2,31,98,17.27],[2,99,151,21.88],[3,0,60,25.53],[4,0,5,30.04],[4,5,48,31.39],[4,49,97,34.48],[5,0,26,43.65],[6,0,11,48.66],[6,11,92,50.03],[6,93,124,55.34],[7,0,43,60.52],[7,44,75,65.21],[8,0,36,68.75],[8,37,68,71.2],[9,0,38,74.1],[-1,0,0,76.95]]},"s-wait":{"f":"s-wait.mp3","s":[[0,0,43,0.3],[1,0,20,3.96],[1,21,91,5.71],[1,92,136,12.39],[1,137,178,16.15],[2,0,5,19.43],[2,5,26,20.3],[2,27,116,22.05],[2,117,159,28.11],[3,0,36,31.52],[4,0,21,34.65],[4,21,58,36.66],[4,59,98,39.41],[4,99,164,43.44],[5,0,34,50.93],[5,35,63,54.88],[6,0,36,57.79],[6,37,106,60.25],[7,0,57,65.45],[-1,0,0,69.48]]},"s-fdm":{"f":"s-fdm.mp3","s":[[0,0,33,0.3],[1,0,20,3.69],[1,21,69,5.44],[1,70,100,11.07],[1,101,129,13.76],[2,0,4,16.55],[2,4,24,17.62],[2,25,89,19.37],[2,90,134,24.29],[3,0,41,30.22],[3,42,65,34.98],[4,0,8,37.96],[4,8,31,39.05],[4,32,112,41.06],[4,113,152,46.39],[5,0,41,50.16],[6,0,15,53.78],[6,15,107,55.51],[7,0,50,63.98],[7,51,76,69.05],[8,0,36,72.27],[8,37,104,74.72],[9,0,35,79.97],[-1,0,0,83.29]]},"s-prop":{"f":"s-prop.mp3","s":[[0,0,31,0.3],[1,0,20,3.2],[1,21,114,4.95],[1,115,145,12.33],[2,0,17,15.03],[2,17,50,16.74],[2,51,103,19.3],[2,104,166,22.93],[3,0,56,27.43],[4,0,18,31.84],[4,18,87,33.69],[4,88,125,38.26],[5,0,26,41.97],[6,0,8,45.5],[6,8,37,46.98],[6,38,73,49.45],[6,74,149,52.67],[7,0,29,59.94],[7,30,67,65.32],[8,0,36,68.52],[8,37,109,70.97],[9,0,48,76.4],[-1,0,0,80.11]]},"s-nodal":{"f":"s-nodal.mp3","s":[[0,0,31,0.3],[1,0,20,3.18],[1,21,108,4.93],[1,109,139,11.5],[2,0,15,14.29],[2,15,36,15.82],[2,37,221,17.72],[3,0,48,30.58],[4,0,11,34.37],[4,11,91,35.83],[4,92,135,41.01],[5,0,69,45.44],[5,70,83,54.17],[6,0,36,56.19],[6,37,69,58.65],[7,0,43,61.35],[-1,0,0,64.65]]},"s-loss":{"f":"s-loss.mp3","s":[[0,0,25,0.3],[1,0,20,2.79],[1,21,97,4.54],[1,98,158,12.5],[1,159,202,18.35],[2,0,10,21.6],[2,10,128,23.16],[2,129,188,30.95],[3,0,42,35.28],[4,0,17,38.64],[4,17,85,40.26],[4,86,136,44.62],[5,0,48,50.8],[6,0,43,62.12],[6,44,72,66.84],[7,0,17,69.46],[7,17,86,71.16],[7,87,135,78.38],[8,0,61,82.72],[8,62,83,89.0],[9,0,36,91.17],[9,37,110,93.62],[10,0,48,98.67],[-1,0,0,102.25]]},"s-bott":{"f":"s-bott.mp3","s":[[0,0,35,0.3],[1,0,20,3.09],[1,21,85,4.84],[1,86,142,11.99],[2,0,10,16.08],[2,10,36,17.3],[2,37,96,19.37],[2,97,135,23.59],[2,136,155,26.19],[3,0,31,29.3],[3,32,61,33.81],[4,0,22,36.3],[4,22,94,38.39],[4,95,147,43.12],[5,0,27,48.13],[6,0,4,51.46],[6,4,80,52.84],[7,0,61,59.79],[8,0,36,66.64],[8,37,65,69.09],[9,0,42,71.86],[-1,0,0,75.03]]}}}</script>
 
 <div class="video" id="video" hidden role="dialog" aria-modal="true" aria-label="Video lesson">
     <div class="v-top"><div class="v-title"><span class="v-wk"></span><span class="v-ls"></span></div><button class="v-x" type="button" aria-label="Close video">×</button></div>
@@ -1837,7 +2148,8 @@ const Narr=(()=>{
     if(A.clip){A.clip=false;A.playing=false;setUI();setStatus(A.resume?'Press play to carry on with the lesson.':'Press play to start this week.');return;}
     if(window.__setProg&&A.idx>=0)__setProg(A.lessons[A.idx].id,1);
     const adv=()=>{if(A.idx+1<A.lessons.length)loadLesson(A.idx+1,true);else{stop();setStatus('Finished. Try the questions at the end of the week.');V.finished();}};
-    const ls0=A.lessons[A.idx];if(V.isOpen()&&ls0&&QC[ls0.id]){A.playing=false;setUI();V.check(ls0,adv);}else adv();});
+    const ls0=A.lessons[A.idx];if(ls0&&window.__soloStop===ls0){window.__soloStop=null;A.playing=false;setUI();if(V.isOpen())V.msg('Walkthrough finished. Close the video to pick another one.');return;}
+    if(V.isOpen()&&ls0&&QC[ls0.id]){A.playing=false;setUI();V.check(ls0,adv);}else adv();});
   au.addEventListener('playing',()=>{au.playbackRate=rate;});
   au.addEventListener('error',()=>{if(!useAudio||!au.getAttribute('src'))return;useAudio=false;A.playing=false;voiceWrap.hidden=false;setUI();
     setStatus('Recorded audio could not load here, so your browser voice is used instead.');});
@@ -1981,6 +2293,7 @@ const V=(()=>{
     const txt=(el.dataset.say&&itemSents.length<=1)?el.textContent:el.textContent.slice(s,e);setCap(txt);addTerms(txt);if(k!=null)setBeat(k);}
   function tick(t,frac){if(!open)return;bar.style.width=(frac*100).toFixed(2)+'%';}
   function setPlaying(p){vicon.setAttribute('d',p?'M3 2h4v12H3zM9 2h4v12H9z':'M4 2l10 6-10 6z');vplay.setAttribute('aria-label',p?'Pause':'Play');}
+  function msg(t){if(open)setCap(t,true);}
   function finished(){if(!open)return;setCap('That is the end of this week. Close the video and try the questions.',true);}
   function openAt(ls,seek){lastFocus=document.activeElement;if(!open){try{history.pushState({video:1},'',location.href);}catch(e){}}open=true;root.hidden=false;document.body.style.overflow='hidden';vrate.value=String(Narr.rate);$('#v-play').focus();
     const cur=Narr.currentLesson();
@@ -1996,7 +2309,7 @@ const V=(()=>{
   function ask(tryEl,cont){const ov=$('.v-check',root),bx=$('.qc-box',ov);ov.hidden=false;setCap('Your turn: answer to carry on',true);bx.innerHTML='';
     window.__mountTry(bx,tryEl,{inVideo:true,onDone:()=>{ov.hidden=true;if(open)cont();}});}
   function check(ls,cont){const ov=$('.v-check',root),bx=$('.qc-box',ov);ov.hidden=false;setCap('Quick check before the next lesson',true);runCheck(bx,ls.id,QC[ls.id],()=>{ov.hidden=true;if(open)cont();});}
-  return {isOpen,lesson,sentence,tick,setPlaying,finished,openAt,close,check,word,ask};
+  return {isOpen,lesson,sentence,tick,setPlaying,finished,openAt,close,check,word,ask,msg};
 })();
 
 /* ============ picture library for video mode (160×160) ============ */
@@ -2422,6 +2735,39 @@ SCN.speeds=(g,ok)=>{const nx=layers(g,ok);const col=['u1','u2','u3','u4'];
     if(n===3){title(l,'Bits per slot: how much you send per turn','more connections → shorter slots');row(l,150,4,480,true);T(l,130,182,'4 sharing','sm','end');row(l,250,8,480,true);T(l,130,282,'8 sharing','sm','end');}
     if(n===4){title(l,'Slot rate: your own speed');eqn(l,['slot rate = link rate ÷ slots','slot rate = frame rate × bits per slot'],200,80);}
   }};};
+const WALKCALC={"tdm": [["The problem", "TDM link with setup time", ["800,000-bit file", "2.048 Mbps link · 16 slots", "setup 250 ms"]], ["Link rate in bps", "", ["2.048 Mbps = 2,048,000 bps"]], ["Slot rate = link rate ÷ slots", "", ["2,048,000 ÷ 16", "= 128,000 bps"]], ["Transmission time", "file ÷ YOUR slot rate", ["800,000 ÷ 128,000", "= 6.25 s"]], ["Add the setup time", "", ["250 ms = 0.25 s", "0.25 + 6.25 = 6.5 s"]]], "lr": [["The problem", "transmission time", ["1,500-byte packet", "10 Mbps link"]], ["L in bits", "1 byte = 8 bits", ["1,500 × 8 = 12,000 bits"]], ["R in bits per second", "", ["10 Mbps = 10,000,000 bps"]], ["Transmission time = L ÷ R", "", ["12,000 ÷ 10,000,000", "= 0.0012 s = 1.2 ms"]]], "saf": [["The problem", "store-and-forward", ["1,000-byte packet", "link 1: 2 Mbps · link 2: 4 Mbps"]], ["L in bits", "the same on every link", ["1,000 × 8 = 8,000 bits"]], ["One L/R per link", "", ["link 1: 8,000 ÷ 2,000,000 = 4 ms", "link 2: 8,000 ÷ 4,000,000 = 2 ms"]], ["Add the links", "", ["4 + 2 = 6 ms"]]], "circ": [["The problem", "circuit share", ["4 Mbps link", "8 circuits"]], ["Mbps → kbps", "× 1,000", ["4 Mbps = 4,000 kbps"]], ["Equal share", "", ["4,000 ÷ 8 = 500 kbps"]]], "wait": [["The problem", "queuing delay", ["A: 6,000 bytes (sending)", "B: 2,000 bytes (waiting)", "4 Mbps link"]], ["A's length in bits", "", ["6,000 × 8 = 48,000 bits"]], ["B waits for all of A", "", ["48,000 ÷ 4,000,000", "= 0.012 s = 12 ms"]]], "fdm": [["The problem", "FDM", ["20 Mbps link · 10 circuits", "7 users transmitting"]], ["One band", "", ["20 ÷ 10 = 2 Mbps"]], ["Idle circuits", "", ["10 − 7 = 3 idle"]], ["Unused capacity", "", ["3 × 2 = 6 Mbps"]]], "prop": [["The problem", "propagation delay", ["2,000 km link", "speed 2 × 10⁸ m/s"]], ["km → m", "× 1,000", ["2,000 km = 2,000,000 m"]], ["d ÷ s", "", ["2,000,000 ÷ 200,000,000", "= 0.01 s = 10 ms"]]], "nodal": [["The problem", "nodal delay", ["processing 1 ms · queuing 5 ms", "transmission 4 ms · propagation 10 ms"]], ["Add the four", "", ["1 + 5 + 4 + 10 = 20 ms"]]], "loss": [["The problem", "packet loss in 1 second", ["send 15 Mbps → link 10 Mbps", "queue holds 200 · packet 1,250 bytes"]], ["Packet size in bits", "", ["1,250 × 8 = 10,000 bits"]], ["Packets per second", "", ["sent: 15,000,000 ÷ 10,000 = 1,500", "forwarded: 10,000,000 ÷ 10,000 = 1,000"]], ["Extra, then dropped", "", ["extra = 1,500 − 1,000 = 500", "dropped = 500 − 200 = 300"]]], "bott": [["The problem", "bottleneck", ["50 MB file", "links: 100 · 20 · 1000 Mbps"]], ["Find the bottleneck", "", ["min(100, 20, 1000) = 20 Mbps"]], ["MB → Mb", "× 8", ["50 MB = 400 Mb"]], ["Time = size ÷ rate", "", ["400 ÷ 20 = 20 s"]]]};
+Object.entries(WALKCALC).forEach(([key,defs])=>{SCN['sv_'+key]=(g,ok)=>{const nx=layers(g,ok);return {step(n){const d=defs[n];if(!d)return;const {g:l}=nx();title(l,d[0],d[1]||'');
+  if(n===0){d[2].forEach((t,i)=>{const c=G(l);R(c,170,130+i*78,460,62,'bx',14);T(c,400,168+i*78,t,'h3');inn(c,i*250);});chip(l,400,130+d[2].length*78+30,'solve it step by step','dark',700);}
+  else eqn(l,d[2],d[2].length>1?190:220,70);}};};});
+SCN.mic=(g,ok)=>{const nx=layers(g,ok);const col=['u1','u2','u3','u4'];
+  const frame=(l,y,n,lab,each)=>{const W=520,w=W/n,x0=400-W/2;for(let i=0;i<n;i++){const r=R(l,x0+i*w+2,y,w-4,60,'slotc '+col[i%4],5);inn(r,i*50);if(i)r.classList.add('faded');T(l,x0+i*w+w/2,y+36,each,'slotlab');}Pt(l,`M${x0} ${y-10}v-8h${W}v8`,'lk');T(l,400,y-26,lab,'t');};
+  return {step(n){const {g:l,ok:k}=nx();
+    if(n===0){title(l,'One microphone, many friends');[190,330,470,610].forEach((x,i)=>{person(l,x,250);T(l,x,300,'friend '+(i+1),'sm');});ic(l,'chat',400,140,80);}
+    if(n===1){title(l,'The microphone = the link','it carries 1,000 words per second, shared by everyone');R(l,120,190,560,70,'fillA',12);T(l,400,234,'1,000 words per second','h2');T(l,400,320,'link rate','h3 acc');}
+    if(n===2){title(l,'10 rounds per second = 10 turns for you','frame rate: it never changes');[0,1,2].forEach(f=>{for(let i=0;i<4;i++){const r=R(l,130+f*190+i*40,180,36,60,'slotc '+col[i],5);if(i)r.classList.add('faded');}T(l,208+f*190,270,'round '+(f+1),'sm');});T(l,400,330,'… 10 rounds every second','h3 acc');}
+    if(n===3){title(l,'Each round fits 100 words','4 friends → 25 words per turn');frame(l,200,4,'one round = 100 words','25');T(l,400,320,'bits per slot = 25 words','h3 acc');}
+    if(n===4){title(l,'Your speed: turns × words per turn');eqn(l,['10 turns × 25 words = 250 words/s','= 1,000 ÷ 4'],200,70);T(l,400,360,'slot rate','h3 acc');}
+    if(n===5){title(l,'10 friends: still 10 rounds per second','but each round is split 10 ways');frame(l,200,10,'one round = 100 words','10');T(l,400,320,'only 10 words per turn','h3 acc');}
+    if(n===6){title(l,'Same turns, shorter turns');eqn(l,['10 turns × 10 words = 100 words/s','= 1,000 ÷ 10'],200,70);chip(l,400,370,'more people → shorter turns → less said each second','dark',400);}
+    if(n===7){title(l,'Remember the table');[['the microphone','link'],['rounds per second','frame rate'],['your moment with the mic','slot'],['words per turn','bits per slot'],['words per second you get','slot rate']].forEach((r,i)=>{const c=G(l);T(c,380,130+i*58,r[0],'t','end');T(c,400,130+i*58,'→','t');T(c,420,130+i*58,r[1],'h3 acc','start');inn(c,i*220);});}
+  }};};
+SCN.gift=(g,ok)=>{const nx=layers(g,ok);
+  const W=[['card','DATA','','#D9E2E8'],['envelope','flat 443','port → segment','#F08C3A'],['parcel','142.250.200.14','IP address → packet','#3CC08A'],['courier bag','next depot: 3C:52:82…','MAC address → frame','#6EA0F7']];
+  const draw=(l,m)=>{for(let i=m;i>=0;i--){const pad=i*34,x=180-pad,y=160-pad,w=440+pad*2,h=140+pad*2;const r=R(l,x,y,w,h,'',14);r.style.fill=W[i][3];r.style.stroke='#0A0F13';r.style.strokeWidth='3';
+      T(l,x+14,y+24,W[i][0]+(W[i][1]?': '+W[i][1]:''),'gtag','start');}
+    T(l,400,236,'your card','gtag');if(m)T(l,400,420,W[m][2],'h3 acc');};
+  return {step(n){const {g:l}=nx();
+    if(n===0){title(l,'Encapsulation = packing a gift','one wrapper per layer');draw(l,3);}
+    if(n>=1&&n<=4){title(l,['','Write the card: the data','Envelope with the flat number','Parcel with the street address','Courier bag to the next depot'][n]);draw(l,n-1);}
+  }};};
+SCN.trip=(g,ok)=>{const nx=layers(g,ok);const X=[150,400,650];
+  const base=l=>{['Cairo','Paris','London'].forEach((c,i)=>{Ci(l,X[i],250,30,'hub');T(l,X[i],300,c,'h3');});Ln(l,180,250,370,250,'lkA');Ln(l,430,250,620,250,'lkA');};
+  return {step(n){const {g:l}=nx();base(l);
+    if(n===0){title(l,'Flying Cairo → London, changing in Paris');}
+    if(n===1){title(l,'Your ticket: Cairo → London','it never changes = IP address');chip(l,400,160,'TICKET  Cairo → London','good',200);chip(l,400,370,'same ticket for the whole trip','dark',600);}
+    if(n===2){title(l,'A boarding pass for each flight','only for the next hop = MAC address');chip(l,275,190,'PASS  Cairo → Paris','',200);chip(l,525,190,'PASS  Paris → London','',600);}
+    if(n===3){title(l,'At every stop: new pass, same ticket','at every router: new MAC, same IP');chip(l,400,150,'TICKET  Cairo → London','good',0);chip(l,275,200,'PASS 1','',200);chip(l,525,200,'PASS 2','',500);T(l,400,360,'Paris = a router','h3 acc');}
+  }};};
 SCN.packet=(g,ok)=>{const nx=layers(g,ok);let saf=null;
   const safDraw=(l,k)=>{title(l,'Store-and-forward over two links');const S=[120,250],Rr=[400,250],D=[680,250];Ln(l,170,250,350,250);Ln(l,450,250,630,250);nd(l,...S,'laptop','Source',90);Ci(l,...Rr,48,'hub');ic(l,'router',...Rr,70);T(l,400,325,'Router','t');nd(l,...D,'server','Destination',90);
     const clock=T(l,400,110,'t = 0','eq eqa');const bits=[];for(let i=0;i<8;i++){bits.push(R(l,0,0,14,14,'bitc',3));}
@@ -2799,14 +3145,24 @@ const BEATS={
  'w1-mux':[[0,'fdm2',0],[4,'fdm2',1],[6,'fdm2',2],[8,'fdm2',3],[10,'fdm2',4]],
  'w1-tdm':[[0,'tdm2',0],[3,'tdm2',1],[5,'tdm2',2],[7,'tdm2',3],[9,'tdm2',4],[10,'tdm2',5],[12,'tdm2',6],[14,'tdm2',7],[17,'tdm2',8]],
  'w1-tdmguide':[[0,'guide',0],[3,'guide',1],[6,'guide',7],[8,'guide',2],[11,'guide',3],[13,'guide',7],[15,'guide',4],[18,'guide',7],[20,'guide',5],[23,'guide',6],[25,'guide',7],[27,'guide',8],[29,'guide',7],[31,'guide',8]],
- 'x1-speeds':[[0, 'speeds', 0], [3, 'speeds', 1], [6, 'speeds', 2], [10, 'speeds', 3], [13, 'speeds', 4], [17, 'guide', 9], [20, 'guide', 7], [22, 'speeds', 4]],
- 'x1-saf':[[0, 'packet', 10], [2, 'packet', 6], [4, 'packet', 7], [6, 'packet', 9], [8, 'packet', 10], [11, 'guide', 7], [13, 'packet', 10]],
- 'x2-delays':[[0, 'delays', 0], [2, 'delays', 8], [7, 'delays', 9], [12, 'delays', 10], [15, 'guide', 7], [18, 'delays', 7]],
- 'x2-tput':[[0, 'tput', 1], [5, 'tput', 0], [8, 'tput', 3], [11, 'guide', 7], [13, 'tput', 4]],
- 'x3-encap':[[0, 'encap', 0], [3, 'encap', 4], [4, 'encap', 7], [5, 'encap', 8], [6, 'encap', 9], [7, 'encap', 10], [8, 'encap', 11], [9, 'guide', 7], [11, 'encap', 12]],
- 'x3-ipmac':[[0, 'dl', 2], [2, 'netl', 1], [6, 'dl', 3], [9, 'netl', 5], [11, 'guide', 7], [13, 'dl', 2]],
- 'x3-ports':[[0, 'ports', 0], [3, 'ports', 1], [6, 'ports', 3], [9, 'ports', 9], [10, 'guide', 7], [12, 'ports', 1]],
- 'x3-tcpudp':[[0, 'transport', 0], [2, 'transport', 5], [6, 'transport', 22], [10, 'transport', 23], [13, 'guide', 7], [14, 'transport', 16]],
+ 'x1-speeds':[[0, "mic", 0], [2, "tdm2", 1], [4, "mic", 1], [8, "tdm2", 2], [12, "mic", 2], [14, "mic", 3], [17, "mic", 4], [20, "mic", 5], [24, "mic", 6], [27, "guide", 7], [29, "guide", 9], [31, "mic", 7]],
+ 'x1-saf':[[0, "packet", 10], [2, "packet", 6], [9, "packet", 7], [11, "packet", 9], [13, "packet", 10], [20, "guide", 7], [22, "packet", 10]],
+ 'x2-delays':[[0, "delays", 10], [4, "delays", 8], [8, "delays", 9], [12, "delays", 10], [15, "guide", 7], [19, "delays", 7]],
+ 'x2-tput':[[0, "tput", 1], [5, "tput", 0], [7, "tput", 3], [15, "guide", 7], [17, "tput", 3]],
+ 'x3-encap':[[0, "gift", 0], [2, "gift", 1], [5, "gift", 2], [8, "gift", 3], [11, "gift", 4], [15, "encap", 10], [17, "encap", 11], [20, "guide", 7], [22, "encap", 12]],
+ 'x3-ipmac':[[0, "trip", 0], [2, "trip", 1], [6, "trip", 2], [10, "trip", 3], [12, "dl", 2], [14, "guide", 7], [16, "trip", 3]],
+ 'x3-ports':[[0, "ports", 0], [7, "ports", 1], [13, "ports", 9], [16, "ports", 3], [17, "guide", 7], [19, "ports", 1]],
+ 'x3-tcpudp':[[0, "transport", 0], [3, "transport", 5], [8, "transport", 16], [14, "transport", 22], [19, "transport", 23], [22, "guide", 7], [24, "transport", 7]],
+ 's-tdm':[[0, "sv_tdm", 0], [5, "tdm2", 2], [9, "guide", 7], [11, "sv_tdm", 1], [15, "guide", 7], [16, "sv_tdm", 2], [21, "guide", 7], [22, "sv_tdm", 3], [26, "guide", 7], [27, "sv_tdm", 4], [32, "guide", 7], [36, "sv_tdm", 4]],
+ 's-lr':[[0, "sv_lr", 0], [4, "units", 1], [8, "sv_lr", 1], [9, "guide", 7], [10, "sv_lr", 2], [14, "guide", 7], [15, "delays", 8], [18, "sv_lr", 3], [19, "guide", 7], [22, "sv_lr", 3]],
+ 's-saf':[[0, "sv_saf", 0], [4, "sv_saf", 1], [7, "guide", 7], [8, "packet", 10], [12, "sv_saf", 2], [13, "guide", 7], [14, "sv_saf", 3], [17, "guide", 7], [21, "sv_saf", 3]],
+ 's-circ':[[0, "sv_circ", 0], [4, "circuit", 2], [8, "guide", 7], [9, "sv_circ", 1], [12, "guide", 7], [13, "sv_circ", 2], [16, "guide", 7], [20, "sv_circ", 2]],
+ 's-wait':[[0, "sv_wait", 0], [5, "queue", 3], [9, "guide", 7], [10, "sv_wait", 2], [14, "guide", 7], [18, "sv_wait", 2]],
+ 's-fdm':[[0, "sv_fdm", 0], [5, "fdm2", 2], [9, "guide", 7], [11, "fdm2", 4], [15, "guide", 7], [16, "sv_fdm", 3], [18, "guide", 7], [22, "sv_fdm", 3]],
+ 's-prop':[[0, "sv_prop", 0], [4, "delays", 9], [8, "guide", 7], [9, "sv_prop", 1], [12, "guide", 7], [13, "sv_prop", 2], [17, "guide", 7], [21, "sv_prop", 2]],
+ 's-nodal':[[0, "sv_nodal", 0], [4, "delays", 0], [7, "guide", 7], [8, "sv_nodal", 1], [11, "guide", 7], [15, "sv_nodal", 1]],
+ 's-loss':[[0, "sv_loss", 0], [5, "loss", 3], [8, "guide", 7], [9, "sv_loss", 1], [12, "sv_loss", 2], [13, "guide", 7], [15, "sv_loss", 3], [18, "guide", 7], [22, "sv_loss", 3]],
+ 's-bott':[[0, "sv_bott", 0], [4, "sv_bott", 1], [9, "guide", 7], [11, "sv_bott", 2], [14, "guide", 7], [15, "sv_bott", 3], [17, "guide", 7], [20, "sv_bott", 3]],
  'w1-tdmex':[[0,'mux',8],[3,'mux',9],[5,'mux',10],[6,'mux',11],[7,'guide',9],[9,'mux',7],[10,'guide',10]],
  'w1-packet':[[0,'packet',0],[2,'packet',1],[3,'packet',2],[4,'packet',3],[5,'packet',4],[8,'packet',5],[11,'packet',6],[12,'packet',7],[13,'packet',8],[14,'packet',9],[15,'packet',10]],
  'w1-queue':[[0,'queue',0],[2,'queue',1],[3,'queue',2],[5,'queue',3],[8,'queue',4],[11,'queue',5],[15,'queue',6],[17,'queue',7],[18,'queue',8],[20,'queue',9]],
@@ -3527,7 +3883,7 @@ function initCalc(){const sec=$('#tool-calc'),sel=$('#cd-topic'),box=$('#cd-box'
     const steps=(good)=>{res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol><div class="cd-nb"><button type="button" class="btn cd-next">Next problem</button><button type="button" class="btn ghost cd-how">How to solve this type</button><button type="button" class="btn ghost cd-ls">Review the lesson</button></div>`;
       $('.cd-v',res).textContent=good===null?`Answer: ${nf(cur.ans)} ${cur.unit}`:good?`Correct: ${nf(cur.ans)} ${cur.unit}`:`Not quite. The answer is ${nf(cur.ans)} ${cur.unit}.`;
       cur.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('.steps',res).appendChild(li);});
-      $('.cd-next',res).addEventListener('click',next);$('.cd-ls',res).addEventListener('click',()=>go('lesson',{ls:document.getElementById(GEN[key].ls)}));{const hb=$('.cd-how',res);if(typeof SOLVE!=='undefined'&&SOLVE.has(key))hb.addEventListener('click',()=>{go('solve');SOLVE.run(key);});else hb.remove();}$('.cd-next',res).focus();};
+      $('.cd-next',res).addEventListener('click',next);$('.cd-ls',res).addEventListener('click',()=>go('lesson',{ls:document.getElementById(GEN[key].ls)}));{const hb=$('.cd-how',res);if(typeof SOLVE!=='undefined'&&SOLVE.has(key))hb.addEventListener('click',()=>SOLVE.run(key));else hb.remove();}$('.cd-next',res).focus();};
     $('.cd-f',box).addEventListener('submit',e=>{e.preventDefault();if(answered)return;const v=parseFloat(inp.value.replace(/,/g,'').trim());if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
       answered=true;const good=Math.abs(v-cur.ans)<=Math.max(Math.abs(cur.ans)*0.01,1e-6);tot++;if(good){ok++;clearWeak('calc-'+key);}else addWeak({id:'calc-'+key,kind:'Calculation',text:GEN[key].name,ls:GEN[key].ls,tool:'calc',topic:key});
       score.textContent=`${ok} of ${tot} correct this session`;steps(good);});
@@ -3690,26 +4046,31 @@ function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.
 window.__calc=initCalc();initTrace();
 /* ---------- "Your turn" questions inside lessons ---------- */
 (function(){const num=v=>parseFloat(String(v).replace(/,/g,'').trim());
-  function specOf(t){if(t.dataset.gen&&GEN[t.dataset.gen]){if(!t._gen)t._gen=GEN[t.dataset.gen].make();const g=t._gen;return {q:g.q,ans:g.ans,unit:g.unit,hint:'Use the four rules in order: your rate, transmission time, convert the setup time, then add.',steps:g.steps,gen:true};}
+  function specOf(t){if(t.dataset.opts){const o=t.dataset.opts.split('|');return {q:t.querySelector('.try-q').textContent,mc:o,ans:o[0],unit:'',hint:'',steps:(t.dataset.steps||'').split('|').filter(Boolean)};}
+    if(t.dataset.gen&&GEN[t.dataset.gen]){if(!t._gen)t._gen=GEN[t.dataset.gen].make();const g=t._gen;return {q:g.q,ans:g.ans,unit:g.unit,hint:'Use the four rules in order: your rate, transmission time, convert the setup time, then add.',steps:g.steps,gen:true};}
     return {q:t.querySelector('.try-q').textContent,ans:num(t.dataset.ans),unit:t.dataset.unit||'',hint:t.dataset.hint||'',steps:(t.dataset.steps||'').split('|').filter(Boolean)};}
   window.__mountTry=(box,t,o)=>{o=o||{};const sp=specOf(t);let tries=0,done=false;
     box.innerHTML=`<p class="qc-k">${o.inVideo?'Your turn':'Try it'}</p>${o.inVideo||sp.gen?'<p class="try-text"></p>':''}<form class="cd-f try-f"><input inputmode="decimal" autocomplete="off" placeholder="your answer" aria-label="Your answer"><span class="cd-u"></span><button class="btn" type="submit">Check</button><button class="btn ghost try-show" type="button">Show me</button></form><div class="try-r" aria-live="polite"></div>`;
-    const tt=box.querySelector('.try-text');if(tt)tt.textContent=sp.q;box.querySelector('.cd-u').textContent=sp.unit;
-    const inp=box.querySelector('input'),res=box.querySelector('.try-r');
+    if(sp.mc){const f=box.querySelector('form');const o=document.createElement('div');o.className='qc-o try-mc';
+      shuffled(sp.mc.length).forEach(i=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=sp.mc[i];
+        b.addEventListener('click',()=>{if(o.dataset.done)return;o.dataset.done=1;const ok=i===0;b.classList.add(ok?'correct':'wrong');if(!ok)o.children[[...o.children].findIndex(x=>x.textContent===sp.mc[0])].classList.add('correct');fin(ok);});o.appendChild(b);});
+      f.replaceWith(o);}
+    const tt=box.querySelector('.try-text');if(tt)tt.textContent=sp.q;const cu=box.querySelector('.cd-u');if(cu)cu.textContent=sp.unit;
+    const inp=box.querySelector('input')||{value:'',select(){},focus(){}},res=box.querySelector('.try-r');
     const fin=(good)=>{done=true;t.classList.add('solved');res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol>`;
-      res.querySelector('.cd-v').textContent=good?`Correct: ${nf(sp.ans)} ${sp.unit}`:`The answer is ${nf(sp.ans)} ${sp.unit}. Here's how:`;
+      res.querySelector('.cd-v').textContent=sp.mc?(good?`Correct: ${sp.ans}.`:`The answer is: ${sp.ans}.`):good?`Correct: ${nf(sp.ans)} ${sp.unit}`:`The answer is ${nf(sp.ans)} ${sp.unit}. Here's how:`;
       sp.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;res.querySelector('.steps').appendChild(li);});
       const nb=document.createElement('div');nb.className='cd-nb';
       if(o.onDone){const c=document.createElement('button');c.type='button';c.className='btn';c.innerHTML=PLAYSVG+'Continue the lesson';c.addEventListener('click',()=>{const f=o.onDone;o.onDone=null;f();});nb.appendChild(c);setTimeout(()=>c.focus(),50);}
       if(sp.gen){const n=document.createElement('button');n.type='button';n.className='btn ghost';n.textContent='Another problem';n.addEventListener('click',()=>{t._gen=null;window.__mountTry(box,t,o);});nb.appendChild(n);}
       if(nb.children.length)res.appendChild(nb);};
-    box.querySelector('form').addEventListener('submit',e=>{e.preventDefault();if(done)return;const v=num(inp.value);if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
+    const fm=box.querySelector('form');if(fm)fm.addEventListener('submit',e=>{e.preventDefault();if(done)return;const v=num(inp.value);if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
       const good=Math.abs(v-sp.ans)<=Math.max(Math.abs(sp.ans)*0.01,1e-6);tries++;
       if(good)return fin(true);
       if(tries===1&&sp.hint){res.innerHTML='<p class="cd-v n">Not quite. Hint: <span></span></p><p class="try-again">Try again, or tap "Show me".</p>';res.querySelector('span').textContent=sp.hint;inp.select();return;}
       fin(false);});
-    box.querySelector('.try-show').addEventListener('click',()=>{if(!done)fin(false);});
-    if(o.inVideo)setTimeout(()=>inp.focus({preventScroll:true}),60);
+    const shw=box.querySelector('.try-show');if(shw)shw.addEventListener('click',()=>{if(!done)fin(false);});
+    if(o.inVideo)setTimeout(()=>{const f=box.querySelector('input,.opt');f&&f.focus({preventScroll:true});},60);
     return {sp};};
   $$('.try').forEach(t=>{const w=document.createElement('div');w.className='try-w';t.appendChild(w);window.__mountTry(w,t,{});});
   window.__tryCancel=()=>{const ov=$('#video .v-check');if(ov)ov.hidden=true;$$('.try.waiting').forEach(t=>t.classList.remove('waiting'));};
@@ -3718,130 +4079,19 @@ window.__calc=initCalc();initTrace();
     const w=t.querySelector('.try-w');t.classList.add('waiting');t.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
     if(t.classList.contains('solved')){t._gen=null;}
     window.__mountTry(w,t,{onDone:()=>{t.classList.remove('waiting');cont();}});
-    const inp=w.querySelector('input');setTimeout(()=>inp&&inp.focus({preventScroll:true}),400);};
+    const inp=w.querySelector('input,.opt');setTimeout(()=>inp&&inp.focus({preventScroll:true}),400);};
 })();
-/* ============ How to solve: guided walkthroughs ============ */
+/* ============ How to solve: video walkthroughs ============ */
 const SOLVE=(()=>{
-  const W=520,H=150;
-  const sv=()=>E('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-hidden':'true'});
-  const rect=(s,x,y,w,h,c,rx)=>E('rect',{x,y,width:Math.max(0,w),height:h,rx:rx==null?4:rx,class:c},s);
-  const line=(s,x1,y1,x2,y2,c)=>E('line',{x1,y1,x2,y2,class:c||'s-link'},s);
-  const arrow=(s,x1,y,x2,lab)=>{line(s,x1,y,x2,y);E('path',{d:`M${x2} ${y}l-8 -5v10z`,class:'s-acc-f'},s);if(lab)txt(s,(x1+x2)/2,y-8,lab,'s-small');};
-  const cols=['u1','u2','u3','u4'];
-  /* ---- pictures ---- */
-  const V={
-    frame(n,o){o=o||{};const s=sv(),fr=o.frames||2,fw=(W-40-(fr-1)*14)/fr,show=Math.min(n,24);
-      for(let f=0;f<fr;f++){const x0=20+f*(fw+14),w=fw/show;rect(s,x0,40,fw,52,'s-soft',4);
-        for(let k=0;k<show;k++){const r=rect(s,x0+k*w+1,44,w-2,44,cols[k%4],2);if(o.mine&&k!==0)r.setAttribute('opacity','.28');}
-        txt(s,x0+fw/2,110,'frame '+(f+1)+(n>show?` (${n} slots)`:''),'s-small');}
-      E('path',{d:`M20 32v-6h${fw}v6`,class:'s-link'},s);txt(s,20+fw/2,20,`1 frame = ${n} slots`,'s-bold');
-      if(o.mine)txt(s,W/2,138,'your slot (bright) comes once in every frame','s-small');else txt(s,W/2,138,'time →','s-small');return s;},
-    share(n,label){const s=sv();rect(s,20,40,W-40,40,'s-soft',6);const w=(W-40)/Math.min(n,24);for(let k=0;k<Math.min(n,24);k++){const r=rect(s,20+k*w+1,43,w-2,34,cols[k%4],3);if(k)r.setAttribute('opacity','.25');}
-      txt(s,W/2,26,'the whole link = R','s-bold');E('path',{d:`M20 92v6h${w}v-6`,class:'s-link'},s);txt(s,20,116,label||'your share = R ÷ N','s-bold','start');return s;},
-    turns(){const s=sv();const X=[90,190,290,390];X.forEach((x,i)=>{E('circle',{cx:x,cy:50,r:20,class:'s-node'},s);txt(s,x,55,String(i+1),'s-bold');});
-      E('circle',{cx:190,cy:50,r:27,class:'s-ring'},s);arrow(s,90,100,430,'turns per second = frame rate (stays the same)');txt(s,W/2,135,'bits sent per turn = bits per slot (shrinks as more join)','s-small');return s;},
-    bytes(){const s=sv();rect(s,30,45,120,50,'s-soft',6);txt(s,90,76,'1 byte','s-big');arrow(s,165,70,235,'× 8');for(let i=0;i<8;i++){rect(s,250+i*32,50,26,40,cols[i%4],3);txt(s,263+i*32,75,i%2?'1':'0','s-bold');}txt(s,378,115,'8 bits','s-bold');return s;},
-    ladder(){const s=sv();[['bps',1],['kbps','× 1,000'],['Mbps','× 1,000,000'],['Gbps','× 1,000,000,000']].forEach((r,i)=>{const x=30+i*122;rect(s,x,40,108,46,'s-soft',8);txt(s,x+54,68,r[0],'s-big');txt(s,x+54,110,i?r[1]+' bps':'bits per second','s-small');});return s;},
-    push(lab){const s=sv();rect(s,20,40,110,60,'s-node',8);txt(s,75,75,'sender','s-bold');line(s,130,70,500,70);for(let i=0;i<6;i++)rect(s,140+i*22,62,16,16,cols[i%4],3);txt(s,320,52,'bits pushed onto the link one after another','s-small');txt(s,W/2,125,lab||'transmission time = all L bits ÷ R bits per second','s-bold');return s;},
-    travel(){const s=sv();E('circle',{cx:40,cy:70,r:18,class:'s-node'},s);E('circle',{cx:480,cy:70,r:18,class:'s-node'},s);line(s,58,70,462,70);E('circle',{cx:200,cy:70,r:7,class:'u1'},s);arrow(s,215,96,330,'one bit travelling');E('path',{d:'M58 40v-6h404v6',class:'s-link'},s);txt(s,260,24,'distance d','s-bold');txt(s,W/2,135,'speed in copper/fibre ≈ 2 × 10⁸ m/s','s-small');return s;},
-    chain(n){const s=sv(),xs=[...Array(n+1)].map((_,i)=>40+i*(440/n));xs.forEach((x,i)=>{E('circle',{cx:x,cy:60,r:18,class:'s-node'},s);txt(s,x,100,i===0?'source':i===n?'destination':'router','s-small');});
-      for(let i=0;i<n;i++){line(s,xs[i]+18,60,xs[i+1]-18,60);txt(s,(xs[i]+xs[i+1])/2,48,'link '+(i+1),'s-small');}txt(s,W/2,135,'each router waits for the WHOLE packet, then sends it on','s-bold');return s;},
-    stack(parts,unit){const s=sv(),tot=parts.reduce((a,p)=>a+p[1],0)||1;let x=20;parts.forEach((p,i)=>{const w=(W-40)*p[1]/tot;rect(s,x,50,w,40,cols[i%4],3);if(w>40)txt(s,x+w/2,75,String(+p[1].toPrecision(6)),'s-bold');txt(s,x+w/2,110,p[0],'s-small');x+=w;});txt(s,W/2,30,'add the parts end to end'+(unit?` (${unit})`:''),'s-bold');return s;},
-    queue(){const s=sv();rect(s,20,50,70,40,'u2',6);txt(s,55,75,'A','s-bold');line(s,90,70,300,70);rect(s,110,58,90,24,'u2',3);txt(s,155,75,'A sending','s-small');rect(s,330,50,70,40,'u3',6);txt(s,365,75,'B','s-bold');txt(s,365,110,'waiting','s-small');arrow(s,320,30,100,'B can only start after the last bit of A');return s;},
-    bands(n,idle){const s=sv(),h=(110)/n;for(let i=0;i<n;i++){const y=20+i*h;rect(s,20,y+2,W-120,h-4,(idle&&i>=n-idle)?'s-soft':cols[i%4],3);txt(s,W-90,y+h/2+4,(idle&&i>=n-idle)?'idle (reserved)':'band '+(i+1),'s-small','start');}return s;},
-    pipes(rs){const s=sv(),mx=Math.max(...rs),mn=Math.min(...rs),n=rs.length,w=(W-40)/n;rs.forEach((r,i)=>{const h=10+40*r/mx;rect(s,20+i*w+2,70-h/2,w-4,h,r===mn?'u1':'s-soft',4);txt(s,20+i*w+w/2,120,r+' Mbps'+(r===mn?' ← slowest':''),r===mn?'s-bold':'s-small');});txt(s,W/2,26,'data can only flow as fast as the narrowest pipe','s-bold');return s;},
-    router(Q){const s=sv();arrow(s,20,70,150,'arriving: S');rect(s,160,40,140,60,'s-node',8);txt(s,230,32,'router queue','s-small');for(let i=0;i<6;i++)rect(s,168+i*21,58,17,24,'u3',2);txt(s,230,118,`holds ${Q} packets`,'s-small');arrow(s,310,70,440,'leaving: T');E('path',{d:'M470 40l20 20m0-20l-20 20',class:'s-bad'},s);txt(s,480,90,'dropped','s-badt');return s;},
-    convert(a,b,op){const s=sv();rect(s,40,45,150,50,'s-soft',8);txt(s,115,76,a,'s-big');arrow(s,200,70,320,op);rect(s,330,45,150,50,'s-soft',8);txt(s,405,76,b,'s-big');return s;}
-  };
-  /* ---- walkthroughs ---- */
-  const T={};
-  T.tdm={name:'TDM: total time with setup',gen:'tdm',ls:'w1-tdmguide',make(){const R=pick([1.536,2.048,3.2,4.8,6.4]),N=pick([8,16,24,32]),F=pick([400000,640000,800000,1000000,1600000]),S=pick([100,200,250,400,500]),sl=R*1e6/N,tr=F/sl,tot=S/1000+tr;
-    return {q:`A TDM link runs at ${R} Mbps with ${N} slots per frame. A user sends a file of ${nf(F)} bits. Setting up the circuit takes ${S} ms. What is the total time?`,ans:tot,unit:'s',steps:[
-      {t:'Frames and slots',x:`TDM shares one link by taking turns. One full round of turns is a <b>frame</b>, and each turn inside it is a <b>slot</b>. Every connection owns one slot in every frame, so the number of slots tells you how many connections share the link.`,v:()=>V.frame(N,{mine:true}),c:`This link has ${N} slots per frame, so ${N} connections share it. You own 1 of them.`,
-        k:{q:'A TDM frame has 12 slots. How many connections can share the link?',o:['12','1','6','24'],e:'One slot per connection, so 12 slots means 12 connections.'}},
-      {t:'Frame rate vs bits per slot',x:`The <b>frame rate</b> is how many turns you get per second. It never changes. The <b>bits per slot</b> is how much you send in each turn. When more connections share the link, the slots get shorter, so each turn carries fewer bits.`,v:()=>V.turns(),c:`You get your turn once in every frame. What matters next is how much speed that adds up to.`,
-        k:{q:'Eight more connections join a TDM link. What happens?',o:['Same turns per second, fewer bits per turn','More turns per second','Fewer turns per second','Nothing changes'],e:'The frame rate stays fixed. The slots get shorter, so each turn carries fewer bits.'}},
-      {t:'Slot rate: your speed',x:`Your <b>slot rate</b> is the bits per second <i>you</i> get. The link's speed is shared equally between the slots, so <b>slot rate = R ÷ N</b>: link rate divided by number of slots. Convert Mbps to bps first (× 1,000,000).`,v:()=>V.share(N,`your share = ${nf(R*1e6)} ÷ ${N}`),c:`slot rate = ${nf(R*1e6)} bps ÷ ${N} = <b>${nf(sl)} bps</b>`,
-        k:{num:true,q:`Same link (${R} Mbps) but with ${N*2} slots. What is the slot rate, in bps?`,a:R*1e6/(N*2),u:'bps',h:`${nf(R*1e6)} ÷ ${N*2}`}},
-      {t:'Transmission time',x:`To find how long the file takes, divide the file size by <b>your slot rate</b>, not the link rate. You only own one slot.`,v:()=>V.push('transmission time = file bits ÷ YOUR slot rate'),c:`transmission = ${nf(F)} bits ÷ ${nf(sl)} bps = <b>${nf(tr)} s</b>`,
-        k:{q:'Which rate do you divide the file size by?',o:['Your slot rate','The link rate','The frame rate','The number of slots'],e:'You only get your slot, so your speed is the slot rate.'}},
-      {t:'Add the setup time',x:`Before any data flows, the circuit must be set up. Setup is usually given in <b>milliseconds</b>: divide by 1,000 to get seconds, then add it to the transmission time.`,v:()=>V.stack([['setup',S/1000],['transmission',tr]],'s'),c:`setup = ${S} ms = ${nf(S/1000)} s · total = ${nf(S/1000)} + ${nf(tr)} = <b>${nf(tot)} s</b>`,
-        k:{num:true,q:'Setup is 250 ms and transmission takes 4 s. What is the total, in seconds?',a:4.25,u:'s',h:'250 ms = 0.25 s'}}]};}};
-  T.lr={name:'Transmission time (L / R)',gen:'lr',ls:'w1-packet',make(){const B=pick([1000,1500,2000,4000,5000,8000,12000]),R=pick([1,2,4,5,8,10,20,50,100]),L=B*8,t=L/(R*1e6)*1000;
-    return {q:`${aN(nf(B),1)} ${nf(B)}-byte packet is sent over ${aN(R,0)} ${R} Mbps link. What is the transmission time?`,ans:t,unit:'ms',steps:[
-      {t:'Bytes to bits',x:`Links are measured in <b>bits</b> per second, so the packet size must be in bits too. <b>1 byte = 8 bits</b>, so multiply bytes by 8.`,v:()=>V.bytes(),c:`L = ${nf(B)} bytes × 8 = <b>${nf(L)} bits</b>`,k:{num:true,q:'How many bits is 2,500 bytes?',a:20000,u:'bits',h:'× 8'}},
-      {t:'Link rate in bits per second',x:`<b>Mbps</b> means megabits per second. Mega = 1,000,000, so multiply by 1,000,000 to get plain bits per second.`,v:()=>V.ladder(),c:`R = ${R} Mbps = <b>${nf(R*1e6)} bps</b>`,k:{num:true,q:'How many bps is 6 Mbps?',a:6e6,u:'bps',h:'6 × 1,000,000'}},
-      {t:'Transmission delay = L ÷ R',x:`<b>Transmission delay</b> is the time to push every bit of the packet onto the link. Bits go out one after another at R per second, so the time is L ÷ R. Seconds × 1,000 gives milliseconds.`,v:()=>V.push(),c:`${nf(L)} ÷ ${nf(R*1e6)} = ${nf(t/1000)} s = <b>${nf(t)} ms</b>`,
-        k:{q:'If the link were twice as fast, the transmission time would…',o:['Halve','Double','Stay the same','Depend on the distance'],e:'R is on the bottom: double R and the time halves.'}}]};}};
-  T.saf={name:'Store-and-forward over several links',gen:'saf',ls:'w1-packet',make(){const B=pick([2000,4000,6000,8000,12000]),n=pick([2,3]),Rs=[...Array(n)].map(()=>pick([2,4,5,8,10])),L=B*8,ts=Rs.map(r=>L/(r*1e6)*1000),tot=ts.reduce((a,b)=>a+b,0);
-    return {q:`${aN(nf(B),1)} ${nf(B)}-byte packet crosses ${n} links in a row at ${Rs.join(', ')} Mbps, using store-and-forward. Ignore all other delays. How long until the destination has the whole packet?`,ans:tot,unit:'ms',steps:[
-      {t:'Packet size in bits',x:`Multiply bytes by 8. The packet is the <b>same size on every link</b>: routers don't shrink or grow it.`,v:()=>V.bytes(),c:`L = ${nf(B)} × 8 = <b>${nf(L)} bits</b>`,k:{q:'Does L change from one link to the next?',o:['No, the packet is the same size everywhere','Yes, it shrinks','Yes, it grows','Only on the last link'],e:'The same packet crosses every link, so L stays the same.'}},
-      {t:'Store-and-forward',x:`A router must receive the <b>whole packet</b> before it can send it on. So each link adds its own transmission time, L ÷ R for that link.`,v:()=>V.chain(n),c:Rs.map((r,i)=>`link ${i+1}: ${nf(L)} ÷ ${nf(r*1e6)} = ${nf(ts[i])} ms`).join('<br>'),k:{num:true,q:'A 12,000-bit packet goes over a 4 Mbps link. What is L ÷ R, in ms?',a:3,u:'ms',h:'12,000 ÷ 4,000,000 s, then × 1,000'}},
-      {t:'Add the links',x:`The packet crosses the links one after another, so add their times.`,v:()=>V.stack(Rs.map((r,i)=>['link '+(i+1),ts[i]]),'ms'),c:`total = ${ts.map(nf).join(' + ')} = <b>${nf(tot)} ms</b>`,k:{q:'Three identical links each take 2 ms. What is the total?',o:['6 ms','2 ms','8 ms','3 ms'],e:'Each link adds its own 2 ms: 2 + 2 + 2 = 6 ms.'}}]};}};
-  T.wait={name:'Queuing behind another packet',gen:'wait',ls:'w2-exercises',make(){const A=pick([2000,4000,6000,8000,10000]),Bb=pick([1000,2000,4000]),R=pick([1,2,4,5,8,10]),L=A*8,t=L/(R*1e6)*1000;
-    return {q:`Packet A (${nf(A)} bytes) has just started transmitting on ${aN(R,0)} ${R} Mbps link. Packet B (${nf(Bb)} bytes) is waiting behind it. How long does B wait before it can start?`,ans:t,unit:'ms',steps:[
-      {t:'Why B waits',x:`A link sends <b>one packet at a time</b>. A has just started, so B must wait until <b>all of A</b> has been pushed onto the link. B's own size doesn't matter for its waiting time.`,v:()=>V.queue(),c:`B waits for the whole of A: ${nf(A)} bytes = ${nf(L)} bits.`,k:{q:'Whose size decides how long B waits?',o:['Packet A, the one in front','Packet B','A and B added together','Neither'],e:'B waits while A is being transmitted, so only A’s size matters.'}},
-      {t:'A\'s transmission time',x:`The wait equals A's transmission time, L ÷ R.`,v:()=>V.push('B waits = L(A) ÷ R'),c:`wait = ${nf(L)} ÷ ${nf(R*1e6)} = <b>${nf(t)} ms</b>`,k:{num:true,q:'A is 1,000 bytes on a 2 Mbps link. How long does B wait, in ms?',a:4,u:'ms',h:'8,000 bits ÷ 2,000,000 bps'}}]};}};
-  T.fdm={name:'FDM: users and unused capacity',gen:'fdm',ls:'w2-exercises',make(){if(Math.random()<0.5){const per=pick([1,2,4,5]),n=pick([8,10,12,16,20]),Tt=per*n;
-      return {q:`An FDM link has ${Tt} Mbps of bandwidth and gives each user a dedicated ${per} Mbps band. What is the maximum number of users?`,ans:n,unit:'users',steps:[
-        {t:'What FDM does',x:`FDM cuts the link into <b>bands</b>. Each user keeps their own band the whole time, like radio stations each on their own frequency.`,v:()=>V.bands(5),c:`Each user needs ${aN(per,0)} ${per} Mbps band.`,k:{q:'In FDM, users share the link by…',o:['Each getting their own band, all the time','Taking turns in time','Sending in random order','Sharing one band'],e:'FDM splits frequency; TDM splits time.'}},
-        {t:'How many bands fit',x:`Divide the total bandwidth by the size of one band.`,v:()=>V.bands(Math.min(n,8)),c:`max users = ${Tt} ÷ ${per} = <b>${n}</b>`,k:{num:true,q:'A 30 Mbps link gives each user 3 Mbps. Maximum users?',a:10,u:'users',h:'30 ÷ 3'}}]};}
-    const C=pick([8,10,12,16,20]),per=pick([1,2,3,4,5]),Tt=C*per,Ac=C-pick([1,2,3,4]);
-    return {q:`${aN(Tt,1)} ${Tt} Mbps link uses FDM for exactly ${C} circuits. Only ${Ac} users are transmitting. How much capacity is unused?`,ans:(C-Ac)*per,unit:'Mbps',steps:[
-      {t:'One circuit\'s band',x:`The link is split equally into ${C} bands. Divide the total by the number of circuits.`,v:()=>V.bands(Math.min(C,8)),c:`per circuit = ${Tt} ÷ ${C} = <b>${per} Mbps</b>`,k:{num:true,q:'A 40 Mbps link is split into 8 circuits. How much does one get, in Mbps?',a:5,u:'Mbps',h:'40 ÷ 8'}},
-      {t:'Idle circuits are wasted',x:`In circuit switching, a band stays <b>reserved</b> even when its owner is silent. Nobody else can use it, so idle circuits are wasted capacity.`,v:()=>V.bands(6,2),c:`idle circuits = ${C} − ${Ac} = ${C-Ac} · unused = ${C-Ac} × ${per} = <b>${(C-Ac)*per} Mbps</b>`,k:{q:'Can another user borrow an idle FDM band?',o:['No, it stays reserved','Yes, automatically','Only at night','Yes, if they ask the router'],e:'Reserved resources stay reserved. That is the weakness packet switching fixes.'}}]};}};
-  T.circ={name:'Circuit share of a link',gen:'circ',ls:'w1-circuit',make(){const R=pick([1,2,4,8,10]),n=pick([4,8,10,16,20]),v=R*1000/n;
-    return {q:`${aN(R,1)} ${R} Mbps link is divided into ${n} circuits. What rate does one connection get?`,ans:v,unit:'kbps',steps:[
-      {t:'Same units as the answer',x:`The answer is asked in <b>kbps</b>. 1 Mbps = 1,000 kbps, so multiply by 1,000.`,v:()=>V.convert(R+' Mbps',nf(R*1000)+' kbps','× 1,000'),c:`${R} Mbps = <b>${nf(R*1000)} kbps</b>`,k:{num:true,q:'How many kbps is 2.5 Mbps?',a:2500,u:'kbps',h:'× 1,000'}},
-      {t:'Split equally',x:`Each circuit gets an equal share: divide the link rate by the number of circuits.`,v:()=>V.share(n,`one circuit = ${nf(R*1000)} ÷ ${n}`),c:`${nf(R*1000)} ÷ ${n} = <b>${nf(v)} kbps</b>`,k:{num:true,q:'A 1,000 kbps link is split into 4 circuits. One circuit gets how many kbps?',a:250,u:'kbps',h:'1,000 ÷ 4'}}]};}};
-  T.prop={name:'Propagation delay (d / s)',gen:'prop',ls:'w2-delay',make(){const d=pick([100,200,500,1000,1500,2000,3000,6000]),t=d*1000/2e8*1000;
-    return {q:`A link is ${nf(d)} km long and signals travel at 2 × 10⁸ m/s. What is the propagation delay?`,ans:t,unit:'ms',steps:[
-      {t:'Kilometres to metres',x:`The speed is in metres per second, so the distance must be in <b>metres</b>. 1 km = 1,000 m.`,v:()=>V.convert(nf(d)+' km',nf(d*1000)+' m','× 1,000'),c:`d = <b>${nf(d*1000)} m</b>`,k:{num:true,q:'How many metres is 250 km?',a:250000,u:'m',h:'× 1,000'}},
-      {t:'Propagation delay = d ÷ s',x:`<b>Propagation delay</b> is how long one bit takes to travel the length of the link. It depends on <b>distance</b>, not on packet size. 2 × 10⁸ m/s = 200,000,000 m/s.`,v:()=>V.travel(),c:`${nf(d*1000)} ÷ 200,000,000 = ${nf(t/1000)} s = <b>${nf(t)} ms</b>`,k:{q:'A bigger packet on the same link: propagation delay…',o:['Stays the same','Increases','Decreases','Doubles'],e:'Propagation depends only on distance and medium. Packet size affects transmission delay.'}}]};}};
-  T.nodal={name:'Total nodal delay',gen:'nodal',ls:'w2-delay',make(){const p=pick([0.1,0.5,1,2]),q=pick([0,2,5,10,20,120]),tr=pick([1,2,4,8,12]),pr=pick([1,3,5,10,15]),t=p+q+tr+pr;
-    return {q:`At one router: processing ${p} ms, queuing ${q} ms, transmission ${tr} ms, propagation ${pr} ms. What is the total nodal delay?`,ans:t,unit:'ms',steps:[
-      {t:'The four delays',x:`At each router a packet picks up four delays: <b>processing</b> (checking the packet), <b>queuing</b> (waiting in the buffer), <b>transmission</b> (pushing bits on, L ÷ R) and <b>propagation</b> (travelling the wire, d ÷ s).`,v:()=>V.stack([['proc',Math.max(p,0.6)],['queue',Math.max(q,0.6)],['trans',tr],['prop',pr]]),c:'All four are already given in milliseconds.',k:{q:'Which delay depends on the length of the cable?',o:['Propagation','Transmission','Processing','Queuing'],e:'Propagation = distance ÷ speed.'}},
-      {t:'Add them',x:'Nodal delay is the sum of the four, as long as they are in the same unit.',v:()=>V.stack([['proc',p],['queue',q],['trans',tr],['prop',pr]],'ms'),c:`${p} + ${q} + ${tr} + ${pr} = <b>${nf(t)} ms</b>`,k:{num:true,q:'Processing 1 ms, queuing 0 ms, transmission 4 ms, propagation 5 ms. Total?',a:10,u:'ms',h:'1 + 0 + 4 + 5'}}]};}};
-  T.loss={name:'Packet loss from queue overflow',gen:'loss',ls:'w2-loss',make(){const B=pick([500,1000,1250]),Tm=pick([5,10,20]),S=Tm+pick([5,10,20]),Q=pick([50,100,200,500]),pb=B*8,sent=S*1e6/pb,fwd=Tm*1e6/pb,ex=sent-fwd,dr=Math.max(0,ex-Q);
-    return {q:`A sender sends at ${S} Mbps into a router whose outgoing link runs at ${Tm} Mbps. The router queue holds ${Q} packets and each packet is ${nf(B)} bytes. How many packets are dropped in 1 second?`,ans:dr,unit:'packets',steps:[
-      {t:'What causes loss',x:`Packets arrive at rate <b>S</b> but can only leave at rate <b>T</b>. The extra packets wait in the router's queue. When the queue is full, new packets are <b>dropped</b>.`,v:()=>V.router(Q),c:`S = ${S} Mbps arriving, T = ${Tm} Mbps leaving, queue = ${Q} packets.`,k:{q:'When does a router start dropping packets?',o:['When packets arrive faster than they leave and the queue is full','Whenever the link is busy','When packets are large','Never'],e:'Loss happens when S > T and the buffer has no room left.'}},
-      {t:'Count packets, not bits',x:`The queue holds packets, so turn the rates into <b>packets per second</b>: rate ÷ bits per packet.`,v:()=>V.bytes(),c:`packet = ${nf(B)} × 8 = ${nf(pb)} bits<br>sent = ${nf(S*1e6)} ÷ ${nf(pb)} = <b>${nf(sent)}</b> packets · forwarded = ${nf(Tm*1e6)} ÷ ${nf(pb)} = <b>${nf(fwd)}</b> packets`,k:{num:true,q:'10 Mbps with 1,000-byte packets: how many packets per second?',a:1250,u:'packets',h:'10,000,000 ÷ 8,000'}},
-      {t:'Extra packets, then the queue',x:`Extra = sent − forwarded. The queue absorbs as many as it holds; the rest are dropped.`,v:()=>V.stack([['forwarded',fwd],['queued',Math.min(Q,ex)],['dropped',Math.max(dr,0.0001)]]),c:`extra = ${nf(sent)} − ${nf(fwd)} = ${nf(ex)} · dropped = ${nf(ex)} − ${Q} = <b>${nf(dr)} packets</b>`,k:{num:true,q:'2,500 packets sent, 1,250 forwarded, the queue holds 100. How many are dropped?',a:1150,u:'packets',h:'(2,500 − 1,250) − 100'}}]};}};
-  T.bott={name:'Bottleneck throughput',gen:'bott',ls:'w2-throughput',make(){const n=pick([2,3]),Rs=[...Array(n)].map(()=>pick([5,10,20,50,100,1000])),m=Math.min(...Rs),MB=pick([10,25,50,100]),t=MB*8/m;
-    return {q:`${aN(MB,1)} ${MB} MB file crosses links of ${Rs.join(', ')} Mbps. At the bottleneck rate, how long does the transfer take? (1 MB = 8 Mb)`,ans:t,unit:'s',steps:[
-      {t:'Find the bottleneck',x:`Data can't move faster than the <b>slowest link</b> on its path. That link is the bottleneck, and it sets the end-to-end throughput: <b>min(R₁, R₂, …)</b>.`,v:()=>V.pipes(Rs),c:`throughput = min(${Rs.join(', ')}) = <b>${m} Mbps</b>`,k:{q:'Links of 100, 10 and 1000 Mbps. The throughput is…',o:['10 Mbps','100 Mbps','1000 Mbps','1110 Mbps'],e:'The slowest link wins: 10 Mbps.'}},
-      {t:'Megabytes to megabits',x:`The file is in mega<b>bytes</b> (MB) but rates are in mega<b>bits</b> (Mb). 1 byte = 8 bits, so MB × 8 = Mb.`,v:()=>V.convert(MB+' MB',MB*8+' Mb','× 8'),c:`file = ${MB} × 8 = <b>${MB*8} Mb</b>`,k:{num:true,q:'How many megabits is 40 MB?',a:320,u:'Mb',h:'40 × 8'}},
-      {t:'Time = size ÷ rate',x:`Divide the file size by the bottleneck rate.`,v:()=>V.push('time = file size ÷ bottleneck rate'),c:`time = ${MB*8} ÷ ${m} = <b>${nf(t)} s</b>`,k:{num:true,q:'An 80 Mb file at 10 Mbps takes how many seconds?',a:8,u:'s',h:'80 ÷ 10'}}]};}};
-  /* ---- UI ---- */
-  const num=v=>parseFloat(String(v).replace(/,/g,'').trim());
-  const close=(v,a)=>Math.abs(v-a)<=Math.max(Math.abs(a)*0.01,1e-6);
-  function check(box,k,done){box.innerHTML='<p class="sv-ck">Check yourself</p><p class="sv-q"></p>';box.querySelector('.sv-q').textContent=k.q;const res=document.createElement('div');res.className='sv-r';
-    const fin=(good,msg)=>{res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p>`;res.firstChild.textContent=(good?'Correct. ':'Not quite. ')+msg;done();};
-    if(k.num){const f=document.createElement('form');f.className='cd-f try-f';f.innerHTML='<input inputmode="decimal" autocomplete="off" placeholder="your answer" aria-label="Your answer"><span class="cd-u"></span><button class="btn" type="submit">Check</button><button class="btn ghost" type="button">Show me</button>';
-      f.querySelector('.cd-u').textContent=k.u;let tries=0,over=false;const inp=f.querySelector('input');
-      f.addEventListener('submit',e=>{e.preventDefault();if(over)return;const v=num(inp.value);if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
-        if(close(v,k.a)){over=true;fin(true,`${nf(k.a)} ${k.u}.`);return;}tries++;if(tries===1){res.innerHTML='<p class="cd-v n">Not quite. Hint: <span></span></p>';res.querySelector('span').textContent=k.h;return;}over=true;fin(false,`The answer is ${nf(k.a)} ${k.u} (${k.h}).`);});
-      f.querySelector('button[type=button]').addEventListener('click',()=>{if(!over){over=true;fin(false,`The answer is ${nf(k.a)} ${k.u} (${k.h}).`);}});box.appendChild(f);}
-    else{const o=document.createElement('div');o.className='qc-o';shuffled(k.o.length).map(i=>[k.o[i],i===0]).forEach(([t,ok])=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=t;
-        b.addEventListener('click',()=>{if(o.dataset.done)return;o.dataset.done=1;b.classList.add(ok?'correct':'wrong');if(!ok)[...o.children].find(x=>x.textContent===k.o[0]).classList.add('correct');fin(ok,k.e);});o.appendChild(b);});box.appendChild(o);}
-    box.appendChild(res);}
-  let cur=null;
-  function run(key){const box=$('#sv-run'),def=T[key];cur=key;$$('#sv-topics .sv-topic').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===key)));
-    const P=def.make();box.innerHTML=`<div class="sv-prob"><p class="sv-ck">The problem</p><p class="sv-pq"></p><div class="cd-bar"><button type="button" class="btn ghost sv-new">New numbers</button><button type="button" class="btn ghost sv-ls">Review the lesson</button></div></div><div class="sv-steps"></div>`;
-    $('.sv-pq',box).textContent=P.q;$('.sv-new',box).addEventListener('click',()=>run(key));$('.sv-ls',box).addEventListener('click',()=>go('lesson',{ls:document.getElementById(def.ls)}));
-    const wrap=$('.sv-steps',box);let i=0;
-    const step=()=>{const st=P.steps[i],c=document.createElement('section');c.className='sv-step';
-      c.innerHTML=`<p class="sv-n">Step ${i+1} of ${P.steps.length}</p><h4></h4><p class="sv-x"></p><div class="sv-v"></div><p class="sv-c"><span>For this problem</span><b class="sv-cl"></b></p><div class="sv-k"></div><div class="sv-nx"></div>`;
-      $('h4',c).textContent=st.t;$('.sv-x',c).innerHTML=st.x;try{$('.sv-v',c).appendChild(st.v());}catch(e){console.error(e);}$('.sv-cl',c).innerHTML=st.c;wrap.appendChild(c);
-      check($('.sv-k',c),st.k,()=>{const nx=$('.sv-nx',c);const b=document.createElement('button');b.type='button';b.className='btn';
-        if(i<P.steps.length-1){b.textContent='Next step →';b.addEventListener('click',()=>{b.remove();i++;step();});}else{b.textContent='See the answer →';b.addEventListener('click',()=>{b.remove();finish();});}
-        nx.appendChild(b);b.focus({preventScroll:true});});
-      if(i>0)c.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});};
-    const finish=()=>{const c=document.createElement('section');c.className='sv-step sv-end';c.innerHTML=`<p class="sv-n">Answer</p><p class="sv-ans"></p><h4>Your turn</h4><p class="sv-x">A new problem of the same type. Solve it on your own using the same steps.</p><div class="try sv-try" data-gen="${def.gen}"><div class="try-w"></div></div>`;
-      $('.sv-ans',c).textContent=`${nf(P.ans)} ${P.unit}`;wrap.appendChild(c);const t=$('.sv-try',c);window.__mountTry($('.try-w',t),t,{});c.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});};
-    step();}
-  function init(){const tb=$('#sv-topics');Object.entries(T).forEach(([k,d])=>{const b=document.createElement('button');b.type='button';b.className='sv-topic';b.dataset.k=k;b.textContent=d.name;b.addEventListener('click',()=>{run(k);$('#sv-run').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});});tb.appendChild(b);});}
-  return {init,run,has:k=>!!T[k],open(){if(!cur)run('tdm');}};})();
+  const watch=ls=>{window.__soloStop=ls;go('week',{w:+ls.closest('.week').dataset.w});V.openAt(ls);};
+  function init(){const box=$('#sv-topics');box.innerHTML='';
+    [1,2].forEach(w=>{const L=$$('#week'+w+' .lesson.walk');if(!L.length)return;const h=document.createElement('p');h.className='sv-wk';h.textContent='Week '+w;box.appendChild(h);
+      L.forEach(ls=>{const c=document.createElement('div');c.className='sv-card';c.dataset.id=ls.id;
+        c.innerHTML=`<span class="ll-num"></span><span class="sv-main"><span class="ll-title"></span><span class="sv-pv"></span><span class="ll-meta"></span></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>`;
+        $('.ll-num',c).textContent=$('.lesson-num',ls).textContent;$('.ll-title',c).textContent=$('h4',ls).textContent.replace(/^How to solve: /,'');
+        $('.sv-pv',c).textContent=$('.sv-prob p',ls).textContent.replace(/^Here is the problem\. /,'');$('.ll-meta',c).textContent=mins(durOf(ls))+' · '+$$('.try',ls).length+' questions along the way';
+        const [bw,br]=$$('button',c);bw.addEventListener('click',()=>watch(ls));br.addEventListener('click',()=>go('lesson',{ls}));box.appendChild(c);});});}
+  return {init,has:k=>!!document.getElementById('s-'+k),run(k){const ls=document.getElementById('s-'+k);if(ls)watch(ls);},open(){}};})();
 SOLVE.init();
 
 $$('[data-home]').forEach(b=>b.addEventListener('click',()=>go('home')));
