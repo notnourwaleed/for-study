@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2131,6 +2131,10 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 const PLAYSVG='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg>';
 const SPEAK='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2zM11 5.5a3.5 3.5 0 0 1 0 5l-.9-.9a2.2 2.2 0 0 0 0-3.2zM12.8 3.7a6 6 0 0 1 0 8.6l-.9-.9a4.7 4.7 0 0 0 0-6.8z"/></svg>';
 let activeWeek=1;
+/* main lessons vs. "How to solve" walkthroughs vs. extra lectures */
+const lsKind=ls=>!ls?'main':ls.classList.contains('walk')?'walk':ls.classList.contains('extra')?'extra':'main';
+const kindLessons=(w,kind)=>[...w.querySelectorAll('.lesson')].filter(l=>lsKind(l)===(kind||'main'));
+const nextWeekEl=w=>document.getElementById('week'+(+w.dataset.w+1));
 
 /* ============ voice reader ============ */
 const lessonTitle=ls=>{const n=$('.lesson-num',ls),h=$('h4',ls);return (n?n.textContent+' · ':'')+(h?h.textContent:'');};
@@ -2189,7 +2193,7 @@ const Narr=(()=>{
      if(pe&&pe.classList.contains('try-q')&&!A.passed.has(lastIi)&&window.__tryPause){A.playing=false;A.waiting=true;A.waitII=lastIi;setUI();const lsNow=A.lessons[A.idx];
        __tryPause(pe,()=>{A.passed.add(lastIi);A.waiting=false;if(A.lessons[A.idx]===lsNow)au.dispatchEvent(new Event('ended'));});return;}}
     if(window.__setProg&&A.idx>=0)__setProg(A.lessons[A.idx].id,1);
-    const adv=()=>{if(A.idx+1<A.lessons.length)loadLesson(A.idx+1,true);else{stop();setStatus('Finished. Try the questions at the end of the week.');V.finished();}};
+    const adv=()=>{if(A.idx+1<A.lessons.length)loadLesson(A.idx+1,true);else{const L=A.lessons[A.idx];stop();setStatus('Finished this week.');V.finished(L);}};
     const ls0=A.lessons[A.idx];if(ls0&&window.__soloStop===ls0){window.__soloStop=null;A.playing=false;setUI();if(V.isOpen())V.msg('Walkthrough finished. Close the video to pick another one.');return;}
     if(V.isOpen()&&ls0&&QC[ls0.id]){A.playing=false;setUI();V.check(ls0,adv);}else adv();});
   au.addEventListener('playing',()=>{au.playbackRate=rate;});
@@ -2205,7 +2209,7 @@ const Narr=(()=>{
     setStatus(lessonTitle(ls));
     if(auto){A.playing=true;setUI();au.play().catch(()=>{A.playing=false;setUI();setStatus(lessonTitle(ls)+' · press play');});}
   }
-  const weekLessons=w=>$$('.lesson',w);
+  const weekLessons=(w,ls)=>kindLessons(w,lsKind(ls));
 
   /* ---------- browser voice fallback ---------- */
   const T=(()=>{
@@ -2220,17 +2224,18 @@ const Narr=(()=>{
     const split=t=>{const parts=t.split(/(?<=[.!?;])\s+/),out=[];let b='';for(const p of parts){if(b&&(b+' '+p).length>200){out.push(b);b=p;}else b=b?b+' '+p:p;}if(b)out.push(b);return out;};
     const textOf=el=>(el.dataset.say||el.innerText||el.textContent).replace(/\s+/g,' ').trim();
     function utter(text){const u=new SpeechSynthesisUtterance(text);if(voice){u.voice=voice;u.lang=voice.lang;}else u.lang='en-GB';u.rate=rate;keep=[u];return u;}
-    function next(){if(!playing)return;if(idx>=items.length){stopT();setStatus('Finished. Try the questions at the end of the week.');V.finished();return;}
+    function next(){if(!playing)return;if(idx>=items.length){const L=items.length?items[items.length-1].lesson:null;stopT();setStatus('Finished this week.');V.finished(L);return;}
       const it=items[idx];if(ci===0&&!chunks.length){if(it.lesson!==curLesson){curLesson=it.lesson;playFig(it.lesson);const ls=$$('.lesson',it.lesson.closest('.week'));V.lesson(it.lesson,ls.indexOf(it.lesson),ls.length);setStatus(lessonTitle(it.lesson));}
         mark(it.el,null,null);const L=it.el.textContent.length;V.sentence(it.el,-1,0,L,0,0,[[0,0,L,0]]);V.tick(1e9,0);chunks=split(speakify(textOf(it.el)));}
       if(ci>=chunks.length){idx++;ci=0;chunks=[];next();return;}
       const my=++gen,u=utter(chunks[ci]);u.onend=u.onerror=()=>{if(my!==gen)return;ci++;next();};synth.speak(u);}
-    function collect(week){items=[];$$('.lesson',week).forEach(ls=>$$('.say',ls).forEach(el=>items.push({el,lesson:ls})));}
+    function collect(week,from){items=[];weekLessons(week,from).forEach(ls=>$$('.say',ls).forEach(el=>items.push({el,lesson:ls})));}
     function play(week){if(!can){setStatus('This browser cannot read aloud.');return;}if(!items.length||idx>=items.length){collect(week);idx=0;ci=0;chunks=[];curLesson=null;}playing=true;setUI();synth.cancel();gen++;setTimeout(next,80);}
     function pause(){playing=false;gen++;if(can)synth.cancel();setUI();setStatus('Paused');}
     function stopT(){playing=false;gen++;if(can)synth.cancel();setUI();items=[];idx=0;ci=0;chunks=[];curLesson=null;}
-    function startAt(ls){collect(ls.closest('.week'));idx=Math.max(0,items.findIndex(it=>it.lesson===ls));ci=0;chunks=[];curLesson=null;play();}
+    function startAt(ls){collect(ls.closest('.week'),ls);idx=Math.max(0,items.findIndex(it=>it.lesson===ls));ci=0;chunks=[];curLesson=null;play();}
     function jump(dir,week){if(!items.length){collect(week);idx=0;}if(!items.length)return;const lessons=[...new Set(items.map(i=>i.lesson))];const cur=items[Math.min(idx,items.length-1)].lesson;
+      const nw=nextWeekEl(cur.closest('.week'));if(dir>0&&lessons.indexOf(cur)===lessons.length-1&&lsKind(cur)==='main'&&nw){const was=playing;(window.__toWeek||showWeek)(+nw.dataset.w,false);collect(nw);idx=0;ci=0;chunks=[];curLesson=null;if(window.__follow)__follow(items[0].lesson);if(was){synth.cancel();gen++;setTimeout(next,80);}else{mark(items[0].el,null,null);setStatus(lessonTitle(items[0].lesson)+' · press play');}return;}
       const li=Math.max(0,Math.min(lessons.length-1,lessons.indexOf(cur)+dir));idx=items.findIndex(it=>it.lesson===lessons[li]);ci=0;chunks=[];curLesson=null;if(playing){synth.cancel();gen++;setTimeout(next,80);}else{mark(items[idx].el,null,null);setStatus(lessonTitle(lessons[li])+' · press play');}}
     function restart(){if(playing){synth.cancel();gen++;setTimeout(next,80);}}
     function say(text){if(!can)return;playing=false;setUI();synth.cancel();gen++;const my=gen,cs=split(speakify(text));let k=0;const n=()=>{if(my!==gen||k>=cs.length)return;const u=utter(cs[k++]);u.onend=n;synth.speak(u);};setTimeout(n,80);}
@@ -2248,9 +2253,11 @@ const Narr=(()=>{
   }
   function pause(){if(!useAudio)return T.pause();au.pause();A.playing=false;setUI();setStatus('Paused'+(A.idx>=0?' · '+lessonTitle(A.lessons[A.idx]):''));}
   function stop(){T.stop();au.pause();A.playing=false;A.idx=-1;A.clip=false;A.resume=null;clearHL();setUI();}
-  function startAt(ls,seek){if(!useAudio)return T.startAt(ls);A.resume=null;A.lessons=weekLessons(ls.closest('.week'));loadLesson(Math.max(0,A.lessons.indexOf(ls)),true,seek||0);}
+  function startAt(ls,seek){if(!useAudio)return T.startAt(ls);A.resume=null;A.lessons=weekLessons(ls.closest('.week'),ls);loadLesson(Math.max(0,A.lessons.indexOf(ls)),true,seek||0);}
   function jump(dir){if(!useAudio)return T.jump(dir,activeWeekEl());
     if(A.idx<0||A.clip){A.lessons=weekLessons(activeWeekEl());if(A.idx<0)A.idx=dir>0?-1:1;}
+    {const cur=A.lessons[A.idx],nw=cur&&nextWeekEl(cur.closest('.week'));
+     if(dir>0&&cur&&A.idx===A.lessons.length-1&&lsKind(cur)==='main'&&nw){(window.__toWeek||showWeek)(+nw.dataset.w,false);A.lessons=weekLessons(nw);loadLesson(0,A.playing);if(!A.playing){mark(A.els[0],null,null);setStatus(lessonTitle(A.lessons[0])+' · press play');}return;}}
     const i=Math.max(0,Math.min(A.lessons.length-1,A.idx+dir));loadLesson(i,A.playing);if(!A.playing){mark(A.els[0],null,null);setStatus(lessonTitle(A.lessons[i])+' · press play');}}
   function clip(w,i,kind,text){
     if(!useAudio){T.say(text);setStatus('Reading a question');return;}
@@ -2336,7 +2343,7 @@ const V=(()=>{
   function tick(t,frac){if(!open)return;bar.style.width=(frac*100).toFixed(2)+'%';}
   function setPlaying(p){vicon.setAttribute('d',p?'M3 2h4v12H3zM9 2h4v12H9z':'M4 2l10 6-10 6z');vplay.setAttribute('aria-label',p?'Pause':'Play');}
   function msg(t){if(open)setCap(t,true);}
-  function finished(){if(!open)return;setCap('That is the end of this week. Close the video and try the questions.',true);}
+  function finished(c){if(!open)return;c=c||Narr.currentLesson();const w=c&&c.closest('.week'),nw=w&&nextWeekEl(w);setCap(lsKind(c)!=='main'?'That was the last one in this section. Close the video to pick another.':nw?'That is the end of Week '+w.dataset.w+'. Press next ⏭ to start Week '+nw.dataset.w+'. How to solve and the extra lectures stay in the week list whenever you want them.':'That is the end of the last week. Close the video and try the questions.',true);}
   function openAt(ls,seek){lastFocus=document.activeElement;if(!open){try{history.pushState({video:1},'',location.href);}catch(e){}}open=true;root.hidden=false;document.body.style.overflow='hidden';vrate.value=String(Narr.rate);$('#v-play').focus();
     const cur=Narr.currentLesson();
     if(ls&&(ls!==cur||seek))Narr.startAt(ls,seek);else if(cur){const L=$$('.lesson',cur.closest('.week'));lesson(cur,L.indexOf(cur),L.length);if(!Narr.playing)Narr.play();}else Narr.startAt(ls||$('.lesson',$('#week'+activeWeek)));}
@@ -4052,7 +4059,7 @@ function go(name,o){o=o||{};const prevLs=VIEW.ls;
   if(name==='solve'&&typeof SOLVE!=='undefined')SOLVE.open();
   if(!o.keepScroll)scrollTo({top:0,behavior:'auto'});
   if(name==='week')Narr.setStatus(`Week ${VIEW.w}: pick a lesson to watch or read.`);}
-function fillNav(){const w=$('#week'+VIEW.w),L=$$('.lesson',w),nav=$('.lesson-nav',w);nav.innerHTML='';
+function fillNav(){const w=$('#week'+VIEW.w),L=kindLessons(w,lsKind(VIEW.name==='lesson'?VIEW.ls:null)),nav=$('.lesson-nav',w);nav.innerHTML='';
   const btn=(t,cls,fn)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.innerHTML=t;b.addEventListener('click',fn);nav.appendChild(b);return b;};
   btn('← All Week '+VIEW.w+' lessons','btn ghost',()=>go('week'));
   if(VIEW.name==='lesson'){const i=L.indexOf(VIEW.ls);
@@ -4061,7 +4068,10 @@ function fillNav(){const w=$('#week'+VIEW.w),L=$$('.lesson',w),nav=$('.lesson-na
     {const id=VIEW.ls.id,b=document.createElement('button');b.type='button';b.className='btn ghost ll-mark';b.dataset.id=id;b.addEventListener('click',()=>__markDone(id,!isDone(id)));nav.appendChild(b);
      const s=document.createElement('button');s.type='button';s.className='btn ghost ll-star';s.dataset.id=id;s.addEventListener('click',()=>__toggleStar(id));nav.appendChild(s);updProgUI();updStarUI();}
     if(i<L.length-1)btn($('.lesson-num',L[i+1]).textContent+' '+$('h4',L[i+1]).textContent+' →','btn',()=>go('lesson',{ls:L[i+1]}));
-    else btn('Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}}
+    else{const nw=nextWeekEl(w),f=nw&&kindLessons(nw)[0];
+      if(lsKind(VIEW.ls)==='main'&&f){btn('Week '+VIEW.w+' questions','btn ghost',()=>go('quiz'));btn('Week '+nw.dataset.w+': '+$('.lesson-num',f).textContent+' '+$('h4',f).textContent+' →','btn',()=>go('lesson',{ls:f}));}
+      else btn('Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}}}
+window.__toWeek=n=>{if(VIEW.name==='week')go('week',{w:n,fromNarr:true,keepScroll:true});else if(VIEW.name!=='lesson')showWeek(n,false);else VIEW.w=n;};
 window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromNarr:true});};
 /* watched progress */
 const PROG=(()=>{let p={};try{p=JSON.parse(store.get('fon-progress')||'{}')||{};}catch(e){}return p;})();
@@ -4274,3 +4284,5 @@ addEventListener('popstate',()=>{if(V.isOpen()){V.close();return;}route({fromPop
 route({init:true});
 })();
 </script>
+
+</body></html>
