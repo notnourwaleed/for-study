@@ -2271,7 +2271,7 @@ const Narr=(()=>{
     function stopT(){playing=false;gen++;if(can)synth.cancel();setUI();items=[];idx=0;ci=0;chunks=[];curLesson=null;}
     function startAt(ls){collect(ls.closest('.week'),ls);idx=Math.max(0,items.findIndex(it=>it.lesson===ls));ci=0;chunks=[];curLesson=null;play();}
     function jump(dir,week){if(!items.length){collect(week);idx=0;}if(!items.length)return;const lessons=[...new Set(items.map(i=>i.lesson))];const cur=items[Math.min(idx,items.length-1)].lesson;
-      const nw=nextWeekEl(cur.closest('.week'));if(dir>0&&lessons.indexOf(cur)===lessons.length-1&&lsKind(cur)==='main'&&nw){const was=playing;(window.__toWeek||showWeek)(+nw.dataset.w,false);collect(nw);idx=0;ci=0;chunks=[];curLesson=null;if(window.__follow)__follow(items[0].lesson);if(was){synth.cancel();gen++;setTimeout(next,80);}else{mark(items[0].el,null,null);setStatus(lessonTitle(items[0].lesson)+' · press play');}return;}
+      if(dir>0&&lessons.indexOf(cur)===lessons.length-1&&lsKind(cur)==='main'&&window.__toQuiz){__toQuiz(cur);return;}
       const li=Math.max(0,Math.min(lessons.length-1,lessons.indexOf(cur)+dir));idx=items.findIndex(it=>it.lesson===lessons[li]);ci=0;chunks=[];curLesson=null;if(playing){synth.cancel();gen++;setTimeout(next,80);}else{mark(items[idx].el,null,null);setStatus(lessonTitle(lessons[li])+' · press play');}}
     function restart(){if(playing){synth.cancel();gen++;setTimeout(next,80);}}
     function say(text){if(!can)return;playing=false;setUI();synth.cancel();gen++;const my=gen,cs=split(speakify(text));let k=0;const n=()=>{if(my!==gen||k>=cs.length)return;const u=utter(cs[k++]);u.onend=n;synth.speak(u);};setTimeout(n,80);}
@@ -2293,7 +2293,7 @@ const Narr=(()=>{
   function jump(dir){if(!useAudio)return T.jump(dir,activeWeekEl());
     if(A.idx<0||A.clip){A.lessons=weekLessons(activeWeekEl());if(A.idx<0)A.idx=dir>0?-1:1;}
     {const cur=A.lessons[A.idx],nw=cur&&nextWeekEl(cur.closest('.week'));
-     if(dir>0&&cur&&A.idx===A.lessons.length-1&&lsKind(cur)==='main'&&nw){(window.__toWeek||showWeek)(+nw.dataset.w,false);A.lessons=weekLessons(nw);loadLesson(0,A.playing);if(!A.playing){mark(A.els[0],null,null);setStatus(lessonTitle(A.lessons[0])+' · press play');}return;}}
+     if(dir>0&&cur&&A.idx===A.lessons.length-1&&lsKind(cur)==='main'&&window.__toQuiz){__toQuiz(cur);return;}}
     const i=Math.max(0,Math.min(A.lessons.length-1,A.idx+dir));loadLesson(i,A.playing);if(!A.playing){mark(A.els[0],null,null);setStatus(lessonTitle(A.lessons[i])+' · press play');}}
   function clip(w,i,kind,text){
     if(!useAudio){T.say(text);setStatus('Reading a question');return;}
@@ -2379,7 +2379,7 @@ const V=(()=>{
   function tick(t,frac){if(!open)return;bar.style.width=(frac*100).toFixed(2)+'%';}
   function setPlaying(p){vicon.setAttribute('d',p?'M3 2h4v12H3zM9 2h4v12H9z':'M4 2l10 6-10 6z');vplay.setAttribute('aria-label',p?'Pause':'Play');}
   function msg(t){if(open)setCap(t,true);}
-  function finished(c){if(!open)return;c=c||Narr.currentLesson();const w=c&&c.closest('.week'),nw=w&&nextWeekEl(w);setCap(lsKind(c)!=='main'?'That was the last one in this section. Close the video to pick another.':nw?'That is the end of Week '+w.dataset.w+'. Press next ⏭ to start Week '+nw.dataset.w+'. How to solve and the extra lectures stay in the week list whenever you want them.':'That is the end of the last week. Close the video and try the questions.',true);}
+  function finished(c){if(!open)return;c=c||Narr.currentLesson();if(c&&lsKind(c)==='main'&&window.__toQuiz){setCap('That is the end of the Week '+c.closest('.week').dataset.w+' videos. Time for the week questions.',true);setTimeout(()=>{if(open)__toQuiz(c);},2200);return;}const w=c&&c.closest('.week'),nw=w&&nextWeekEl(w);setCap(lsKind(c)!=='main'?'That was the last one in this section. Close the video to pick another.':nw?'That is the end of Week '+w.dataset.w+'. Press next ⏭ to start Week '+nw.dataset.w+'. How to solve and the extra lectures stay in the week list whenever you want them.':'That is the end of the last week. Close the video and try the questions.',true);}
   function openAt(ls,seek){lastFocus=document.activeElement;if(!open){try{history.pushState({video:1},'',location.href);}catch(e){}}open=true;root.hidden=false;document.body.style.overflow='hidden';vrate.value=String(Narr.rate);$('#v-play').focus();
     const cur=Narr.currentLesson();
     if(ls&&(ls!==cur||seek))Narr.startAt(ls,seek);else if(cur){const L=$$('.lesson',cur.closest('.week'));lesson(cur,L.indexOf(cur),L.length);if(!Narr.playing)Narr.play();}else Narr.startAt(ls||$('.lesson',$('#week'+activeWeek)));}
@@ -4104,9 +4104,10 @@ function fillNav(){const w=$('#week'+VIEW.w),L=kindLessons(w,lsKind(VIEW.name===
     {const id=VIEW.ls.id,b=document.createElement('button');b.type='button';b.className='btn ghost ll-mark';b.dataset.id=id;b.addEventListener('click',()=>__markDone(id,!isDone(id)));nav.appendChild(b);
      const s=document.createElement('button');s.type='button';s.className='btn ghost ll-star';s.dataset.id=id;s.addEventListener('click',()=>__toggleStar(id));nav.appendChild(s);updProgUI();updStarUI();}
     if(i<L.length-1)btn($('.lesson-num',L[i+1]).textContent+' '+$('h4',L[i+1]).textContent+' →','btn',()=>go('lesson',{ls:L[i+1]}));
-    else{const nw=nextWeekEl(w),f=nw&&kindLessons(nw)[0];
-      if(lsKind(VIEW.ls)==='main'&&f){btn('Week '+VIEW.w+' questions','btn ghost',()=>go('quiz'));btn('Week '+nw.dataset.w+': '+$('.lesson-num',f).textContent+' '+$('h4',f).textContent+' →','btn',()=>go('lesson',{ls:f}));}
-      else btn('Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}}}
+    else if(lsKind(VIEW.ls)==='main')btn('Now: Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}
+  if(VIEW.name==='quiz'){const L2=kindLessons(w);if(L2.length){const z=L2[L2.length-1];btn('← '+$('.lesson-num',z).textContent+' '+$('h4',z).textContent,'btn ghost',()=>go('lesson',{ls:z}));}
+    const nw=nextWeekEl(w),f=nw&&kindLessons(nw)[0];if(f)btn('Next: Week '+nw.dataset.w+' · '+$('.lesson-num',f).textContent+' '+$('h4',f).textContent+' →','btn',()=>go('lesson',{ls:f}));}}
+window.__toQuiz=ls=>{Narr.stop&&Narr.stop();if(V.isOpen())V.close();go('quiz',{w:+ls.closest('.week').dataset.w});};
 window.__toWeek=n=>{if(VIEW.name==='week')go('week',{w:n,fromNarr:true,keepScroll:true});else if(VIEW.name!=='lesson')showWeek(n,false);else VIEW.w=n;};
 window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromNarr:true});};
 /* watched progress */
@@ -4137,7 +4138,8 @@ $$('.week').forEach(sec=>{const w=+sec.dataset.w,list=document.createElement('di
       $('.ll-num',r).textContent=$('.lesson-num',el).textContent;$('.ll-title',r).textContent=$('h4',el).textContent;$('.ll-meta',r).textContent=mins(durOf(el));
       $('.ll-mark',r).addEventListener('click',()=>__markDone(el.id,!isDone(el.id)));$('.ll-star',r).addEventListener('click',()=>__toggleStar(el.id));
       $('.ll-watch',r).addEventListener('click',()=>V.openAt(el));$('.ll-read',r).addEventListener('click',()=>go('lesson',{ls:el}));$('.ll-title',r).addEventListener('click',()=>go('lesson',{ls:el}));list.appendChild(r);}
-    if(el.classList.contains('quiz-wrap')){const r=document.createElement('div');r.className='ll-row ll-quiz';r.innerHTML=`<span class="ll-num">?</span><span class="ll-main"><span class="ll-title">Week ${w} questions</span><span class="ll-meta">${QUIZ[w].length} multiple-choice questions with explanations</span></span><span class="ll-btns"><button type="button" class="btn">Start</button></span>`;$('button',r).addEventListener('click',()=>go('quiz'));r.querySelector('.ll-title').addEventListener('click',()=>go('quiz'));list.appendChild(r);}
+    if(el.classList.contains('quiz-wrap')){const r=document.createElement('div');r.className='ll-row ll-quiz';r.innerHTML=`<span class="ll-num">?</span><span class="ll-main"><span class="ll-title">Week ${w} questions</span><span class="ll-meta">${QUIZ[w].length} multiple-choice questions with explanations</span></span><span class="ll-btns"><button type="button" class="btn">Start</button></span>`;$('button',r).addEventListener('click',()=>go('quiz'));r.querySelector('.ll-title').addEventListener('click',()=>go('quiz'));
+      const mains=[...list.querySelectorAll('.ll-row[data-id]')].filter(x=>lsKind(document.getElementById(x.dataset.id))==='main');const last=mains[mains.length-1];if(last)last.after(r);else list.appendChild(r);}
   });
   {const f=document.createElement('button');f.type='button';f.className='ll-filter';f.hidden=true;f.innerHTML='★ Show only important (<span>0</span>)';f.addEventListener('click',()=>{list.classList.toggle('only-star');f.setAttribute('aria-pressed',String(list.classList.contains('only-star')));});list.prepend(f);}
   $('.week-head',sec).after(list);const nav=document.createElement('nav');nav.className='lesson-nav';nav.setAttribute('aria-label','Lesson navigation');sec.appendChild(nav);});
