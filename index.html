@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -739,6 +739,21 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .bf-why{color:var(--muted);margin:12px 0 10px}
 .bf-end{font-size:1.1rem}
 .bf-card{max-width:820px}
+
+.install{margin:30px 0 8px;max-width:1000px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:14px;align-items:center}
+.install img{width:64px;height:64px;border-radius:15px;display:block}
+.install h3{font-family:var(--f-display);font-size:1.1rem;margin:0 0 2px}
+.install p{margin:0;color:var(--muted);font-size:.95rem}
+.install .ins-act{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ins-guide{grid-column:1/-1;margin-top:12px}
+.ins-tabs{display:flex;gap:6px;margin-bottom:10px}
+.ins-tabs button{font:inherit;font-size:.9rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.ins-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ins-steps{margin:0;padding-left:1.4em;display:grid;gap:8px}
+.ins-steps li{line-height:1.45}
+.ins-steps b{white-space:nowrap}
+.ins-note{margin-top:10px!important;font-size:.88rem!important}
+.ins-done{color:var(--good)!important;font-weight:600}
 </style>
 
 <header class="top">
@@ -764,6 +779,27 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
   <div class="home-weeks" id="home-weeks"></div>
   <h3 class="home-h">Practice</h3>
   <div class="home-tools" id="home-tools"></div>
+  <div class="install" id="install">
+    <img src="icons/icon-192.png" alt="" onerror="this.style.visibility='hidden'">
+    <div><h3>Put it on your home screen</h3><p id="ins-sub">Open it like an app, full screen, with its own icon.</p></div>
+    <div class="ins-act"><button type="button" class="btn" id="ins-btn">Add to home screen</button><button type="button" class="btn ghost" id="ins-how">Show me how</button></div>
+    <div class="ins-guide" id="ins-guide" hidden>
+      <div class="ins-tabs" role="tablist"><button type="button" role="tab" data-os="ios" aria-selected="false">iPhone / iPad</button><button type="button" role="tab" data-os="android" aria-selected="false">Android</button></div>
+      <ol class="ins-steps" data-os="ios" hidden>
+        <li>Open this page in <b>Safari</b> (other browsers on iPhone can't add it).</li>
+        <li>Tap the <b>Share</b> button: the square with an arrow pointing up, at the bottom of the screen.</li>
+        <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
+        <li>Tap <b>Add</b> in the top corner. The icon appears on your home screen.</li>
+      </ol>
+      <ol class="ins-steps" data-os="android" hidden>
+        <li>Open this page in <b>Chrome</b>.</li>
+        <li>Tap the <b>⋮ menu</b> in the top-right corner.</li>
+        <li>Tap <b>Add to Home screen</b> (or <b>Install app</b>).</li>
+        <li>Tap <b>Install</b> or <b>Add</b>. The icon appears on your home screen.</li>
+      </ol>
+      <p class="ins-note">Already added an old version? Delete that icon first, then add it again so you get the newest one.</p>
+    </div>
+  </div>
 </section>
 
 <!-- ===================== WEEK 1 ===================== -->
@@ -4281,6 +4317,21 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>go('week',{w:+t.dataset.w})
 function route(o){const h=(location.hash||'').slice(1);const el=h&&document.getElementById(h);
   if(TOOLN[h])go(h,o);else if(/^week[123]$/.test(h))go('week',Object.assign({w:+h.slice(4)},o));else if(/^w[123]-quiz$/.test(h))go('quiz',Object.assign({w:+h[1]},o));else if(el&&el.classList.contains('lesson'))go('lesson',Object.assign({ls:el},o));else go('home',o);}
 addEventListener('popstate',()=>{if(V.isOpen()){V.close();return;}route({fromPop:true});});
+
+/* ---------- add to home screen ---------- */
+(()=>{const box=document.getElementById('install');if(!box)return;const btn=$('#ins-btn'),how=$('#ins-how'),guide=$('#ins-guide'),sub=$('#ins-sub');
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(standalone){sub.textContent='You are using the home screen version.';sub.classList.add('ins-done');$('.ins-act',box).hidden=true;return;}
+  const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  let prompt=null;
+  const showOS=os=>{$$('.ins-tabs button',box).forEach(b=>b.setAttribute('aria-selected',String(b.dataset.os===os)));$$('.ins-steps',box).forEach(o=>o.hidden=o.dataset.os!==os);};
+  const openGuide=()=>{guide.hidden=false;showOS(ios?'ios':'android');how.textContent='Hide steps';};
+  $$('.ins-tabs button',box).forEach(b=>b.addEventListener('click',()=>showOS(b.dataset.os)));
+  how.addEventListener('click',()=>{if(guide.hidden)openGuide();else{guide.hidden=true;how.textContent='Show me how';}});
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();prompt=e;});
+  addEventListener('appinstalled',()=>{sub.textContent='Added. Open it from your home screen.';sub.classList.add('ins-done');$('.ins-act',box).hidden=true;guide.hidden=true;});
+  btn.addEventListener('click',async()=>{if(prompt){prompt.prompt();try{await prompt.userChoice;}catch(e){}prompt=null;return;}openGuide();guide.scrollIntoView({behavior:'smooth',block:'nearest'});});
+})();
 route({init:true});
 })();
 </script>
