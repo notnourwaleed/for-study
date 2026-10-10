@@ -635,6 +635,23 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .rules-card b{display:block;color:var(--accent)}
 .vs .hlring{fill:none;stroke:#FFD43B;stroke-width:4;transition:cx .35s ease}
 .vs .slotlab{fill:#0A0F13;font-size:15px;font-weight:800;text-anchor:middle}
+
+.fx-tip{font-size:.82rem;color:var(--muted);margin:-4px 0 8px}
+.fx{border-top:1px solid var(--line)}
+.fx summary{display:grid;grid-template-columns:minmax(0,1fr) 24px;grid-template-areas:'n i' 'f i';gap:2px 10px;align-items:center;padding:9px 2px;cursor:pointer;list-style:none}.fx-n{grid-area:n}.fx-i{grid-area:i}.fx-f{grid-area:f}
+.fx summary::-webkit-details-marker{display:none}
+.fx-n{font-size:.92rem}
+.fx-f{font-family:var(--f-mono);font-size:.9rem;color:var(--ink);font-weight:600}
+.fx-i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--accent);font-weight:800;font-size:.78rem}
+.fx[open] .fx-i{background:var(--accent);color:var(--on-accent,#fff)}
+.fx summary:hover .fx-n{color:var(--accent)}
+.fx-b{background:var(--soft);border-radius:10px;padding:10px 12px;margin:0 0 10px;font-size:.9rem;line-height:1.5}
+.fx-g{margin:0 0 8px}
+.fx-t{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:0 0 8px}
+.fx-t dt{font-family:var(--f-mono);font-weight:700;color:var(--accent)}
+.fx-t dd{margin:0}
+.fx-ex{margin:0}.fx-ex b:first-child{display:block;font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.fx-note{margin:8px 0 0;color:var(--muted);font-size:.86rem}
 </style>
 
 <header class="top">
@@ -1474,14 +1491,44 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 <section class="tool wrap" id="tool-cheat" aria-labelledby="cs-h">
   <header class="week-head"><p class="wk-label">Review</p><h2 id="cs-h">Cheat sheet</h2><p>Everything from Weeks 1–3 on one page.</p></header>
   <div class="cs-grid">
-    <div class="cs-card"><h5>Formulas</h5><table>
-      <tr><td>Transmission delay</td><td class="num">L / R</td></tr><tr><td>Propagation delay</td><td class="num">d / s</td></tr>
-      <tr><td>Nodal delay</td><td class="num">proc + queue + trans + prop</td></tr><tr><td>Store-and-forward, n links</td><td class="num">L/R₁ + L/R₂ + …</td></tr>
-      <tr><td>Circuit share</td><td class="num">link rate ÷ circuits</td></tr><tr><td>TDM slot rate</td><td class="num">R ÷ slots</td></tr>
-      <tr><td>TDM circuit rate</td><td class="num">frame rate × bits per slot</td></tr><tr><td>TDM total time</td><td class="num">setup + file ÷ slot rate</td></tr>
-      <tr><td>FDM max users</td><td class="num">total ÷ per-user band</td></tr><tr><td>Arrival rate</td><td class="num">N × r</td></tr>
-      <tr><td>Throughput</td><td class="num">min(R₁, R₂, …)</td></tr><tr><td>Packets per second</td><td class="num">rate ÷ packet bits</td></tr>
-      <tr><td>Dropped</td><td class="num">(sent − forwarded) − queue</td></tr><tr><td>OC-n</td><td class="num">n × 51.8 Mbps</td></tr></table></div>
+    <div class="cs-card fx-card"><h5>Delays (Lecture 1 &amp; 2)</h5><p class="fx-tip">Tap a formula to see what each letter means.</p>
+      <details class="fx"><summary><span class="fx-n">Transmission delay</span><code class="fx-f">L / R</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">Time to push every bit of one packet onto the link.</p><dl class="fx-t"><dt>L</dt><dd>packet length, in <b>bits</b> (bytes × 8)</dd><dt>R</dt><dd>link rate, in <b>bits per second</b></dd></dl><p class="fx-ex"><b>Example</b>A 1,500-byte packet = 12,000 bits on a 10 Mbps link: 12,000 ÷ 10,000,000 = 0.0012 s = <b>1.2 ms</b>.</p><p class="fx-note">Depends on packet size and link speed, not on distance.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Propagation delay</span><code class="fx-f">d / s</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">Time for one bit to travel the length of the link.</p><dl class="fx-t"><dt>d</dt><dd>length of the link, in <b>metres</b></dd><dt>s</dt><dd>propagation speed in the medium, about <b>2 × 10⁸ m/s</b> in copper or fibre</dd></dl><p class="fx-ex"><b>Example</b>1,500 km = 1,500,000 m: 1,500,000 ÷ 200,000,000 = 0.0075 s = <b>7.5 ms</b>.</p><p class="fx-note">Depends on distance, not on packet size.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Nodal delay</span><code class="fx-f">proc + queue + trans + prop</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">The total delay a packet picks up at one router (one hop).</p><dl class="fx-t"><dt>proc</dt><dd>processing: the router checks the packet and picks the output link</dd><dt>queue</dt><dd>queuing: time waiting in the output buffer</dd><dt>trans</dt><dd>transmission delay, L / R</dd><dt>prop</dt><dd>propagation delay, d / s</dd></dl><p class="fx-ex"><b>Example</b>0.5 ms + 2 ms + 1.2 ms + 7.5 ms = <b>11.2 ms</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Store-and-forward over n links</span><code class="fx-f">L/R₁ + L/R₂ + …</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">Time for one packet to cross several links, when each router must receive the whole packet before sending it on.</p><dl class="fx-t"><dt>L</dt><dd>packet length, in bits</dd><dt>R₁, R₂, …</dt><dd>the rate of each link, in bits per second</dd></dl><p class="fx-ex"><b>Example</b>12,000 bits over two 1 Mbps links: 0.012 + 0.012 = <b>0.024 s</b>.</p><p class="fx-note">If every link has the same rate R, this is just n × L/R.</p></div></details>
+    </div>
+    <div class="cs-card fx-card"><h5>TDM: time-division multiplexing</h5><p class="fx-tip">Tap a formula to see what each letter means.</p>
+      <details class="fx"><summary><span class="fx-n">Slot rate (your rate)</span><code class="fx-f">R ÷ N</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How many bits per second <b>one connection</b> gets. Also called the circuit rate.</p><dl class="fx-t"><dt>R</dt><dd>the <b>link rate</b>: total speed of the whole link, in bits per second</dd><dt>N</dt><dd>number of slots in each frame = number of connections sharing the link</dd></dl><p class="fx-ex"><b>Example</b>1.536 Mbps link, 24 slots: 1,536,000 ÷ 24 = <b>64,000 bps (64 kbps)</b>.</p><p class="fx-note">Your connection gets the whole link, but only 1 slot out of every N, so on average it gets 1/N of the speed.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Slot rate, the other way</span><code class="fx-f">frame rate × bits per slot</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">The same slot rate, worked out from how often your slot comes round.</p><dl class="fx-t"><dt>frame rate</dt><dd>how many frames (full rounds of turns) happen per second</dd><dt>bits per slot</dt><dd>how many bits you send in each of your turns</dd></dl><p class="fx-ex"><b>Example</b>8,000 frames/s × 8 bits = <b>64,000 bps</b>, the same as 1,536,000 ÷ 24.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Total time to send a file</span><code class="fx-f">setup + F ÷ slot rate</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How long a whole file takes over a TDM circuit, from start to finish.</p><dl class="fx-t"><dt>setup</dt><dd>circuit setup time, in <b>seconds</b> (ms ÷ 1,000)</dd><dt>F</dt><dd>file size, in <b>bits</b></dd><dt>slot rate</dt><dd>your rate, R ÷ N, <b>not</b> the link rate</dd></dl><p class="fx-ex"><b>Example</b>0.5 s + 640,000 ÷ 64,000 = 0.5 + 10 = <b>10.5 s</b>.</p><p class="fx-note">The usual mistakes: dividing by the link rate, or adding 500 ms to 10 s without converting.</p></div></details>
+    </div>
+    <div class="cs-card fx-card"><h5>FDM and circuit sharing</h5><p class="fx-tip">Tap a formula to see what each letter means.</p>
+      <details class="fx"><summary><span class="fx-n">Circuit share</span><code class="fx-f">link rate ÷ circuits</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">The rate each circuit gets when a link is split equally.</p><dl class="fx-t"><dt>link rate</dt><dd>total capacity of the link</dd><dt>circuits</dt><dd>how many circuits share it</dd></dl><p class="fx-ex"><b>Example</b>10 Mbps shared by 10 circuits: <b>1 Mbps each</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">FDM max users</span><code class="fx-f">total ÷ per-user band</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How many users fit when each needs its own band.</p><dl class="fx-t"><dt>total</dt><dd>total bandwidth of the link</dd><dt>per-user band</dt><dd>bandwidth each user needs</dd></dl><p class="fx-ex"><b>Example</b>20 Mbps total, 2 Mbps per user: 20 ÷ 2 = <b>10 users</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Unused FDM capacity</span><code class="fx-f">(circuits − active) × per circuit</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">Capacity wasted by idle circuits, which stay reserved.</p><dl class="fx-t"><dt>circuits</dt><dd>total circuits on the link</dd><dt>active</dt><dd>circuits actually transmitting</dd><dt>per circuit</dt><dd>rate of one circuit</dd></dl><p class="fx-ex"><b>Example</b>12 circuits of 2 Mbps, 9 active: (12 − 9) × 2 = <b>6 Mbps unused</b>.</p></div></details>
+    </div>
+    <div class="cs-card fx-card"><h5>Throughput and packet loss (Lecture 2)</h5><p class="fx-tip">Tap a formula to see what each letter means.</p>
+      <details class="fx"><summary><span class="fx-n">Throughput (bottleneck)</span><code class="fx-f">min(R₁, R₂, …)</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">The fastest rate data can cross a whole path. It is set by the slowest link.</p><dl class="fx-t"><dt>R₁, R₂, …</dt><dd>the rate of each link on the path</dd></dl><p class="fx-ex"><b>Example</b>Link A 100 Mbps, link B 10 Mbps: <b>10 Mbps</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Arrival rate</span><code class="fx-f">N × r</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How fast data arrives at a router from several senders together.</p><dl class="fx-t"><dt>N</dt><dd>number of sources sending</dd><dt>r</dt><dd>rate of each source</dd></dl><p class="fx-ex"><b>Example</b>5 sources at 2 Mbps each: <b>10 Mbps</b> arriving.</p><p class="fx-note">If this is more than the output link can send, the queue grows.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Packets per second</span><code class="fx-f">rate ÷ packet bits</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How many packets a rate carries each second.</p><dl class="fx-t"><dt>rate</dt><dd>bits per second</dd><dt>packet bits</dt><dd>size of one packet in bits (bytes × 8)</dd></dl><p class="fx-ex"><b>Example</b>20 Mbps with 8,000-bit packets: 20,000,000 ÷ 8,000 = <b>2,500 packets/s</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">Packets dropped</span><code class="fx-f">(sent − forwarded) − queue</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">How many packets are lost when a router is overloaded.</p><dl class="fx-t"><dt>sent</dt><dd>packets arriving from the sender</dd><dt>forwarded</dt><dd>packets the output link can send</dd><dt>queue</dt><dd>packets the buffer can hold</dd></dl><p class="fx-ex"><b>Example</b>(2,500 − 1,250) − 100 = <b>1,150 packets lost</b>.</p></div></details>
+      <details class="fx"><summary><span class="fx-n">OC-n (fibre speed levels)</span><code class="fx-f">n × 51.8 Mbps</code><span class="fx-i" aria-hidden="true">?</span></summary>
+        <div class="fx-b"><p class="fx-g">The speed of an Optical Carrier level.</p><dl class="fx-t"><dt>n</dt><dd>the level number, as in OC-3 or OC-48</dd></dl><p class="fx-ex"><b>Example</b>OC-3: 3 × 51.8 ≈ <b>155 Mbps</b>.</p></div></details>
+    </div>
     <div class="cs-card"><h5>Units</h5><table>
       <tr><td>bytes → bits</td><td class="num">× 8</td></tr><tr><td>k / M / G</td><td class="num">10³ / 10⁶ / 10⁹</td></tr>
       <tr><td>s → ms</td><td class="num">× 1,000</td></tr><tr><td>ms → s</td><td class="num">÷ 1,000</td></tr>
