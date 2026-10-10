@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<!doctype html>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1208,7 +1208,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
         <p class="say try-q">More friends join the table. What happens to your turns?</p>
       </div>
       <p class="say">In a real link, swap words for bits. Your slot rate is the link rate, shared between all the slots.</p>
-      <div class="try" data-eq="{&quot;lhs&quot;: &quot;slot rate&quot;, &quot;answers&quot;: [[&quot;link rate&quot;, &quot;÷&quot;, &quot;number of slots&quot;], [&quot;frame rate&quot;, &quot;×&quot;, &quot;bits per slot&quot;]], &quot;tiles&quot;: [&quot;link rate&quot;, &quot;number of slots&quot;, &quot;frame rate&quot;, &quot;bits per slot&quot;, &quot;file size&quot;]}" data-steps="The whole link is shared between the slots.|slot rate = link rate ÷ number of slots.|It also equals frame rate × bits per slot.">
+      <div class="try" data-eq="{&quot;lhs&quot;: &quot;slot rate&quot;, &quot;answers&quot;: [[&quot;link rate&quot;, &quot;÷&quot;, &quot;number of slots&quot;]], &quot;tiles&quot;: [&quot;link rate&quot;, &quot;number of slots&quot;, &quot;file size&quot;, &quot;setup time&quot;]}" data-steps="The whole link is shared between the slots.|slot rate = link rate ÷ number of slots.">
         <span class="k">Build the formula</span>
         <p class="say try-q">Now build it yourself. Slot rate equals what? Drag the pieces into place, and watch it get warmer.</p>
       </div>
@@ -4126,10 +4126,11 @@ window.__calc=initCalc();initTrace();
     for(let i=0;i<N;i++){const z=document.createElement('button');z.type='button';z.className='eqb-z'+(i%2?' op':'');z.setAttribute('aria-label',(i%2?'operator':'term')+' space '+(i+1));z.dataset.i=i;wrap.querySelector('.eqb-zones').appendChild(z);zones.push(z);}
     const ops=['×','÷','+','−'];const tiles=shuffled(e.tiles.length).map(i=>e.tiles[i]).concat(ops).map(v=>{const b=document.createElement('button');b.type='button';b.className='eqb-t'+(ops.includes(v)?' op':'');b.textContent=v;b.dataset.v=v;(ops.includes(v)?wrap.querySelector('.eqb-ops'):tray).appendChild(b);return b;});
     const val=()=>zones.map(z=>z.dataset.v||'');
-    const score=()=>{const v=val();if(e.sum){const terms=e.answers[0].filter((x,i)=>i%2===0);let s=0;const seen=new Set();v.forEach((x,i)=>{if(i%2){if(x===e.answers[0][i])s++;}else if(x&&terms.includes(x)&&!seen.has(x)){seen.add(x);s++;}});return s;}
-      let best=0;e.answers.forEach(a=>{const alts=[a];if(a.length===3&&(a[1]==='×'||a[1]==='+'))alts.push([a[2],a[1],a[0]]);alts.forEach(x=>{const s=x.reduce((n,t,i)=>n+(v[i]===t?1:0),0);if(s>best)best=s;});});return best;};
+    let wrongN=0;
+    const score=()=>{const v=val(),filled=v.filter(Boolean).length;if(e.sum){const terms=e.answers[0].filter((x,i)=>i%2===0);let s=0;const seen=new Set();v.forEach((x,i)=>{if(i%2){if(x===e.answers[0][i])s++;}else if(x&&terms.includes(x)&&!seen.has(x)){seen.add(x);s++;}});wrongN=filled-s;return s===N?N:Math.max(0,s-wrongN);}
+      let best=-99,bw=0,full=false;e.answers.forEach(a=>{const alts=[a];if(a.length===3&&(a[1]==='×'||a[1]==='+'))alts.push([a[2],a[1],a[0]]);alts.forEach(x=>{const c=x.reduce((n,t,i)=>n+(v[i]===t?1:0),0),w=filled-c;if(c===N)full=true;if(c-w>best){best=c-w;bw=w;}});});wrongN=bw;return full?N:Math.max(0,best);};
     const heat=()=>{const s=score(),f=s/N;wrap.style.setProperty('--heat',f);wrap.querySelector('.eqb-bar i').style.width=(8+f*92)+'%';
-      const lab=f===0?(val().some(Boolean)?'Cold':'Cold: start placing pieces'):f<0.5?'Getting warmer':f<1?'Warm… almost there':'Hot! That\'s it';wrap.querySelector('.eqb-lab').textContent=lab;wrap.dataset.heat=f===1?'hot':f>=0.5?'warm':f>0?'warmer':'cold';
+      const lab=f===1?'Hot! That\'s it':wrongN>0?(f===0?'Cold: a piece doesn\'t belong there':'Colder: a piece doesn\'t belong there'):f===0?'Cold: start placing pieces':f<0.5?'Getting warmer':'Warm… almost there';wrap.querySelector('.eqb-lab').textContent=lab;wrap.dataset.heat=f===1?'hot':f>=0.5?'warm':f>0?'warmer':'cold';
       if(f===1&&!over){over=true;tiles.forEach(t=>t.disabled=true);setTimeout(()=>onDone(true),350);}};
     const place=(z,t)=>{if(over)return;if(z.dataset.v){const old=tiles.find(x=>x.dataset.v===z.dataset.v&&x.classList.contains('used')&&x._z===z);if(old){old.classList.remove('used');old._z=null;}}
       z.dataset.v=t.dataset.v;z.textContent=t.dataset.v;z.classList.add('full');if(!t.classList.contains('op')){t.classList.add('used');t._z=z;}sel=null;tiles.forEach(x=>x.classList.remove('sel'));heat();};
@@ -4183,7 +4184,8 @@ window.__calc=initCalc();initTrace();
 /* ---------- Build the formula practice ---------- */
 window.__build=(function(){
   const Q=[
-   {t:'TDM',lhs:'slot rate',a:[['link rate','÷','number of slots'],['frame rate','×','bits per slot']],x:['file size','setup time'],why:'The link is shared equally between the slots. It also equals frame rate × bits per slot.'},
+   {t:'TDM',lhs:'slot rate',a:[['link rate','÷','number of slots']],x:['file size','setup time'],why:'The whole link is shared equally between the slots.'},
+   {t:'TDM',lhs:'slot rate, using the frame rate',a:[['frame rate','×','bits per slot']],x:['number of slots','link rate'],why:'How often your turn comes, times how much you send each turn.'},
    {t:'TDM',lhs:'TDM total time',a:[['setup time','+','file size','÷','slot rate']],x:['link rate','frame rate'],why:'First the circuit is set up, then the file is sent at your slot rate.'},
    {t:'Delays',lhs:'transmission delay',a:[['packet size','÷','link rate']],x:['distance','speed'],why:'Time to push all L bits onto the link at R bits per second: L ÷ R.'},
    {t:'Delays',lhs:'propagation delay',a:[['distance','÷','speed']],x:['packet size','link rate'],why:'Time for one bit to travel the cable: d ÷ s.'},
@@ -4272,4 +4274,3 @@ addEventListener('popstate',()=>{if(V.isOpen()){V.close();return;}route({fromPop
 route({init:true});
 })();
 </script>
-</body></html>
