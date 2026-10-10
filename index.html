@@ -583,6 +583,12 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
   .v-mid>.v-main{flex:0 1 auto;min-height:0}
   .v-mid .vs{height:auto;max-height:58vh}
 }
+
+.ll-mark{align-self:flex-start;margin-top:6px;font:inherit;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.ll-mark:hover{border-color:var(--good);color:var(--ink)}
+.ll-mark.on{border-color:var(--good);color:var(--good)}
+.ll-mark .ll-undo{font-weight:500;color:var(--muted)}
+.lesson-nav .ll-mark{margin-top:0;font-size:.95rem;padding:9px 16px}
 </style>
 
 <header class="top">
@@ -3187,6 +3193,7 @@ function fillNav(){const w=$('#week'+VIEW.w),L=$$('.lesson',w),nav=$('.lesson-na
   if(VIEW.name==='lesson'){const i=L.indexOf(VIEW.ls);
     if(i>0)btn('← '+$('.lesson-num',L[i-1]).textContent+' '+$('h4',L[i-1]).textContent,'btn ghost',()=>go('lesson',{ls:L[i-1]}));
     btn(PLAYSVG+'Watch this lesson','btn',()=>V.openAt(VIEW.ls));
+    {const id=VIEW.ls.id,b=document.createElement('button');b.type='button';b.className='btn ghost ll-mark';b.dataset.id=id;b.addEventListener('click',()=>__markDone(id,!isDone(id)));nav.appendChild(b);updProgUI();}
     if(i<L.length-1)btn($('.lesson-num',L[i+1]).textContent+' '+$('h4',L[i+1]).textContent+' →','btn',()=>go('lesson',{ls:L[i+1]}));
     else btn('Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}}
 window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromNarr:true});};
@@ -3194,7 +3201,8 @@ window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromN
 const PROG=(()=>{let p={};try{p=JSON.parse(store.get('fon-progress')||'{}')||{};}catch(e){}return p;})();
 const isDone=id=>(PROG[id]||0)>=0.92;
 window.__setProg=(id,f)=>{f=Math.min(1,f);if(f<=(PROG[id]||0))return;const was=isDone(id);PROG[id]=f>=0.92?1:Math.round(f*100)/100;store.set('fon-progress',JSON.stringify(PROG));updProgUI(was!==isDone(id));};
-function updProgUI(){$$('.ll-row[data-id]').forEach(r=>{const f=PROG[r.dataset.id]||0,done=f>=0.92;r.classList.toggle('done',done);
+window.__markDone=(id,on)=>{if(on)PROG[id]=1;else delete PROG[id];store.set('fon-progress',JSON.stringify(PROG));updProgUI(true);if(VIEW.name==='lesson'||VIEW.name==='quiz')fillNav();if(VIEW.name==='home')renderNext();};
+function updProgUI(){$$('.ll-mark[data-id]').forEach(b=>{const d=isDone(b.dataset.id);b.classList.toggle('on',d);b.setAttribute('aria-pressed',String(d));b.innerHTML=d?'<span aria-hidden="true">✓</span> Watched <span class="ll-undo">· undo</span>':'<span aria-hidden="true">○</span> Mark as watched';});$$('.ll-row[data-id]').forEach(r=>{const f=PROG[r.dataset.id]||0,done=f>=0.92;r.classList.toggle('done',done);
     $('.ll-bar i',r).style.width=(f*100).toFixed(0)+'%';$('.ll-pr',r).hidden=f<=0.02;$('.ll-state',r).textContent=done?'✓ Watched':f>0.02?`${Math.round(f*100)}% watched`:'';});
   $$('.wk-card').forEach(c=>{const L=$$('.lesson',$('#week'+c.dataset.w)),n=L.filter(l=>isDone(l.id)).length;$('.wk-p',c).textContent=n?`${n} of ${L.length} watched`:'';$('.wk-pb i',c).style.width=(n/L.length*100)+'%';});}
 /* home week cards */
@@ -3207,8 +3215,9 @@ $$('.week').forEach(sec=>{const w=+sec.dataset.w,list=document.createElement('di
   [...sec.children].forEach(el=>{
     if(el.classList.contains('part')){const h=document.createElement('div');h.className='ll-part';h.innerHTML=`<span class="part-tag"></span><span class="ll-pt"></span><span class="when"></span>`;$('.part-tag',h).textContent=$('.part-tag',el).textContent;$('.ll-pt',h).textContent=$('h3',el).textContent;$('.when',h).textContent=($('.when',el)||{}).textContent||'';list.appendChild(h);}
     if(el.classList.contains('lesson')){const r=document.createElement('div');r.className='ll-row';r.dataset.id=el.id;
-      r.innerHTML=`<span class="ll-num"></span><span class="ll-main"><span class="ll-title"></span><span class="ll-meta"></span><span class="ll-pr"><span class="ll-bar"><i></i></span><span class="ll-state"></span></span></span><span class="ll-btns"><button type="button" class="btn ll-watch">${PLAYSVG}Watch</button><button type="button" class="btn ghost ll-read">Read</button></span>`;
+      r.innerHTML=`<span class="ll-num"></span><span class="ll-main"><span class="ll-title"></span><span class="ll-meta"></span><span class="ll-pr"><span class="ll-bar"><i></i></span><span class="ll-state"></span></span><button type="button" class="ll-mark" data-id="${el.id}"></button></span><span class="ll-btns"><button type="button" class="btn ll-watch">${PLAYSVG}Watch</button><button type="button" class="btn ghost ll-read">Read</button></span>`;
       $('.ll-num',r).textContent=$('.lesson-num',el).textContent;$('.ll-title',r).textContent=$('h4',el).textContent;$('.ll-meta',r).textContent=mins(durOf(el));
+      $('.ll-mark',r).addEventListener('click',()=>__markDone(el.id,!isDone(el.id)));
       $('.ll-watch',r).addEventListener('click',()=>V.openAt(el));$('.ll-read',r).addEventListener('click',()=>go('lesson',{ls:el}));$('.ll-title',r).addEventListener('click',()=>go('lesson',{ls:el}));list.appendChild(r);}
     if(el.classList.contains('quiz-wrap')){const r=document.createElement('div');r.className='ll-row ll-quiz';r.innerHTML=`<span class="ll-num">?</span><span class="ll-main"><span class="ll-title">Week ${w} questions</span><span class="ll-meta">${QUIZ[w].length} multiple-choice questions with explanations</span></span><span class="ll-btns"><button type="button" class="btn">Start</button></span>`;$('button',r).addEventListener('click',()=>go('quiz'));r.querySelector('.ll-title').addEventListener('click',()=>go('quiz'));list.appendChild(r);}
   });
