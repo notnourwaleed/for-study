@@ -591,6 +591,50 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .lesson-nav .ll-mark{margin-top:0;font-size:.95rem;padding:9px 16px}
 
 #player{display:none!important}
+
+.ll-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ll-flags .ll-mark{margin-top:0}
+.ll-star{font:inherit;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.ll-star:hover{border-color:#F59F00;color:var(--ink)}
+.ll-star.on{border-color:#F59F00;color:#F59F00;background:color-mix(in srgb,#F59F00 12%,var(--surface))}
+.ll-row.star{border-color:#F59F00;box-shadow:inset 4px 0 0 #F59F00}
+.lesson-nav .ll-star{font-size:.95rem;padding:9px 16px}
+.ll-filter{align-self:flex-start;font:inherit;font-size:.88rem;font-weight:700;padding:7px 14px;border-radius:999px;border:1px solid #F59F00;background:var(--surface);color:var(--ink);cursor:pointer;margin-bottom:4px}
+.ll-filter[aria-pressed="true"]{background:#F59F00;color:#1A1300}
+.lesson-list.only-star>.ll-row:not(.star),.lesson-list.only-star>.ll-part,.lesson-list.only-star>.ll-quiz{display:none}
+.nx-row.star .nx-k{color:#E67700}
+.nx-unstar{flex:0 0 auto!important;padding-inline:12px!important}
+
+/* your-turn questions, rules, simulator */
+.try{border:2px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:12px;padding:12px 14px;margin:0 0 16px;background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
+.try>.k,.rule>.k,.keyline>.k,.mistakes>.k{display:block;font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:4px}
+.try.waiting{border-style:solid;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.try.solved{border-style:solid;border-color:color-mix(in srgb,var(--good) 55%,var(--line))}
+.try-q{font-weight:600;margin:0 0 8px}
+.try-w .qc-k{display:none}
+.try-w .try-text{font-weight:600}
+.try-f{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.try-f input{width:9em;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.try-r .cd-v{margin:10px 0 4px;font-weight:700}
+.try-r .cd-v.y{color:var(--good)}.try-r .cd-v.n{color:var(--bad)}
+.try-again{margin:0;color:var(--muted);font-size:.9rem}
+.try-r .steps{margin:6px 0 0}
+.try-r .cd-nb{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.qc-box .try-text{font-size:1.1rem;font-weight:600;margin:0 0 12px}
+.qc-box .try-f input{background:#0B1116;color:#E8EEF1;border-color:#2B3B47}
+.rule{border-left:4px solid var(--accent);padding:6px 0 6px 14px;margin:0 0 14px}
+.keyline{background:var(--soft);border-radius:10px;padding:10px 14px;font-weight:600}
+.mistakes{border:1px solid color-mix(in srgb,var(--bad) 40%,var(--line));border-radius:10px;padding:10px 14px;margin:0 0 16px}
+.mistakes>.k{color:var(--bad)}.mistakes ul{margin:4px 0 0;padding-left:20px}
+.hint-sim{color:var(--muted);font-size:.92rem}
+.sim{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;margin-bottom:8px;font-size:.9rem}
+.sim label{display:flex;align-items:center;gap:8px}
+.sim input[type=range]{width:140px;accent-color:var(--accent)}
+.rules-card{margin:0;padding-left:22px;display:grid;gap:10px}
+.rules-card li{line-height:1.45}
+.rules-card b{display:block;color:var(--accent)}
+.vs .hlring{fill:none;stroke:#FFD43B;stroke-width:4;transition:cx .35s ease}
+.vs .slotlab{fill:#0A0F13;font-size:15px;font-weight:800;text-anchor:middle}
 </style>
 
 <header class="top">
@@ -798,12 +842,76 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 
   <article class="lesson" id="w1-mux">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">1.10</span><h4 class="say">FDM and TDM: sharing a link between circuits</h4></div>
-      <p class="say">A circuit on a link is built with either frequency-division multiplexing, FDM, or time-division multiplexing, TDM.</p>
-      <p class="say">With FDM, the link's frequency range is divided into bands, and each connection keeps its own band the whole time, like radio stations each on their own frequency.</p>
-      <p class="say">With TDM, time is divided into frames of fixed length, and each frame is divided into a fixed number of time slots. A connection gets one slot in every frame, always the same slot, for its sole use.</p>
-      <p class="say">The frame rate stays fixed. Say a TDM system runs at 1000 frames per second. With 4 devices, each frame has 4 slots. With 8 devices, each frame has 8 slots, but there are still 1000 frames per second. Adding devices adds slots per frame, not frames.</p>
-      <p class="formula say" data-say="Circuit rate equals frame rate times bits per slot. 8000 frames per second times 8 bits equals 64 kilobits per second.">circuit rate = frame rate × bits per slot · e.g. 8,000 × 8 = <b>64 kbps</b></p>
+      <div class="lesson-head"><span class="lesson-num">1.10</span><h4 class="say">FDM: sharing a link by frequency</h4></div>
+      <p class="say">In circuit switching, one link is shared by several connections at once. There are two ways to divide it up: by frequency, or by time.</p>
+      <p class="say">This lesson covers the first way, frequency-division multiplexing, or FDM.</p>
+      <p class="say">Think of radio. Every station broadcasts all the time, but each one uses its own frequency, so they never get in each other's way.</p>
+      <p class="say">FDM works the same way. The link's frequency range is cut into bands, and each connection keeps its own band for the whole call.</p>
+      <p class="keyline say"><span class="k">In one line</span>FDM: everyone transmits at the same time, each in their own band.</p>
+      <p class="tip say"><span class="k">Remember</span>A band stays reserved even when its owner is silent. Nobody else can use it, so that capacity is wasted.</p>
+    </div>
+    <figure class="fig" data-fig="tdm"><div class="ctrls"><div class="seg" role="group" aria-label="Multiplexing"><button type="button" data-mode="tdm" aria-pressed="false">TDM</button><button type="button" data-mode="fdm" aria-pressed="true">FDM</button></div></div><div class="stage"></div><div class="figinfo"></div><figcaption><span>Four connections sharing one link. Switch to TDM to compare.</span></figcaption></figure>
+  </article>
+
+  <article class="lesson" id="w1-tdm">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">1.11</span><h4 class="say">TDM: frames and slots</h4></div>
+      <p class="say">The second way to share a link is time-division multiplexing, or TDM. Instead of splitting frequencies, the connections take turns.</p>
+      <p class="say">Picture four friends sharing one microphone. Each one speaks for one second, always in the same order, and then it goes round again.</p>
+      <p class="say">One full round is called a frame. Each person's turn inside it is called a slot.</p>
+      <p class="say">A connection owns the same slot in every frame. If slot two is yours, it is yours in every round.</p>
+      <p class="say">Frames repeat at a fixed rate, for example 1000 frames per second.</p>
+      <p class="say">If eight devices share the link instead of four, each frame gets eight slots. There are still 1000 frames per second.</p>
+      <p class="say">So adding devices adds slots to each frame, not more frames. Each turn gets shorter, and everyone gets a smaller share of the link.</p>
+      <div class="try" data-ans="1000" data-unit="frames per second" data-hint="Adding devices changes how many slots are in each frame. Does it change how often frames repeat?" data-steps="The frame rate is fixed by the link.|Four more devices only add four more slots to each frame.|So it is still 1,000 frames per second.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">A TDM link runs at 1000 frames per second with 4 devices. Four more devices join. How many frames per second are there now?</p>
+      </div>
+      <p class="say">Exactly. The frames keep the same rhythm. Only the number of slots inside each frame changes.</p>
+      <p class="hint-sim">Try the simulator: change the number of devices and watch what happens to the frame and to each device's share.</p>
+    </div>
+    <figure class="fig" data-fig="tdmsim"><div class="stage"></div><div class="figinfo"></div><figcaption><span>Drag the sliders. The frame rate never changes.</span></figcaption></figure>
+  </article>
+
+  <article class="lesson" id="w1-tdmguide">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">1.12</span><h4 class="say">Solve it with me: TDM step by step</h4></div>
+      <p class="say">Let's build the method for TDM questions one rule at a time. After each rule, the lesson stops and you try a question.</p>
+      <p class="rule say"><span class="k">Rule 1</span>Each connection gets one slot in every frame. So the number of slots in a frame equals the number of connections.</p>
+      <div class="try" data-ans="4" data-unit="slots" data-hint="One slot for each connection, in every frame." data-steps="Each friend is one connection.|One slot per connection.|So each frame has 4 slots.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">Four friends share one TDM link. How many slots are in each frame?</p>
+      </div>
+      <p class="rule say"><span class="k">Rule 2</span>The link's speed is shared equally between the slots. Your rate is the link rate divided by the number of slots.</p>
+      <p class="say">Keep the units the same. 1.536 Mbps is the same as 1,536 kbps.</p>
+      <div class="try" data-ans="64" data-unit="kbps" data-hint="Divide the link rate by the number of slots. Use 1,536 kbps." data-steps="Link rate = 1.536 Mbps = 1,536 kbps.|Your rate = 1,536 ÷ 24.|= 64 kbps.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">A 1.536 Mbps link is shared by 24 connections. What rate does one connection get, in kbps?</p>
+      </div>
+      <p class="rule say"><span class="k">Rule 3</span>To find how long a file takes, divide the file size by your rate, not by the link rate. You only own one slot.</p>
+      <div class="try" data-ans="10" data-unit="s" data-hint="time = bits ÷ bits per second." data-steps="time = 640,000 bits ÷ 64,000 bps.|= 10 seconds.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">You send a 640,000-bit file at 64,000 bps. How many seconds does it take?</p>
+      </div>
+      <p class="rule say"><span class="k">Rule 4</span>Before data can flow, the circuit has to be set up. Add the setup time to the transmission time.</p>
+      <p class="say">Setup time is usually given in milliseconds. Divide by 1,000 to turn it into seconds before you add.</p>
+      <div class="try" data-ans="10.5" data-unit="s" data-hint="Turn 500 ms into seconds first: 500 ÷ 1,000." data-steps="Setup = 500 ms = 0.5 s.|Total = 0.5 s + 10 s.|= 10.5 s.">
+        <span class="k">Your turn</span>
+        <p class="say try-q">Setup takes 500 ms and sending takes 10 s. What is the total time, in seconds?</p>
+      </div>
+      <p class="say">That is the whole method: count the slots, find your rate, work out the transmission time, then add the setup. Now try a full problem with new numbers, on your own.</p>
+      <div class="try" data-gen="tdm">
+        <span class="k">Your turn: full problem</span>
+        <p class="say try-q">Here is a full problem. Use all four rules.</p>
+      </div>
+      <p class="say">Next comes the lecture's own worked example. You already know every step.</p>
+    </div>
+    <figure class="fig" data-fig="rules"><div class="stage"></div><figcaption><span>The four rules for TDM questions.</span></figcaption></figure>
+  </article>
+
+  <article class="lesson" id="w1-tdmex">
+    <div class="text">
+      <div class="lesson-head"><span class="lesson-num">1.13</span><h4 class="say">TDM: the lecture's worked example</h4></div>
       <div class="worked">
         <span class="k">Worked example from the lecture</span>
         <p class="say">How long does it take to send a 640,000-bit file from Host A to Host B? Every link uses TDM with 24 slots and a bit rate of 1.536 Mbps, and setting up the circuit takes 500 milliseconds.</p>
@@ -813,14 +921,22 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
           <li class="say">Total time = setup + transmission = 0.5 s + 10 s = 10.5 s.</li>
         </ol>
       </div>
-      <p class="tip say"><span class="k">Watch out</span>Setup time is often given in milliseconds. 500 ms is 0.5 seconds. Convert before you add.</p>
+      <p class="say">The lecture also writes the circuit rate another way: frame rate times bits per slot. It gives the same answer.</p>
+      <p class="formula say" data-say="Circuit rate equals frame rate times bits per slot. 8000 frames per second times 8 bits equals 64 kilobits per second, the same 64 kilobits per second as before.">circuit rate = frame rate × bits per slot · e.g. 8,000 × 8 = <b>64 kbps</b></p>
+      <div class="mistakes"><span class="k">Common mistakes</span>
+        <ul>
+          <li class="say">Dividing the file by the link rate, 1.536 Mbps, instead of your slot's rate.</li>
+          <li class="say">Forgetting to add the setup time.</li>
+          <li class="say">Adding 500 milliseconds to 10 seconds as if both were seconds.</li>
+        </ul>
+      </div>
     </div>
     <figure class="fig" data-fig="tdm"><div class="ctrls"><div class="seg" role="group" aria-label="Multiplexing"><button type="button" data-mode="tdm" aria-pressed="true">TDM</button><button type="button" data-mode="fdm" aria-pressed="false">FDM</button></div></div><div class="stage"></div><div class="figinfo">TDM: each colour is one connection. It owns the same slot in every frame.</div><figcaption><span>Four connections sharing one link.</span></figcaption></figure>
   </article>
 
   <article class="lesson" id="w1-packet">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">1.11</span><h4 class="say">Packet switching and store-and-forward</h4></div>
+      <div class="lesson-head"><span class="lesson-num">1.14</span><h4 class="say">Packet switching and store-and-forward</h4></div>
       <p class="say">In a network application, end systems exchange messages. A message can carry control information, like a "Hi", or data, like an email, a JPEG image or an MP3 file. To send a long message, the source breaks it into smaller chunks called packets.</p>
       <p class="say">Between source and destination, each packet travels across links and through packet switches, such as routers. A packet is sent over each link at that link's full transmission rate. So if a packet has L bits and the link rate is R bits per second, transmitting it takes L divided by R seconds.</p>
       <p class="formula say" data-say="Transmission time equals L over R. L is packet length in bits. R is link rate in bits per second.">transmission time = <b>L / R</b> &nbsp;(L in bits, R in bits per second)</p>
@@ -833,7 +949,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 
   <article class="lesson" id="w1-queue">
     <div class="text">
-      <div class="lesson-head"><span class="lesson-num">1.12</span><h4 class="say">Buffers, queuing delay and packet loss</h4></div>
+      <div class="lesson-head"><span class="lesson-num">1.15</span><h4 class="say">Buffers, queuing delay and packet loss</h4></div>
       <p class="say">A buffer is temporary storage inside a switch or router where packets wait before being forwarded. With input buffering, packets wait at the input ports before processing. With output buffering, packets wait at an output port when several incoming packets all need the same outgoing link.</p>
       <p class="say">Output buffers are key to packet switching. If a packet arrives and its outgoing link is busy sending another packet, it waits in the output buffer. So on top of store-and-forward delay, packets suffer queuing delay. It varies and depends on how congested the network is.</p>
       <p class="say">A buffer has limited space. If a packet arrives when the buffer is already full, it has nowhere to go and is dropped. This is packet loss.</p>
@@ -875,7 +991,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
   <article class="lesson nofig" id="w2-metrics">
     <div class="text">
       <div class="lesson-head"><span class="lesson-num">2.1</span><h4 class="say">Recap, and the three performance metrics</h4></div>
-      <p class="say">Lecture 2 opens by repeating Lecture 1's packet switching slides: transmission time L/R, store-and-forward, and output buffers. If any of that feels shaky, go back to Week 1, lessons 1.11 and 1.12.</p>
+      <p class="say">Lecture 2 opens by repeating Lecture 1's packet switching slides: transmission time L/R, store-and-forward, and output buffers. If any of that feels shaky, go back to Week 1, lessons 1.14 and 1.15.</p>
       <p class="say">To judge how well a packet-switched network performs, we use three main metrics.</p>
       <dl class="terms">
         <dt class="say">Delay, or latency</dt><dd class="say">The time a packet takes to travel from source to destination.</dd>
@@ -1394,7 +1510,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 </main>
 
 <footer class="wrap">Built from your Week 1–3 slides for Foundations of Networking. Cisco Packet Tracer material is left out.</footer>
-<script>window.__AUDIO={"lessons":{"w1-net":{"f":"w1-net.mp3","s":[[0,0,27,0.3],[1,0,164,2.94],[2,0,24,15.18],[2,25,74,16.89],[2,75,137,20.28],[2,138,283,24.63],[3,0,26,36.06],[3,27,121,38.18],[3,122,259,45.11],[3,260,389,54.97],[4,0,67,64.9],[4,68,235,69.62],[-1,0,0,83.08]]},"w1-types":{"f":"w1-types.mp3","s":[[0,0,24,0.3],[1,0,146,2.88],[1,147,192,12.61],[2,0,27,16.29],[3,0,77,18.95],[3,78,176,24.35],[4,0,24,31.64],[5,0,117,34.11],[5,118,188,42.37],[6,0,25,48.23],[7,0,103,50.87],[7,104,207,58.0],[8,0,31,66.38],[9,0,14,69.27],[9,15,107,70.81],[9,108,193,76.87],[10,0,23,83.63],[11,0,67,86.08],[11,68,100,90.26],[11,101,178,92.88],[12,0,8,98.66],[12,8,43,100.05],[12,44,106,102.76],[12,107,133,107.39],[12,134,282,109.56],[-1,0,0,120.46]]},"w1-media":{"f":"w1-media.mp3","s":[[0,0,27,0.3],[1,0,72,3.03],[2,0,77,8.4],[2,78,163,14.09],[-1,0,0,20.28]]},"w1-models":{"f":"w1-models.mp3","s":[[0,0,30,0.3],[1,0,51,2.98],[1,52,191,6.48],[2,0,35,16.08],[2,36,90,18.7],[2,91,145,22.56],[2,146,252,26.34],[2,253,309,33.57],[3,0,162,38.05],[4,0,134,52.1],[4,135,296,61.62],[5,0,62,73.09],[5,63,169,77.55],[6,0,48,84.95],[6,49,120,88.19],[6,121,180,92.67],[6,181,232,96.79],[7,0,203,100.71],[7,204,379,114.83],[-1,0,0,127.22]]},"w1-devices":{"f":"w1-devices.mp3","s":[[0,0,15,0.3],[1,0,11,2.45],[2,0,102,4.34],[2,103,132,11.38],[3,0,14,14.2],[4,0,30,16.15],[4,31,126,18.67],[5,0,14,25.92],[6,0,118,28.01],[7,0,12,36.02],[8,0,68,37.85],[9,0,28,43.4],[10,0,120,46.14],[11,0,8,54.16],[12,0,95,55.73],[12,96,188,62.77],[12,189,391,69.13],[13,0,8,83.83],[13,8,61,85.02],[13,62,119,89.29],[-1,0,0,93.83]]},"w1-protocols":{"f":"w1-protocols.mp3","s":[[0,0,30,0.3],[1,0,92,3.03],[1,93,181,9.58],[2,0,65,15.72],[2,66,151,20.26],[2,152,209,25.83],[3,0,49,30.15],[4,0,35,36.34],[5,0,34,41.0],[6,0,58,45.05],[7,0,32,50.98],[8,0,15,53.66],[9,0,36,55.75],[9,37,94,58.44],[10,0,38,63.47],[11,0,96,66.53],[12,0,37,72.76],[13,0,61,76.15],[-1,0,0,80.86]]},"w1-edge":{"f":"w1-edge.mp3","s":[[0,0,16,0.3],[1,0,127,2.45],[1,128,263,11.11],[2,0,158,20.9],[3,0,157,31.8],[3,158,249,42.51],[4,0,61,49.11],[4,62,132,54.13],[4,133,269,58.78],[4,270,329,68.04],[5,0,15,72.51],[5,15,44,74.05],[5,45,73,76.23],[5,74,144,78.51],[5,145,211,83.38],[-1,0,0,88.28]]},"w1-access":{"f":"w1-access.mp3","s":[[0,0,40,0.3],[1,0,155,4.22],[2,0,3,14.5],[3,0,74,16.24],[3,75,279,21.85],[3,280,347,36.6],[4,0,83,41.8],[4,84,152,53.68],[5,0,153,59.01],[5,154,279,69.1],[6,0,23,78.57],[7,0,93,81.74],[7,94,154,88.53],[7,155,280,92.94],[7,281,384,101.09],[8,0,63,109.05],[8,64,121,114.1],[8,122,262,117.47],[8,263,373,127.76],[9,0,35,135.75],[9,36,154,139.04],[10,0,27,153.8],[11,0,174,156.65],[12,0,11,168.89],[12,11,31,170.34],[12,32,62,172.75],[12,63,163,175.68],[-1,0,0,183.27]]},"w1-circuit":{"f":"w1-circuit.mp3","s":[[0,0,38,0.3],[1,0,92,3.35],[1,93,188,9.36],[2,0,152,15.93],[3,0,45,26.12],[3,46,137,29.24],[3,138,174,34.59],[3,175,303,37.09],[4,0,142,45.94],[4,143,323,55.35],[5,0,76,67.54],[5,77,143,72.64],[6,0,63,80.47],[-1,0,0,92.07]]},"w1-mux":{"f":"w1-mux.mp3","s":[[0,0,44,0.3],[1,0,114,5.05],[2,0,163,14.01],[3,0,115,25.67],[3,116,198,34.06],[4,0,27,39.88],[4,28,76,41.99],[4,77,116,46.56],[4,117,200,49.88],[4,201,249,56.28],[5,0,68,60.29],[6,0,71,70.53],[6,72,186,77.1],[7,0,47,89.66],[7,48,96,99.54],[8,0,53,103.37],[9,0,58,112.77],[10,0,9,121.5],[10,9,51,122.73],[10,52,74,125.76],[10,75,98,129.5],[-1,0,0,131.75]]},"w1-packet":{"f":"w1-packet.mp3","s":[[0,0,38,0.3],[1,0,56,3.47],[1,57,163,7.63],[1,164,244,16.04],[2,0,110,21.5],[2,111,181,28.64],[2,182,293,33.42],[3,0,60,42.17],[4,0,56,49.78],[4,57,160,53.53],[5,0,61,60.65],[5,62,101,65.13],[5,102,201,67.84],[5,202,246,74.63],[5,247,329,77.91],[6,0,18,84.52],[6,18,72,86.49],[6,73,120,90.22],[6,121,144,93.87],[-1,0,0,96.4]]},"w1-queue":{"f":"w1-queue.mp3","s":[[0,0,38,0.3],[1,0,98,3.37],[1,99,171,10.3],[1,172,288,15.19],[2,0,43,23.23],[2,44,148,26.15],[2,149,216,33.53],[2,217,271,37.95],[3,0,27,42.4],[3,28,117,44.68],[3,118,138,50.34],[4,0,45,52.45],[4,46,78,56.05],[4,79,158,59.72],[4,159,195,67.27],[5,0,46,70.73],[6,0,52,79.79],[7,0,101,86.25],[8,0,83,98.0],[8,84,145,106.28],[8,146,178,116.11],[9,0,24,118.73],[9,25,86,120.89],[-1,0,0,125.55]]},"w2-metrics":{"f":"w2-metrics.mp3","s":[[0,0,40,0.3],[1,0,127,3.62],[1,128,197,13.05],[2,0,80,19.26],[3,0,17,24.82],[4,0,61,27.03],[5,0,11,31.42],[6,0,61,33.1],[7,0,10,37.73],[8,0,58,39.15],[9,0,179,43.63],[-1,0,0,56.57]]},"w2-delay":{"f":"w2-delay.mp3","s":[[0,0,28,0.3],[1,0,131,3.07],[1,132,170,11.47],[2,0,16,14.61],[3,0,146,16.65],[3,147,163,26.16],[4,0,13,29.36],[5,0,59,31.21],[5,60,129,35.07],[5,130,228,39.79],[5,229,245,47.47],[6,0,18,50.9],[7,0,52,52.96],[7,53,93,56.25],[7,94,209,59.22],[8,0,17,74.02],[9,0,94,76.12],[9,95,140,82.2],[9,141,229,85.38],[10,0,34,99.5],[11,0,22,108.12],[11,22,97,110.02],[11,98,155,114.77],[11,156,225,118.85],[11,226,284,123.78],[11,285,436,127.77],[12,0,122,137.77],[12,123,205,150.01],[13,0,55,155.85],[14,0,71,160.1],[-1,0,0,174.51]]},"w2-loss":{"f":"w2-loss.mp3","s":[[0,0,11,0.3],[1,0,124,1.98],[2,0,40,10.98],[2,41,108,13.75],[2,109,157,18.23],[2,158,206,21.22],[2,207,276,24.61],[3,0,20,30.24],[3,21,95,31.93],[3,96,176,37.13],[3,177,250,42.42],[4,0,46,47.94],[5,0,23,56.22],[5,24,50,59.44],[5,51,86,62.92],[5,87,135,65.97],[5,136,158,70.15],[6,0,46,72.45],[7,0,63,79.4],[8,0,60,87.59],[9,0,90,98.01],[10,0,52,109.47],[10,53,177,112.84],[10,178,234,121.52],[10,235,339,125.81],[-1,0,0,133.14]]},"w2-throughput":{"f":"w2-throughput.mp3","s":[[0,0,37,0.3],[1,0,142,3.11],[1,143,200,12.69],[2,0,90,16.95],[2,91,138,23.03],[3,0,68,26.68],[3,69,162,32.82],[4,0,118,41.22],[4,119,176,48.6],[5,0,38,52.99],[6,0,125,58.13],[6,126,191,69.65],[7,0,259,75.17],[-1,0,0,94.88]]},"w2-models":{"f":"w2-models.mp3","s":[[0,0,28,0.3],[1,0,144,3.11],[1,145,247,14.44],[-1,0,0,21.58]]},"w2-compare":{"f":"w2-compare.mp3","s":[[0,0,41,0.3],[1,0,51,3.69],[1,52,74,7.49],[2,0,19,9.81],[3,0,57,12.0],[4,0,61,16.18],[5,0,10,20.76],[6,0,70,22.5],[7,0,9,27.72],[7,10,40,29.05],[8,0,18,31.77],[9,0,37,33.84],[10,0,49,37.05],[11,0,22,41.02],[12,0,42,43.51],[13,0,51,47.07],[14,0,20,50.95],[15,0,76,53.16],[16,0,59,58.94],[17,0,15,63.16],[18,0,67,65.01],[19,0,57,70.04],[-1,0,0,74.53]]},"w2-units":{"f":"w2-units.mp3","s":[[0,0,37,0.3],[1,0,52,3.56],[1,53,85,7.23],[2,0,9,10.17],[3,0,29,11.98],[3,30,57,14.58],[4,0,26,17.48],[5,0,4,24.53],[6,0,29,26.11],[6,30,77,30.74],[7,0,22,34.49],[8,0,4,39.13],[9,0,43,40.92],[9,44,85,44.74],[10,0,21,48.83],[11,0,187,53.8],[12,0,37,69.64],[13,0,46,72.63],[13,47,98,76.02],[14,0,36,79.79],[14,37,91,82.37],[15,0,112,89.77],[16,0,48,98.38],[17,0,58,102.2],[18,0,36,112.16],[19,0,56,115.05],[20,0,42,120.15],[20,43,73,123.09],[21,0,61,127.27],[21,62,98,131.77],[22,0,99,134.99],[23,0,70,141.94],[-1,0,0,147.8]]},"w2-exercises":{"f":"w2-exercises.mp3","s":[[0,0,39,0.3],[1,0,36,3.99],[1,37,77,6.5],[1,78,173,9.21],[1,174,228,15.27],[2,0,65,19.32],[3,0,79,34.44],[4,0,74,45.98],[5,0,52,63.23],[6,0,48,75.13],[7,0,23,83.36],[8,0,30,88.39],[8,31,117,93.77],[9,0,66,101.34],[10,0,31,113.86],[11,0,43,119.61],[12,0,82,129.33],[13,0,37,145.31],[14,0,37,152.45],[15,0,40,159.61],[16,0,101,169.38],[17,0,20,184.24],[17,21,56,186.08],[18,0,45,191.81],[19,0,68,200.58],[19,69,172,207.98],[20,0,79,215.14],[21,0,36,229.75],[22,0,30,237.24],[23,0,38,241.52],[23,39,86,247.96],[24,0,65,252.01],[25,0,51,268.63],[26,0,34,279.8],[27,0,41,285.41],[28,0,30,293.29],[29,0,61,299.84],[30,0,32,312.72],[30,33,52,318.89],[31,0,45,322.12],[32,0,67,332.29],[33,0,35,346.26],[34,0,37,350.61],[34,38,74,357.29],[34,75,111,364.2],[35,0,29,371.43],[-1,0,0,377.72]]},"w3-osi":{"f":"w3-osi.mp3","s":[[0,0,36,0.3],[1,0,69,3.82],[1,70,162,8.91],[2,0,15,15.33],[3,0,64,17.42],[4,0,15,22.23],[5,0,59,24.11],[6,0,8,28.94],[7,0,79,30.71],[8,0,96,36.02],[9,0,101,43.74],[9,102,212,51.54],[9,213,270,58.93],[10,0,207,63.32],[-1,0,0,81.06]]},"w3-app":{"f":"w3-app.mp3","s":[[0,0,20,0.3],[1,0,39,2.88],[1,40,181,5.54],[2,0,12,15.63],[3,0,16,19.04],[3,17,56,20.81],[4,0,3,24.99],[5,0,16,26.69],[6,0,4,28.69],[7,0,12,30.67],[8,0,4,32.5],[9,0,76,34.05],[10,0,4,39.61],[11,0,50,41.19],[12,0,3,44.9],[13,0,50,46.68],[14,0,6,52.08],[15,0,46,53.52],[16,0,3,57.57],[17,0,48,59.36],[18,0,4,63.66],[19,0,63,65.68],[20,0,14,71.08],[20,14,30,72.76],[20,31,56,74.92],[20,57,106,77.2],[-1,0,0,81.27]]},"w3-pres":{"f":"w3-pres.mp3","s":[[0,0,21,0.3],[1,0,92,2.86],[1,93,243,9.06],[1,244,262,19.75],[2,0,29,21.82],[3,0,35,24.5],[3,36,59,27.06],[4,0,25,29.47],[5,0,111,32.0],[5,112,168,39.55],[5,169,215,45.23],[5,216,275,48.62],[6,0,21,55.44],[7,0,129,57.91],[-1,0,0,69.83]]},"w3-session":{"f":"w3-session.mp3","s":[[0,0,16,0.3],[1,0,103,2.51],[1,104,199,9.87],[2,0,45,16.55],[3,0,7,20.19],[4,0,106,21.74],[5,0,11,29.78],[6,0,63,31.55],[7,0,11,36.28],[8,0,64,38.09],[-1,0,0,42.82]]},"w3-transport":{"f":"w3-transport.mp3","s":[[0,0,31,0.3],[1,0,69,4.07],[1,70,136,9.02],[1,137,163,13.57],[2,0,27,15.89],[3,0,195,18.7],[4,0,12,31.66],[5,0,167,33.41],[6,0,30,44.84],[7,0,85,47.69],[8,0,21,53.83],[9,0,59,56.47],[9,60,169,60.91],[9,170,283,68.19],[9,284,329,75.1],[9,330,372,78.49],[10,0,50,82.39],[10,51,72,86.15],[10,73,100,87.9],[10,101,124,90.82],[10,125,143,92.91],[11,0,3,95.06],[12,0,3,99.05],[13,0,3,102.88],[14,0,3,106.52],[15,0,3,110.44],[16,0,3,114.86],[17,0,17,119.33],[18,0,47,121.82],[18,48,101,125.66],[18,102,190,129.08],[18,191,297,135.31],[-1,0,0,142.79]]},"w3-ports":{"f":"w3-ports.mp3","s":[[0,0,28,0.3],[1,0,44,3.03],[1,45,116,6.35],[1,117,195,11.03],[2,0,161,20.22],[3,0,8,34.31],[4,0,13,43.87],[5,0,15,53.82],[6,0,45,65.6],[6,46,142,68.75],[6,143,236,75.26],[7,0,67,82.47],[7,68,193,86.93],[7,194,356,95.99],[8,0,101,108.02],[8,102,187,116.83],[-1,0,0,122.97]]},"w3-network":{"f":"w3-network.mp3","s":[[0,0,16,0.3],[1,0,143,2.49],[1,144,171,12.03],[2,0,18,14.76],[3,0,32,16.91],[3,33,112,19.42],[4,0,7,25.26],[5,0,26,26.82],[5,27,95,28.97],[6,0,10,35.28],[7,0,117,37.03],[8,0,23,45.47],[9,0,45,47.9],[10,0,88,56.28],[11,0,77,69.54],[11,78,103,75.88],[12,0,135,78.39],[-1,0,0,88.92]]},"w3-datalink":{"f":"w3-datalink.mp3","s":[[0,0,18,0.3],[1,0,124,2.64],[1,125,153,11.5],[2,0,7,14.22],[3,0,56,15.77],[3,57,162,19.62],[4,0,19,27.23],[5,0,104,29.38],[5,105,165,36.8],[5,166,235,40.75],[6,0,15,46.08],[7,0,72,48.06],[8,0,20,53.9],[9,0,34,56.22],[9,35,131,58.78],[9,132,228,66.27],[10,0,19,73.86],[11,0,57,76.26],[11,58,89,81.94],[12,0,58,85.5],[12,59,72,91.49],[13,0,99,94.03],[13,100,193,100.77],[-1,0,0,107.7]]},"w3-physical":{"f":"w3-physical.mp3","s":[[0,0,41,0.3],[1,0,39,3.92],[1,40,187,6.8],[1,188,260,17.02],[2,0,19,22.59],[3,0,95,24.8],[3,96,223,31.14],[3,224,355,40.57],[4,0,13,52.38],[5,0,91,54.36],[5,92,157,60.85],[5,158,177,65.58],[6,0,12,67.84],[7,0,71,69.84],[7,72,236,74.49],[8,0,77,87.39],[8,78,135,94.67],[8,136,219,104.87],[9,0,53,116.4],[-1,0,0,127.53]]},"w3-topo":{"f":"w3-topo.mp3","s":[[0,0,19,0.3],[1,0,72,2.45],[2,0,3,8.12],[3,0,28,9.35],[3,29,59,11.81],[4,0,4,14.79],[5,0,49,16.04],[5,50,74,19.41],[6,0,4,21.88],[7,0,36,23.42],[7,37,69,26.51],[8,0,4,29.49],[9,0,56,31.11],[9,57,112,35.03],[-1,0,0,39.51]]},"w3-encap":{"f":"w3-encap.mp3","s":[[0,0,13,0.3],[1,0,67,2.28],[1,68,170,6.99],[1,171,205,13.84],[2,0,80,16.7],[3,0,81,23.09],[4,0,58,29.25],[5,0,117,33.98],[6,0,117,43.22],[7,0,158,51.79],[8,0,75,62.79],[9,0,113,68.48],[10,0,22,76.09],[10,22,95,78.21],[10,96,128,83.9],[-1,0,0,86.67]]},"w3-tcpip":{"f":"w3-tcpip.mp3","s":[[0,0,16,0.3],[1,0,110,3.03],[1,111,169,11.01],[2,0,11,15.37],[3,0,68,17.23],[3,69,95,22.96],[4,0,9,26.76],[5,0,20,28.37],[5,21,33,30.7],[6,0,8,33.28],[7,0,20,34.98],[7,21,30,37.28],[8,0,14,39.58],[9,0,50,41.6],[9,51,67,46.0],[10,0,16,48.17],[10,16,146,49.77],[10,147,198,58.33],[-1,0,0,61.95]]}}};</script>
+<script>window.__AUDIO={"lessons":{"w1-net":{"f":"w1-net.mp3","s":[[0,0,27,0.3],[1,0,164,2.94],[2,0,24,15.18],[2,25,74,16.89],[2,75,137,20.28],[2,138,283,24.63],[3,0,26,36.06],[3,27,121,38.18],[3,122,259,45.11],[3,260,389,54.97],[4,0,67,64.9],[4,68,235,69.62],[-1,0,0,83.08]]},"w1-types":{"f":"w1-types.mp3","s":[[0,0,24,0.3],[1,0,146,2.88],[1,147,192,12.61],[2,0,27,16.29],[3,0,77,18.95],[3,78,176,24.35],[4,0,24,31.64],[5,0,117,34.11],[5,118,188,42.37],[6,0,25,48.23],[7,0,103,50.87],[7,104,207,58.0],[8,0,31,66.38],[9,0,14,69.27],[9,15,107,70.81],[9,108,193,76.87],[10,0,23,83.63],[11,0,67,86.08],[11,68,100,90.26],[11,101,178,92.88],[12,0,8,98.66],[12,8,43,100.05],[12,44,106,102.76],[12,107,133,107.39],[12,134,282,109.56],[-1,0,0,120.46]]},"w1-media":{"f":"w1-media.mp3","s":[[0,0,27,0.3],[1,0,72,3.03],[2,0,77,8.4],[2,78,163,14.09],[-1,0,0,20.28]]},"w1-models":{"f":"w1-models.mp3","s":[[0,0,30,0.3],[1,0,51,2.98],[1,52,191,6.48],[2,0,35,16.08],[2,36,90,18.7],[2,91,145,22.56],[2,146,252,26.34],[2,253,309,33.57],[3,0,162,38.05],[4,0,134,52.1],[4,135,296,61.62],[5,0,62,73.09],[5,63,169,77.55],[6,0,48,84.95],[6,49,120,88.19],[6,121,180,92.67],[6,181,232,96.79],[7,0,203,100.71],[7,204,379,114.83],[-1,0,0,127.22]]},"w1-devices":{"f":"w1-devices.mp3","s":[[0,0,15,0.3],[1,0,11,2.45],[2,0,102,4.34],[2,103,132,11.38],[3,0,14,14.2],[4,0,30,16.15],[4,31,126,18.67],[5,0,14,25.92],[6,0,118,28.01],[7,0,12,36.02],[8,0,68,37.85],[9,0,28,43.4],[10,0,120,46.14],[11,0,8,54.16],[12,0,95,55.73],[12,96,188,62.77],[12,189,391,69.13],[13,0,8,83.83],[13,8,61,85.02],[13,62,119,89.29],[-1,0,0,93.83]]},"w1-protocols":{"f":"w1-protocols.mp3","s":[[0,0,30,0.3],[1,0,92,3.03],[1,93,181,9.58],[2,0,65,15.72],[2,66,151,20.26],[2,152,209,25.83],[3,0,49,30.15],[4,0,35,36.34],[5,0,34,41.0],[6,0,58,45.05],[7,0,32,50.98],[8,0,15,53.66],[9,0,36,55.75],[9,37,94,58.44],[10,0,38,63.47],[11,0,96,66.53],[12,0,37,72.76],[13,0,61,76.15],[-1,0,0,80.86]]},"w1-edge":{"f":"w1-edge.mp3","s":[[0,0,16,0.3],[1,0,127,2.45],[1,128,263,11.11],[2,0,158,20.9],[3,0,157,31.8],[3,158,249,42.51],[4,0,61,49.11],[4,62,132,54.13],[4,133,269,58.78],[4,270,329,68.04],[5,0,15,72.51],[5,15,44,74.05],[5,45,73,76.23],[5,74,144,78.51],[5,145,211,83.38],[-1,0,0,88.28]]},"w1-access":{"f":"w1-access.mp3","s":[[0,0,40,0.3],[1,0,155,4.22],[2,0,3,14.5],[3,0,74,16.24],[3,75,279,21.85],[3,280,347,36.6],[4,0,83,41.8],[4,84,152,53.68],[5,0,153,59.01],[5,154,279,69.1],[6,0,23,78.57],[7,0,93,81.74],[7,94,154,88.53],[7,155,280,92.94],[7,281,384,101.09],[8,0,63,109.05],[8,64,121,114.1],[8,122,262,117.47],[8,263,373,127.76],[9,0,35,135.75],[9,36,154,139.04],[10,0,27,153.8],[11,0,174,156.65],[12,0,11,168.89],[12,11,31,170.34],[12,32,62,172.75],[12,63,163,175.68],[-1,0,0,183.27]]},"w1-circuit":{"f":"w1-circuit.mp3","s":[[0,0,38,0.3],[1,0,92,3.35],[1,93,188,9.36],[2,0,152,15.93],[3,0,45,26.12],[3,46,137,29.24],[3,138,174,34.59],[3,175,303,37.09],[4,0,142,45.94],[4,143,323,55.35],[5,0,76,67.54],[5,77,143,72.64],[6,0,63,80.47],[-1,0,0,92.07]]},"w1-mux":{"f":"w1-mux.mp3","s":[[0,0,32,0.3],[1,0,72,3.62],[1,73,134,8.42],[2,0,74,13.26],[3,0,15,19.19],[3,16,130,20.87],[4,0,23,28.93],[4,24,128,31.2],[5,0,11,37.87],[5,11,76,39.26],[6,0,8,44.43],[6,8,60,45.63],[6,61,112,49.11],[-1,0,0,53.41]]},"w1-packet":{"f":"w1-packet.mp3","s":[[0,0,38,0.3],[1,0,56,3.47],[1,57,163,7.63],[1,164,244,16.04],[2,0,110,21.5],[2,111,181,28.64],[2,182,293,33.42],[3,0,60,42.17],[4,0,56,49.78],[4,57,160,53.53],[5,0,61,60.65],[5,62,101,65.13],[5,102,201,67.84],[5,202,246,74.63],[5,247,329,77.91],[6,0,18,84.52],[6,18,72,86.49],[6,73,120,90.22],[6,121,144,93.87],[-1,0,0,96.4]]},"w1-queue":{"f":"w1-queue.mp3","s":[[0,0,38,0.3],[1,0,98,3.37],[1,99,171,10.3],[1,172,288,15.19],[2,0,43,23.23],[2,44,148,26.15],[2,149,216,33.53],[2,217,271,37.95],[3,0,27,42.4],[3,28,117,44.68],[3,118,138,50.34],[4,0,45,52.45],[4,46,78,56.05],[4,79,158,59.72],[4,159,195,67.27],[5,0,46,70.73],[6,0,52,79.79],[7,0,101,86.25],[8,0,83,98.0],[8,84,145,106.28],[8,146,178,116.11],[9,0,24,118.73],[9,25,86,120.89],[-1,0,0,125.55]]},"w2-metrics":{"f":"w2-metrics.mp3","s":[[0,0,40,0.3],[1,0,127,3.62],[1,128,197,13.05],[2,0,80,19.56],[3,0,17,25.12],[4,0,61,27.33],[5,0,11,31.72],[6,0,61,33.4],[7,0,10,38.03],[8,0,58,39.45],[9,0,179,43.93],[-1,0,0,56.87]]},"w2-delay":{"f":"w2-delay.mp3","s":[[0,0,28,0.3],[1,0,131,3.07],[1,132,170,11.47],[2,0,16,14.61],[3,0,146,16.65],[3,147,163,26.16],[4,0,13,29.36],[5,0,59,31.21],[5,60,129,35.07],[5,130,228,39.79],[5,229,245,47.47],[6,0,18,50.9],[7,0,52,52.96],[7,53,93,56.25],[7,94,209,59.22],[8,0,17,74.02],[9,0,94,76.12],[9,95,140,82.2],[9,141,229,85.38],[10,0,34,99.5],[11,0,22,108.12],[11,22,97,110.02],[11,98,155,114.77],[11,156,225,118.85],[11,226,284,123.78],[11,285,436,127.77],[12,0,122,137.77],[12,123,205,150.01],[13,0,55,155.85],[14,0,71,160.1],[-1,0,0,174.51]]},"w2-loss":{"f":"w2-loss.mp3","s":[[0,0,11,0.3],[1,0,124,1.98],[2,0,40,10.98],[2,41,108,13.75],[2,109,157,18.23],[2,158,206,21.22],[2,207,276,24.61],[3,0,20,30.24],[3,21,95,31.93],[3,96,176,37.13],[3,177,250,42.42],[4,0,46,47.94],[5,0,23,56.22],[5,24,50,59.44],[5,51,86,62.92],[5,87,135,65.97],[5,136,158,70.15],[6,0,46,72.45],[7,0,63,79.4],[8,0,60,87.59],[9,0,90,98.01],[10,0,52,109.47],[10,53,177,112.84],[10,178,234,121.52],[10,235,339,125.81],[-1,0,0,133.14]]},"w2-throughput":{"f":"w2-throughput.mp3","s":[[0,0,37,0.3],[1,0,142,3.11],[1,143,200,12.69],[2,0,90,16.95],[2,91,138,23.03],[3,0,68,26.68],[3,69,162,32.82],[4,0,118,41.22],[4,119,176,48.6],[5,0,38,52.99],[6,0,125,58.13],[6,126,191,69.65],[7,0,259,75.17],[-1,0,0,94.88]]},"w2-models":{"f":"w2-models.mp3","s":[[0,0,28,0.3],[1,0,144,3.11],[1,145,247,14.44],[-1,0,0,21.58]]},"w2-compare":{"f":"w2-compare.mp3","s":[[0,0,41,0.3],[1,0,51,3.69],[1,52,74,7.49],[2,0,19,9.81],[3,0,57,12.0],[4,0,61,16.18],[5,0,10,20.76],[6,0,70,22.5],[7,0,9,27.72],[7,10,40,29.05],[8,0,18,31.77],[9,0,37,33.84],[10,0,49,37.05],[11,0,22,41.02],[12,0,42,43.51],[13,0,51,47.07],[14,0,20,50.95],[15,0,76,53.16],[16,0,59,58.94],[17,0,15,63.16],[18,0,67,65.01],[19,0,57,70.04],[-1,0,0,74.53]]},"w2-units":{"f":"w2-units.mp3","s":[[0,0,37,0.3],[1,0,52,3.56],[1,53,85,7.23],[2,0,9,10.17],[3,0,29,11.98],[3,30,57,14.58],[4,0,26,17.48],[5,0,4,24.53],[6,0,29,26.11],[6,30,77,30.74],[7,0,22,34.49],[8,0,4,39.13],[9,0,43,40.92],[9,44,85,44.74],[10,0,21,48.83],[11,0,187,53.8],[12,0,37,69.64],[13,0,46,72.63],[13,47,98,76.02],[14,0,36,79.79],[14,37,91,82.37],[15,0,112,89.77],[16,0,48,98.38],[17,0,58,102.2],[18,0,36,112.16],[19,0,56,115.05],[20,0,42,120.15],[20,43,73,123.09],[21,0,61,127.27],[21,62,98,131.77],[22,0,99,134.99],[23,0,70,141.94],[-1,0,0,147.8]]},"w2-exercises":{"f":"w2-exercises.mp3","s":[[0,0,39,0.3],[1,0,36,3.99],[1,37,77,6.5],[1,78,173,9.21],[1,174,228,15.27],[2,0,65,19.32],[3,0,79,34.44],[4,0,74,45.98],[5,0,52,63.23],[6,0,48,75.13],[7,0,23,83.36],[8,0,30,88.39],[8,31,117,93.77],[9,0,66,101.34],[10,0,31,113.86],[11,0,43,119.61],[12,0,82,129.33],[13,0,37,145.31],[14,0,37,152.45],[15,0,40,159.61],[16,0,101,169.38],[17,0,20,184.24],[17,21,56,186.08],[18,0,45,191.81],[19,0,68,200.58],[19,69,172,207.98],[20,0,79,215.14],[21,0,36,229.75],[22,0,30,237.24],[23,0,38,241.52],[23,39,86,247.96],[24,0,65,252.01],[25,0,51,268.63],[26,0,34,279.8],[27,0,41,285.41],[28,0,30,293.29],[29,0,61,299.84],[30,0,32,312.72],[30,33,52,318.89],[31,0,45,322.12],[32,0,67,332.29],[33,0,35,346.26],[34,0,37,350.61],[34,38,74,357.29],[34,75,111,364.2],[35,0,29,371.43],[-1,0,0,377.72]]},"w3-osi":{"f":"w3-osi.mp3","s":[[0,0,36,0.3],[1,0,69,3.82],[1,70,162,8.91],[2,0,15,15.33],[3,0,64,17.42],[4,0,15,22.23],[5,0,59,24.11],[6,0,8,28.94],[7,0,79,30.71],[8,0,96,36.02],[9,0,101,43.74],[9,102,212,51.54],[9,213,270,58.93],[10,0,207,63.32],[-1,0,0,81.06]]},"w3-app":{"f":"w3-app.mp3","s":[[0,0,20,0.3],[1,0,39,2.88],[1,40,181,5.54],[2,0,12,15.63],[3,0,16,19.04],[3,17,56,20.81],[4,0,3,24.99],[5,0,16,26.69],[6,0,4,28.69],[7,0,12,30.67],[8,0,4,32.5],[9,0,76,34.05],[10,0,4,39.61],[11,0,50,41.19],[12,0,3,44.9],[13,0,50,46.68],[14,0,6,52.08],[15,0,46,53.52],[16,0,3,57.57],[17,0,48,59.36],[18,0,4,63.66],[19,0,63,65.68],[20,0,14,71.08],[20,14,30,72.76],[20,31,56,74.92],[20,57,106,77.2],[-1,0,0,81.27]]},"w3-pres":{"f":"w3-pres.mp3","s":[[0,0,21,0.3],[1,0,92,2.86],[1,93,243,9.06],[1,244,262,19.75],[2,0,29,21.82],[3,0,35,24.5],[3,36,59,27.06],[4,0,25,29.47],[5,0,111,32.0],[5,112,168,39.55],[5,169,215,45.23],[5,216,275,48.62],[6,0,21,55.44],[7,0,129,57.91],[-1,0,0,69.83]]},"w3-session":{"f":"w3-session.mp3","s":[[0,0,16,0.3],[1,0,103,2.51],[1,104,199,9.87],[2,0,45,16.55],[3,0,7,20.19],[4,0,106,21.74],[5,0,11,29.78],[6,0,63,31.55],[7,0,11,36.28],[8,0,64,38.09],[-1,0,0,42.82]]},"w3-transport":{"f":"w3-transport.mp3","s":[[0,0,31,0.3],[1,0,69,4.07],[1,70,136,9.02],[1,137,163,13.57],[2,0,27,15.89],[3,0,195,18.7],[4,0,12,31.66],[5,0,167,33.41],[6,0,30,44.84],[7,0,85,47.69],[8,0,21,53.83],[9,0,59,56.47],[9,60,169,60.91],[9,170,283,68.19],[9,284,329,75.1],[9,330,372,78.49],[10,0,50,82.39],[10,51,72,86.15],[10,73,100,87.9],[10,101,124,90.82],[10,125,143,92.91],[11,0,3,95.06],[12,0,3,99.05],[13,0,3,102.88],[14,0,3,106.52],[15,0,3,110.44],[16,0,3,114.86],[17,0,17,119.33],[18,0,47,121.82],[18,48,101,125.66],[18,102,190,129.08],[18,191,297,135.31],[-1,0,0,142.79]]},"w3-ports":{"f":"w3-ports.mp3","s":[[0,0,28,0.3],[1,0,44,3.03],[1,45,116,6.35],[1,117,195,11.03],[2,0,161,20.22],[3,0,8,34.31],[4,0,13,43.87],[5,0,15,53.82],[6,0,45,65.6],[6,46,142,68.75],[6,143,236,75.26],[7,0,67,82.47],[7,68,193,86.93],[7,194,356,95.99],[8,0,101,108.02],[8,102,187,116.83],[-1,0,0,122.97]]},"w3-network":{"f":"w3-network.mp3","s":[[0,0,16,0.3],[1,0,143,2.49],[1,144,171,12.03],[2,0,18,14.76],[3,0,32,16.91],[3,33,112,19.42],[4,0,7,25.26],[5,0,26,26.82],[5,27,95,28.97],[6,0,10,35.28],[7,0,117,37.03],[8,0,23,45.47],[9,0,45,47.9],[10,0,88,56.28],[11,0,77,69.54],[11,78,103,75.88],[12,0,135,78.39],[-1,0,0,88.92]]},"w3-datalink":{"f":"w3-datalink.mp3","s":[[0,0,18,0.3],[1,0,124,2.64],[1,125,153,11.5],[2,0,7,14.22],[3,0,56,15.77],[3,57,162,19.62],[4,0,19,27.23],[5,0,104,29.38],[5,105,165,36.8],[5,166,235,40.75],[6,0,15,46.08],[7,0,72,48.06],[8,0,20,53.9],[9,0,34,56.22],[9,35,131,58.78],[9,132,228,66.27],[10,0,19,73.86],[11,0,57,76.26],[11,58,89,81.94],[12,0,58,85.5],[12,59,72,91.49],[13,0,99,94.03],[13,100,193,100.77],[-1,0,0,107.7]]},"w3-physical":{"f":"w3-physical.mp3","s":[[0,0,41,0.3],[1,0,39,3.92],[1,40,187,6.8],[1,188,260,17.02],[2,0,19,22.59],[3,0,95,24.8],[3,96,223,31.14],[3,224,355,40.57],[4,0,13,52.38],[5,0,91,54.36],[5,92,157,60.85],[5,158,177,65.58],[6,0,12,67.84],[7,0,71,69.84],[7,72,236,74.49],[8,0,77,87.39],[8,78,135,94.67],[8,136,219,104.87],[9,0,53,116.4],[-1,0,0,127.53]]},"w3-topo":{"f":"w3-topo.mp3","s":[[0,0,19,0.3],[1,0,72,2.45],[2,0,3,8.12],[3,0,28,9.35],[3,29,59,11.81],[4,0,4,14.79],[5,0,49,16.04],[5,50,74,19.41],[6,0,4,21.88],[7,0,36,23.42],[7,37,69,26.51],[8,0,4,29.49],[9,0,56,31.11],[9,57,112,35.03],[-1,0,0,39.51]]},"w3-encap":{"f":"w3-encap.mp3","s":[[0,0,13,0.3],[1,0,67,2.28],[1,68,170,6.99],[1,171,205,13.84],[2,0,80,16.7],[3,0,81,23.09],[4,0,58,29.25],[5,0,117,33.98],[6,0,117,43.22],[7,0,158,51.79],[8,0,75,62.79],[9,0,113,68.48],[10,0,22,76.09],[10,22,95,78.21],[10,96,128,83.9],[-1,0,0,86.67]]},"w3-tcpip":{"f":"w3-tcpip.mp3","s":[[0,0,16,0.3],[1,0,110,3.03],[1,111,169,11.01],[2,0,11,15.37],[3,0,68,17.23],[3,69,95,22.96],[4,0,9,26.76],[5,0,20,28.37],[5,21,33,30.7],[6,0,8,33.28],[7,0,20,34.98],[7,21,30,37.28],[8,0,14,39.58],[9,0,50,41.6],[9,51,67,46.0],[10,0,16,48.17],[10,16,146,49.77],[10,147,198,58.33],[-1,0,0,61.95]]},"w1-tdm":{"f":"w1-tdm.mp3","s":[[0,0,21,0.3],[1,0,69,3.05],[1,70,131,8.13],[2,0,44,12.71],[2,45,132,15.74],[3,0,33,21.92],[3,34,80,24.35],[4,0,47,28.08],[4,48,97,31.28],[5,0,66,35.14],[6,0,77,40.62],[6,78,117,45.59],[7,0,60,49.0],[7,61,131,53.22],[8,0,57,58.21],[8,58,81,63.56],[8,82,123,65.61],[9,0,8,68.66],[9,9,41,69.85],[9,42,93,72.29],[-1,0,0,76.4]]},"w1-tdmguide":{"f":"w1-tdmguide.mp3","s":[[0,0,34,0.3],[1,0,60,3.88],[1,61,118,8.15],[2,0,6,12.39],[2,6,51,13.56],[2,52,119,16.53],[3,0,32,21.39],[3,33,66,24.18],[4,0,6,26.84],[4,6,59,27.98],[4,60,118,31.33],[5,0,24,36.01],[5,25,62,37.96],[6,0,46,46.74],[6,47,90,52.93],[7,0,6,57.38],[7,6,93,58.6],[7,94,116,64.94],[8,0,42,67.3],[8,43,73,73.55],[9,0,6,76.28],[9,6,57,77.49],[9,58,102,81.08],[10,0,44,84.53],[10,45,100,87.71],[11,0,42,92.48],[11,43,78,97.07],[12,0,110,100.05],[12,111,164,107.2],[13,0,23,110.97],[13,24,43,112.91],[14,0,44,115.02],[14,45,73,117.99],[-1,0,0,120.39]]},"w1-tdmex":{"f":"w1-tdmex.mp3","s":[[0,0,33,0.3],[1,0,71,3.77],[1,72,186,10.34],[2,0,47,22.9],[2,48,96,32.78],[3,0,53,36.62],[4,0,58,46.02],[5,0,85,54.74],[5,86,111,60.5],[6,0,68,63.08],[7,0,76,76.71],[8,0,33,84.83],[9,0,62,87.75],[-1,0,0,93.16]]}}}</script>
 
 <div class="video" id="video" hidden role="dialog" aria-modal="true" aria-label="Video lesson">
     <div class="v-top"><div class="v-title"><span class="v-wk"></span><span class="v-ls"></span></div><button class="v-x" type="button" aria-label="Close video">×</button></div>
@@ -1470,7 +1586,7 @@ const Narr=(()=>{
   /* ---------- recorded narration ---------- */
   let useAudio=!!AUD;
   const au=new Audio();au.preload='auto';
-  const A={lessons:[],idx:-1,els:[],sents:[],k:-1,playing:false,clip:false,resume:null};
+  const A={lessons:[],idx:-1,els:[],sents:[],k:-1,playing:false,clip:false,resume:null,passed:new Set()};
   function setUI(){const p=useAudio?A.playing:T.playing;icon.setAttribute('d',p?PAUSE:PLAY);btn.setAttribute('aria-label',p?'Pause':'Play');V.setPlaying(p);if(window.__listenUI)__listenUI(p);}
   if(useAudio)voiceWrap.hidden=true;
   function onSent(k){const S=A.sents[k];if(!S||S[0]<0)return;const [ii,s,e,ts]=S,te=A.sents[k+1]?A.sents[k+1][3]:ts+3,el=A.els[ii];
@@ -1479,7 +1595,13 @@ const Narr=(()=>{
   function tick(){
     if(useAudio&&A.idx>=0&&!A.clip&&A.sents.length){const t=au.currentTime,S=A.sents;let k=A.k;
       if(k<0||S[k][3]>t+0.03)k=0;while(k+1<S.length-1&&S[k+1][3]<=t+0.03)k++;
-      if(k!==A.k&&S[k][3]<=t+0.03){A.k=k;onSent(k);}
+      if(A.waiting){if(A.playing){A.passed.add(A.waitII);A.waiting=false;if(window.__tryCancel)__tryCancel();}else{requestAnimationFrame(tick);return;}}
+      if(k!==A.k&&S[k][3]<=t+0.03){
+        if(A.k>=0&&S[A.k]&&S[k][0]!==S[A.k][0]){const ii=S[A.k][0],pe=A.els[ii];
+          if(pe&&pe.classList.contains('try-q')&&!A.passed.has(ii)&&window.__tryPause){au.pause();A.playing=false;A.waiting=true;A.waitII=ii;setUI();try{au.currentTime=S[k][3];}catch(e){}
+            const lsNow=A.lessons[A.idx];__tryPause(pe,()=>{A.passed.add(ii);A.waiting=false;if(A.lessons[A.idx]===lsNow){A.playing=true;setUI();au.play().catch(()=>{A.playing=false;setUI();});}});
+            requestAnimationFrame(tick);return;}}
+        A.k=k;onSent(k);}
       V.tick(t,au.duration?t/au.duration:0);wordTick(t);
       if(A.playing&&performance.now()-lastSave>2000){lastSave=performance.now();store.set('fon-resume',JSON.stringify({id:A.lessons[A.idx].id,t:Math.max(0,t-2)}));if(window.__updResume)__updResume();if(window.__setProg&&au.duration)__setProg(A.lessons[A.idx].id,t/au.duration);}}
     requestAnimationFrame(tick);}
@@ -1494,7 +1616,7 @@ const Narr=(()=>{
     setStatus('Recorded audio could not load here, so your browser voice is used instead.');});
   function loadLesson(i,auto,seekTo){
     A.idx=i;A.clip=false;const ls=A.lessons[i],m=AUD.lessons[ls.id];
-    A.els=$$('.say',ls);A.sents=m?m.s:[];A.k=-1;
+    A.els=$$('.say',ls);A.sents=m?m.s:[];A.k=-1;A.passed=new Set();A.waiting=false;
     au.src=BASE+m.f;au.defaultPlaybackRate=rate;au.playbackRate=rate;
     if(seekTo){au.addEventListener('loadedmetadata',()=>{try{au.currentTime=seekTo;}catch(e){}},{once:true});}
     else playFig(ls);
@@ -1555,7 +1677,7 @@ const Narr=(()=>{
     au.pause();A.clip=true;clearHL();au.src=BASE+`q${w}-${i}-${kind}.mp3`;au.playbackRate=rate;A.playing=true;setUI();setStatus('Reading question '+(i+1));
     au.play().catch(()=>{A.playing=false;setUI();});
   }
-  function seekFrac(f){if(useAudio&&A.idx>=0&&!A.clip&&au.duration){try{au.currentTime=f*au.duration;A.k=-1;}catch(e){}}}
+  function seekFrac(f){if(useAudio&&A.idx>=0&&!A.clip&&au.duration){try{au.currentTime=f*au.duration;A.k=-1;if(A.waiting){A.waiting=false;if(window.__tryCancel)__tryCancel();}}catch(e){}}}
   function setRate(v){rate=+v;rateSel.value=String(v);store.set('fon-rate',String(v));au.playbackRate=rate;T.restart();}
   const toggle=()=>(useAudio?A.playing:T.playing)?pause():play();
   btn.addEventListener('click',toggle);
@@ -1644,8 +1766,10 @@ const V=(()=>{
   vrate.addEventListener('change',()=>Narr.setRate(vrate.value));
   $('.v-prog',root).addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();Narr.seekFrac((e.clientX-r.left)/r.width);});
   addEventListener('keydown',e=>{if(!open)return;if(e.key==='Escape'){if(!modal.hidden)closeModal();else close();}else if(!modal.hidden)return;else if(e.key===' '&&!/BUTTON|SELECT|INPUT/.test(document.activeElement.tagName)){e.preventDefault();Narr.toggle();}else if(e.key==='ArrowRight')Narr.jump(1);else if(e.key==='ArrowLeft')Narr.jump(-1);});
+  function ask(tryEl,cont){const ov=$('.v-check',root),bx=$('.qc-box',ov);ov.hidden=false;setCap('Your turn: answer to carry on',true);bx.innerHTML='';
+    window.__mountTry(bx,tryEl,{inVideo:true,onDone:()=>{ov.hidden=true;if(open)cont();}});}
   function check(ls,cont){const ov=$('.v-check',root),bx=$('.qc-box',ov);ov.hidden=false;setCap('Quick check before the next lesson',true);runCheck(bx,ls.id,QC[ls.id],()=>{ov.hidden=true;if(open)cont();});}
-  return {isOpen,lesson,sentence,tick,setPlaying,finished,openAt,close,check,word};
+  return {isOpen,lesson,sentence,tick,setPlaying,finished,openAt,close,check,word,ask};
 })();
 
 /* ============ picture library for video mode (160×160) ============ */
@@ -2024,6 +2148,44 @@ SCN.mux=(g,ok)=>{const nx=layers(g,ok);const col=['u1','u2','u3','u4'];
     if(n===12){title(l,'Convert before you add');eqn(l,['500 ms ÷ 1000 = 0.5 s'],220);chip(l,400,320,'milliseconds → seconds: divide by 1,000','dark',600);}
   }};};
 
+SCN.fdm2=(g,ok)=>{const nx=layers(g,ok);
+  return {step(n){const {g:l,ok:k}=nx();
+    if(n===0){title(l,'Two ways to share one link','split the frequencies, or take turns in time');cards(l,[{icon:'wifi',title:'FDM',sub:'by frequency'},{icon:'stopwatch',title:'TDM',sub:'by time'}],{w:220,h:230,y:110});}
+    if(n===1){title(l,'Radio: every station has its own frequency','all of them broadcasting at the same time');[['88.1 FM',200],['95.4 FM',400],['104.2 FM',600]].forEach((r,i)=>{nd(l,r[1],170,'tower',null,100,i*200);wave(l,r[1]-80,r[1]+80,290,12,20+i*12,'wv su'+(i+1)+' flow');T(l,r[1],340,r[0],'h3');});}
+    if(n===2){title(l,'FDM: the link is cut into frequency bands','each connection keeps its own band for the whole call');R(l,80,110,640,250,'track',10);[0,1,2,3].forEach(i=>{wave(l,90,690,150+i*60,16,18+i*14,'wv su'+(i+1)+' flow');T(l,700,155+i*60,'band '+(i+1),'sm','start');});}
+    if(n===3){title(l,'FDM in one line');chip(l,400,210,'everyone at the same time, each in their own band','dark',0);[0,1,2,3].forEach(i=>wave(l,140,660,290+i*22,7,16+i*10,'wv su'+(i+1)+' flow'));}
+    if(n===4){title(l,'A silent band is still reserved','nobody else can use it');R(l,80,110,640,250,'track',10);[0,1,2,3].forEach(i=>{if(i===2){Ln(l,90,150+i*60,690,150+i*60,'lk');T(l,700,155+i*60,'silent','sm','start');}else{wave(l,90,690,150+i*60,16,18+i*14,'wv su'+(i+1)+' flow');T(l,700,155+i*60,'band '+(i+1),'sm','start');}});chip(l,400,400,'reserved but unused = wasted capacity','bad',400);}
+  }};};
+SCN.tdm2=(g,ok)=>{const nx=layers(g,ok);const col=['u1','u2','u3','u4'];
+  const people=(l,k,y)=>{const X=[190,330,470,610];X.forEach((x,i)=>{person(l,x,y);T(l,x,y+50,'friend '+(i+1),'sm');});
+    const hl=Ci(l,X[0],y-40,30,'hlring');(async()=>{let i=0;while(k()){hl.setAttribute('cx',X[i%4]);i++;await sleep(900);}})();return X;};
+  const frame=(l,y,n,lab)=>{const w=Math.min(110,440/n),x0=400-w*n/2;for(let i=0;i<n;i++){inn(R(l,x0+i*w+2,y,w-4,56,'slotc '+col[i%4],5),i*60);if(n<=8)T(l,x0+i*w+w/2,y+34,(n<=4?'slot ':'')+(i+1),'slotlab');}
+    Pt(l,`M${x0} ${y-10}v-8h${w*n}v8`,'lk');T(l,400,y-26,lab||'1 frame','t');};
+  return {step(n){const {g:l,ok:k}=nx();
+    if(n===0){title(l,'TDM: take turns in time');frame(l,200,4,'the connections take turns');}
+    if(n===1){title(l,'Four friends, one microphone','each speaks for 1 second, always in the same order');people(l,k,260);}
+    if(n===2){title(l,'One round = a frame · one turn = a slot');people(l,k,200);frame(l,330,4,'1 frame = 4 slots');}
+    if(n===3){title(l,'Your slot is the same in every frame');const w=40;for(let f=0;f<3;f++)for(let i=0;i<4;i++){const r=R(l,130+f*190+i*w,200,w-4,70,'slotc '+col[i],5);if(i!==1)r.classList.add('faded');}chip(l,400,330,'slot 2 is yours, every round','good',200);}
+    if(n===4){title(l,'Frames repeat at a fixed rate');frame(l,180,4);T(l,400,330,'1000 frames per second','h2 acc');}
+    if(n===5){title(l,'8 devices → 8 slots in every frame','still 1000 frames per second');frame(l,180,8,'1 frame = 8 slots');T(l,400,330,'1000 frames per second','h3');}
+    if(n===6){title(l,'More devices → a smaller share each','link: 1,000 kbps');bars(l,[['4 devices',250,'fillA','250 kbps each'],['8 devices',125,'fillA','125 kbps each']],{max:250,y:170,gap:90});}
+    if(n===7){title(l,'Your turn');ic(l,'calc',400,210,130);T(l,400,340,'answer on screen to carry on','sm');}
+    if(n===8){title(l,'Same rhythm, more slots');frame(l,180,8,'1 frame = 8 slots');chip(l,400,330,'still 1000 frames per second','good',200);}
+  }};};
+SCN.guide=(g,ok)=>{const nx=layers(g,ok);const col=['u1','u2','u3','u4'];
+  return {step(n){const {g:l,ok:k}=nx();
+    if(n===0){title(l,'Solve it with me','four rules, one at a time');cards(l,[{icon:'layers',title:'Rule 1',sub:'count slots'},{icon:'calc',title:'Rule 2',sub:'your rate'},{icon:'file',title:'Rule 3',sub:'time to send'},{icon:'stopwatch',title:'Rule 4',sub:'add setup'}],{h:220,y:120});}
+    if(n===1){title(l,'Rule 1: one slot per connection');[0,1,2,3].forEach(i=>{const x=280+i*80;Ln(l,x,148,x,206,'lk');nd(l,x,120,'laptop',null,52,i*120);R(l,x-36,210,72,64,'slotc '+col[i],6);T(l,x,248,'slot '+(i+1),'slotlab');});Pt(l,'M244 290v8h320v-8','lk');T(l,404,318,'1 frame','t');eqn(l,['slots per frame = number of connections'],390);}
+    if(n===2){title(l,'Rule 2: your rate = link rate ÷ slots');R(l,120,170,560,60,'track',8);[0,1,2,3].forEach(i=>{const r=R(l,124+i*140,174,132,52,'slotc '+col[i],6);if(i)r.classList.add('faded');});T(l,190,262,'your share','sm');eqn(l,['your rate = link rate ÷ number of slots'],340);}
+    if(n===3){title(l,'Same units first');eqn(l,['1.536 Mbps = 1,536 kbps','1,536 kbps ÷ 24 = 64 kbps'],210,70);}
+    if(n===4){title(l,'Rule 3: time = file size ÷ YOUR rate');nd(l,170,210,'file','640,000 bits',100);Ln(l,240,210,560,210,'lkA');nd(l,630,210,'server',null,90);eqn(l,['time = bits ÷ your bits per second'],350);chip(l,400,410,'not the link rate: you only own one slot','dark',500);}
+    if(n===5){title(l,'Rule 4: total = setup + transmission');const b1=R(l,120,180,0,60,'segq',6),b2=R(l,172,180,0,60,'fillA',6);tween(600,p=>b1.setAttribute('width',52*p),k);setTimeout(()=>tween(1400,p=>b2.setAttribute('width',500*p),k),700);T(l,146,270,'setup','sm');T(l,420,270,'transmission','sm');eqn(l,['total = setup + transmission'],340);}
+    if(n===6){title(l,'Milliseconds → seconds');eqn(l,['500 ms ÷ 1,000 = 0.5 s','convert first, then add'],220,70);}
+    if(n===7){title(l,'Your turn');ic(l,'calc',400,210,130);T(l,400,340,'answer on screen to carry on','sm');}
+    if(n===8){title(l,'The whole method');eqn(l,['1  slots = connections','2  your rate = link rate ÷ slots','3  time = bits ÷ your rate','4  total = setup (in s) + time'],140,62);}
+    if(n===9){title(l,'Two formulas, same answer');eqn(l,['1,536,000 ÷ 24 = 64,000 bps','8,000 frames/s × 8 bits = 64,000 bps'],210,80);}
+    if(n===10){title(l,'Common mistakes');[['Using the link rate instead of your slot rate'],['Forgetting the setup time'],['Adding ms to s without converting']].forEach((r,i)=>{const c=G(l);R(c,140,120+i*95,520,74,'bx',14);xm(c,190,157+i*95,14);T(c,230,163+i*95,r[0],'t','start');inn(c,i*300);});}
+  }};};
 SCN.packet=(g,ok)=>{const nx=layers(g,ok);let saf=null;
   const safDraw=(l,k)=>{title(l,'Store-and-forward over two links');const S=[120,250],Rr=[400,250],D=[680,250];Ln(l,170,250,350,250);Ln(l,450,250,630,250);nd(l,...S,'laptop','Source',90);Ci(l,...Rr,48,'hub');ic(l,'router',...Rr,70);T(l,400,325,'Router','t');nd(l,...D,'server','Destination',90);
     const clock=T(l,400,110,'t = 0','eq eqa');const bits=[];for(let i=0;i<8;i++){bits.push(R(l,0,0,14,14,'bitc',3));}
@@ -2398,7 +2560,10 @@ const BEATS={
  'w1-edge':[[0,'edge',0],[3,'edge',1],[4,'edge',2],[6,'edge',3],[10,'edge',4],[12,'edge',5],[13,'edge',6],[14,'edge',7]],
  'w1-access':[[0,'access',0],[2,'access',1],[5,'access',2],[6,'access',3],[8,'access',4],[10,'access',5],[12,'access',6],[13,'access',7],[15,'access',8],[16,'access',9],[17,'access',10],[18,'access',11],[19,'access',12],[21,'access',13],[23,'access',14]],
  'w1-circuit':[[0,'circuit',0],[2,'circuit',1],[3,'circuit',2],[4,'circuit',3],[8,'circuit',4],[9,'circuit',5],[10,'circuit',6]],
- 'w1-mux':[[0,'mux',0],[2,'mux',1],[3,'mux',2],[4,'mux',3],[5,'mux',4],[7,'mux',5],[8,'mux',6],[10,'mux',7],[11,'mux',8],[13,'mux',9],[15,'mux',10],[16,'mux',11],[17,'mux',12]],
+ 'w1-mux':[[0,'fdm2',0],[4,'fdm2',1],[6,'fdm2',2],[8,'fdm2',3],[10,'fdm2',4]],
+ 'w1-tdm':[[0,'tdm2',0],[3,'tdm2',1],[5,'tdm2',2],[7,'tdm2',3],[9,'tdm2',4],[10,'tdm2',5],[12,'tdm2',6],[14,'tdm2',7],[17,'tdm2',8]],
+ 'w1-tdmguide':[[0,'guide',0],[3,'guide',1],[6,'guide',7],[8,'guide',2],[11,'guide',3],[13,'guide',7],[15,'guide',4],[18,'guide',7],[20,'guide',5],[23,'guide',6],[25,'guide',7],[27,'guide',8],[29,'guide',7],[31,'guide',8]],
+ 'w1-tdmex':[[0,'mux',8],[3,'mux',9],[5,'mux',10],[6,'mux',11],[7,'guide',9],[9,'mux',7],[10,'guide',10]],
  'w1-packet':[[0,'packet',0],[2,'packet',1],[3,'packet',2],[4,'packet',3],[5,'packet',4],[8,'packet',5],[11,'packet',6],[12,'packet',7],[13,'packet',8],[14,'packet',9],[15,'packet',10]],
  'w1-queue':[[0,'queue',0],[2,'queue',1],[3,'queue',2],[5,'queue',3],[8,'queue',4],[11,'queue',5],[15,'queue',6],[17,'queue',7],[18,'queue',8],[20,'queue',9]],
  'w2-metrics':[[0,'metrics',0],[3,'metrics',1],[4,'metrics',2],[6,'metrics',3],[8,'metrics',4],[10,'metrics',5]],
@@ -2511,7 +2676,7 @@ const GLOSS=[
  ['aes','\\bAES\\b','AES','padlock','Advanced Encryption Standard. A fast, strong encryption algorithm used everywhere, from Wi-Fi to HTTPS.'],
  ['rsa','\\bRSA\\b','RSA','padlock','A public-key encryption algorithm, used to exchange keys and sign data securely.'],
  ['handshake','handshake','Three-way handshake','handshake','How TCP opens a connection: the client sends SYN, the server replies SYN-ACK, the client answers ACK.']
-].map(([id,re,term,icon,def])=>({id,re:new RegExp(re,'i'),term,icon,def}));
+].map(([id,re,term,icon,def])=>({id,re:new RegExp(re,/^[A-Z0-9]{2,5}$/.test(term)?'':'i'),term,icon,def}));
 function findTerms(text){const out=[];GLOSS.forEach(t=>{const m=t.re.exec(text);if(m)out.push({t,pos:m.index});});return out.sort((a,b)=>a.pos-b.pos).map(x=>x.t);}
 
 /* ============ svg helpers ============ */
@@ -2673,10 +2838,31 @@ D.tdm=f=>{const s=mk(f,520,220,'TDM and FDM');let mode='tdm';
   const leg=E('g',{},s);['Connection 1','Connection 2','Connection 3','Connection 4'].forEach((t,k)=>{const x=24+k*124;E('rect',{x,y:186,width:14,height:14,rx:3,class:'u'+(k+1)},leg);txt(leg,x+20,197,t,'s-small','start');});
   const setMode=m=>{mode=m;gT.setAttribute('display',m==='tdm'?'inline':'none');gF.setAttribute('display',m==='fdm'?'inline':'none');
     info(f,m==='tdm'?'<b>TDM:</b> time is cut into frames and each frame into 4 slots. Each connection owns the same slot in every frame, so it gets 1/4 of the link rate.':"<b>FDM:</b> the link's frequency range is split into 4 bands. Each connection owns one band and uses it all the time, like radio stations.");};
-  seg(f,m=>{setMode(m);f._play&&f._play();});setMode('tdm');
+  seg(f,m=>{setMode(m);f._play&&f._play();});{const pb=f.querySelector('.seg button[aria-pressed="true"]');setMode(pb?pb.dataset.mode:'tdm');}
   return {async play(ok){await tween(7000,p=>{const t=p*7000;strip.setAttribute('transform',`translate(${-((t/1500*120)%120)},0)`);waves.forEach((w,k)=>w.setAttribute('transform',`translate(${-((t/900*per[k])%per[k])},0)`));},ok);}};
 };
 
+D.tdmsim=f=>{const st=f.querySelector('.stage');
+  st.innerHTML=`<div class="sim"><label>Devices sharing the link <b class="sim-n"></b><input type="range" min="2" max="12" value="4" class="sim-dev" aria-label="Number of devices"></label>
+   <label>Link rate <select class="sim-rate"><option value="1536">1.536 Mbps</option><option value="2048">2.048 Mbps</option><option value="1000">1 Mbps</option></select></label></div>`;
+  const s=E('svg',{viewBox:'0 0 520 230',role:'img','aria-label':'TDM frame simulator'});st.appendChild(s);
+  const cols=['u1','u2','u3','u4'];
+  const draw=()=>{const n=+$('.sim-dev',f).value,R=+$('.sim-rate',f).value;$('.sim-n',f).textContent=n;s.innerHTML='';
+    txt(s,260,22,'3 frames on the link (the frame rate never changes)','s-small');
+    for(let fr=0;fr<3;fr++){const x0=20+fr*160,w=150/n;E('rect',{x:x0,y:36,width:150,height:56,rx:4,class:'s-soft'},s);
+      for(let k=0;k<n;k++){const r=E('rect',{x:x0+k*w+1,y:40,width:Math.max(1,w-2),height:48,rx:2,class:cols[k%4]},s);if(k!==0)r.setAttribute('opacity','.35');}
+      txt(s,x0+75,108,'frame '+(fr+1),'s-small');}
+    txt(s,260,130,`${n} slots per frame · your slot (bright) is the first one in every frame`,'s-small');
+    const per=R/n;E('rect',{x:20,y:150,width:480,height:22,rx:4,class:'s-soft'},s);E('rect',{x:20,y:150,width:480/n,height:22,rx:4,class:'u1'},s);
+    txt(s,20,192,`Your share: ${(+per.toFixed(2)).toLocaleString('en-US')} kbps = ${R.toLocaleString('en-US')} kbps ÷ ${n}`,'s-bold','start');
+    txt(s,20,214,'More devices → more slots → a smaller share for everyone.','s-small','start');
+    info(f,`<b>${n} devices:</b> ${n} slots in every frame. Each device gets ${R.toLocaleString('en-US')} ÷ ${n} = <b>${(+per.toFixed(2)).toLocaleString('en-US')} kbps</b>. The frame rate does not change.`);};
+  $('.sim-dev',f).addEventListener('input',draw);$('.sim-rate',f).addEventListener('change',draw);draw();return {};};
+D.rules=f=>{f.querySelector('.stage').innerHTML=`<ol class="rules-card">
+  <li><b>Slots</b>slots per frame = number of connections</li>
+  <li><b>Your rate</b>link rate ÷ number of slots <i>(same units!)</i></li>
+  <li><b>Transmission time</b>file size ÷ <u>your</u> rate</li>
+  <li><b>Total</b>setup (ms ÷ 1,000 → s) + transmission time</li></ol>`;return {};};
 D.saf=f=>{const s=mk(f,560,230,'Store-and-forward transmission');const Sx=70,Rx=280,Dx=490,Y=118;
   ln(s,Sx+45,Y,Rx-30,Y);ln(s,Rx+30,Y,Dx-45,Y);
   box(s,Sx,Y,90,60,'','s-node');txt(s,Sx,Y+48,'Source','s-bold');
@@ -3005,7 +3191,7 @@ const WEAK=(()=>{let w={};try{w=JSON.parse(store.get('fon-weak')||'{}')||{};}cat
 function addWeak(it){WEAK[it.id]={...it,ts:Date.now()};store.set('fon-weak',JSON.stringify(WEAK));}
 function clearWeak(id){if(WEAK[id]){delete WEAK[id];store.set('fon-weak',JSON.stringify(WEAK));}}
 /* which lesson each quiz question comes from */
-const QL={1:['w1-types','w1-devices','w1-devices','w1-protocols','w1-models','w1-access','w1-access','w1-circuit','w1-mux','w1-packet','w1-queue','w1-queue','w2-compare'],
+const QL={1:['w1-types','w1-devices','w1-devices','w1-protocols','w1-models','w1-access','w1-access','w1-circuit','w1-tdmguide','w1-packet','w1-queue','w1-queue','w2-compare'],
  2:['w2-delay','w2-delay','w2-delay','w2-delay','w2-delay','w2-throughput','w2-throughput','w2-loss','w2-loss','w2-exercises','w2-exercises','w2-exercises','w2-exercises','w2-exercises'],
  3:['w3-pres','w3-app','w3-session','w3-transport','w3-transport','w3-ports','w3-ports','w3-ports','w3-network','w3-network','w3-datalink','w3-datalink','w3-encap','w3-encap','w3-physical','w3-topo','w3-tcpip','w3-physical','w3-datalink']};
 
@@ -3020,7 +3206,9 @@ const QC={
 'w1-edge':[['End systems are also called:',['Hosts','Routers','Links','Switches'],'They host, meaning run, applications.'],['The access network connects an end system to:',['Its first (edge) router','Another end system directly','A satellite','The OSI model'],'Access network = the link to the first router.']],
 'w1-access':[['In DSL, the box at the central office is the:',['DSLAM','ONT','OLT','Splitter'],'DSL modem at home, DSLAM at the central office.'],['In a PON, the device in your home is the:',['ONT','OLT','DSLAM','Splitter'],'ONT at home, OLT at the central office.']],
 'w1-circuit':[['In circuit switching, resources are:',['Reserved for the whole session','Shared packet by packet','Used only when busy','Chosen at each hop'],'A circuit is reserved end to end for the whole call.'],['A 2 Mbps link with 4 circuits gives each connection:',['500 kbps','2 Mbps','8 Mbps','250 kbps'],'2 Mbps ÷ 4 = 500 kbps.']],
-'w1-mux':[['In TDM, a connection gets:',['The same slot in every frame','Its own frequency band','The whole link all the time','A random slot'],'TDM shares time; FDM shares frequency.'],['A 1.536 Mbps TDM link has 24 slots. One slot\'s rate is:',['64 kbps','24 kbps','1.536 Mbps','36.9 Mbps'],'1,536,000 ÷ 24 = 64,000 bps.']],
+'w1-mux':[['In FDM, each connection gets:',['Its own frequency band, all the time','The same slot in every frame','The whole link, taking turns','A different band each second'],'FDM splits frequency: everyone transmits at once, each in their own band.'],['In FDM, a band whose owner is silent is:',['Still reserved, so its capacity is wasted','Given to another user','Removed from the link','Shared out between the others'],'Circuit switching reserves resources even when they are not used.']],
+'w1-tdm':[['In TDM, a connection gets:',['The same slot in every frame','Its own frequency band','The whole link all the time','A random slot'],'TDM shares time; FDM shares frequency.'],['4 more devices join a TDM link running at 1000 frames per second. Frames per second now?',['1000','2000','250','8000'],'Adding devices adds slots to each frame, not more frames.']],
+'w1-tdmex':[['A 1.536 Mbps TDM link has 24 slots. One slot\'s rate is:',['64 kbps','24 kbps','1.536 Mbps','36.9 Mbps'],'1,536,000 ÷ 24 = 64,000 bps.'],['Setup takes 250 ms and transmission takes 4 s. The total is:',['4.25 s','254 s','4.025 s','250.4 s'],'250 ms = 0.25 s, and 0.25 + 4 = 4.25 s.']],
 'w1-packet':[['A 10,000-bit packet on a 1 Mbps link takes:',['10 ms','1 ms','100 ms','10 s'],'10,000 ÷ 1,000,000 = 0.01 s = 10 ms.'],['Store-and-forward means a switch:',['Receives the whole packet before sending it on','Sends each bit straight away','Reserves a circuit','Drops large packets'],'That is why each link adds one L/R.']],
 'w1-queue':[['A packet is lost when:',['It arrives and the buffer is already full','The link is idle','It is very small','The circuit is set up'],'No room in the buffer means the packet is dropped.'],['Queuing delay depends mainly on:',['How congested the network is','The cable colour','The port number','The OSI layer'],'Busy links mean longer queues.']],
 'w2-metrics':[['Throughput measures:',['Data actually delivered per second','Maximum capacity','Time per packet','Percentage lost'],'Capacity is bandwidth; actual delivery rate is throughput.'],['Delay (latency) is:',['The time from source to destination','The number of hops','Bits per second','Packets dropped'],'Latency is a time.']],
@@ -3068,7 +3256,7 @@ const GEN={
    return {q:`A ${nf(B)}-byte packet crosses ${n} links in a row at ${Rs.join(', ')} Mbps, using store-and-forward. Ignore all other delays. How long until the destination has the whole packet?`,unit:'ms',ans:tot,steps:[`L = ${nf(B)} × 8 = ${nf(L)} bits (the same on every link)`,...Rs.map((r,i)=>`link ${i+1}: ${nf(L)} ÷ ${nf(r*1e6)} = ${nf(ts[i])} ms`),`total = ${ts.map(nf).join(' + ')} = ${nf(tot)} ms`]};}},
  wait:{name:'Queuing behind another packet',ls:'w2-exercises',make(){const A=pick([2000,4000,6000,8000,10000,12000]),Bb=pick([1000,2000,4000]),R=pick([1,2,4,5,8,10]),L=A*8,t=L/(R*1e6)*1000;
    return {q:`Packet A (${nf(A)} bytes) has just started transmitting on a ${R} Mbps link. Packet B (${nf(Bb)} bytes) is waiting behind it. How long does B wait before it can start?`,unit:'ms',ans:t,steps:['B must wait for all of A to be transmitted.',`L(A) = ${nf(A)} × 8 = ${nf(L)} bits`,`wait = ${nf(L)} ÷ ${nf(R*1e6)} = ${nf(t)} ms (B's own size does not matter here)`]};}},
- tdm:{name:'TDM: total time with setup',ls:'w1-mux',make(){const R=pick([1.536,2.048,2.56,3.2,4.8,6.4]),N=pick([8,16,24,32]),F=pick([400000,640000,800000,1000000,1200000,1600000,2000000]),S=pick([100,200,250,400,500]),sl=R*1e6/N,tr=F/sl,tot=S/1000+tr;
+ tdm:{name:'TDM: total time with setup',ls:'w1-tdmguide',make(){const R=pick([1.536,2.048,2.56,3.2,4.8,6.4]),N=pick([8,16,24,32]),F=pick([400000,640000,800000,1000000,1200000,1600000,2000000]),S=pick([100,200,250,400,500]),sl=R*1e6/N,tr=F/sl,tot=S/1000+tr;
    return {q:`A TDM link runs at ${R} Mbps with ${N} slots per frame. A user sends a file of ${nf(F)} bits. Setting up the circuit takes ${S} ms. What is the total time?`,unit:'s',ans:tot,steps:[`slot rate = ${nf(R*1e6)} ÷ ${N} = ${nf(sl)} bps`,`transmission = ${nf(F)} ÷ ${nf(sl)} = ${nf(tr)} s`,`setup = ${S} ms = ${nf(S/1000)} s`,`total = ${nf(S/1000)} + ${nf(tr)} = ${nf(tot)} s`]};}},
  fdm:{name:'FDM: users and unused capacity',ls:'w2-exercises',make(){if(Math.random()<0.5){const per=pick([1,2,3,4,5]),n=pick([8,10,12,16,20]),T=per*n;return {q:`An FDM link has ${T} Mbps of bandwidth and gives each user a dedicated ${per} Mbps band. What is the maximum number of users?`,unit:'users',ans:n,steps:[`max users = ${T} ÷ ${per} = ${n}`]};}
    const C=pick([8,10,12,16,20,24]),per=pick([1,2,3,4,5]),T=C*per,A=C-pick([1,2,3,4,5]);return {q:`A ${T} Mbps link uses FDM for exactly ${C} circuits. Only ${A} users are transmitting. How much capacity is unused?`,unit:'Mbps',ans:(C-A)*per,steps:[`per circuit = ${T} ÷ ${C} = ${per} Mbps`,`unused circuits = ${C} − ${A} = ${C-A}`,`unused = ${C-A} × ${per} = ${(C-A)*per} Mbps (idle circuits still reserve their band)`]};}},
@@ -3198,7 +3386,8 @@ function fillNav(){const w=$('#week'+VIEW.w),L=$$('.lesson',w),nav=$('.lesson-na
   if(VIEW.name==='lesson'){const i=L.indexOf(VIEW.ls);
     if(i>0)btn('← '+$('.lesson-num',L[i-1]).textContent+' '+$('h4',L[i-1]).textContent,'btn ghost',()=>go('lesson',{ls:L[i-1]}));
     btn(PLAYSVG+'Watch this lesson','btn',()=>V.openAt(VIEW.ls));
-    {const id=VIEW.ls.id,b=document.createElement('button');b.type='button';b.className='btn ghost ll-mark';b.dataset.id=id;b.addEventListener('click',()=>__markDone(id,!isDone(id)));nav.appendChild(b);updProgUI();}
+    {const id=VIEW.ls.id,b=document.createElement('button');b.type='button';b.className='btn ghost ll-mark';b.dataset.id=id;b.addEventListener('click',()=>__markDone(id,!isDone(id)));nav.appendChild(b);
+     const s=document.createElement('button');s.type='button';s.className='btn ghost ll-star';s.dataset.id=id;s.addEventListener('click',()=>__toggleStar(id));nav.appendChild(s);updProgUI();updStarUI();}
     if(i<L.length-1)btn($('.lesson-num',L[i+1]).textContent+' '+$('h4',L[i+1]).textContent+' →','btn',()=>go('lesson',{ls:L[i+1]}));
     else btn('Week '+VIEW.w+' questions →','btn',()=>go('quiz'));}}
 window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromNarr:true});};
@@ -3206,6 +3395,12 @@ window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromN
 const PROG=(()=>{let p={};try{p=JSON.parse(store.get('fon-progress')||'{}')||{};}catch(e){}return p;})();
 const isDone=id=>(PROG[id]||0)>=0.92;
 window.__setProg=(id,f)=>{f=Math.min(1,f);if(f<=(PROG[id]||0))return;const was=isDone(id);PROG[id]=f>=0.92?1:Math.round(f*100)/100;store.set('fon-progress',JSON.stringify(PROG));updProgUI(was!==isDone(id));};
+const STAR=(()=>{try{return JSON.parse(store.get('fon-star')||'{}')||{};}catch(e){return{};}})();
+const isStar=id=>!!STAR[id];
+function updStarUI(){$$('.ll-star[data-id]').forEach(b=>{const s=isStar(b.dataset.id);b.classList.toggle('on',s);b.setAttribute('aria-pressed',String(s));b.innerHTML=s?'<span aria-hidden="true">★</span> Important':'<span aria-hidden="true">☆</span> Mark important';});
+  $$('.ll-row[data-id]').forEach(r=>r.classList.toggle('star',isStar(r.dataset.id)));
+  $$('.lesson-list').forEach(l=>{const n=$$('.ll-row.star',l).length,f=$('.ll-filter',l);if(f){f.hidden=!n&&!l.classList.contains('only-star');$('span',f).textContent=n;}if(!n)l.classList.remove('only-star');if(f)f.setAttribute('aria-pressed',String(l.classList.contains('only-star')));});}
+window.__toggleStar=id=>{if(STAR[id])delete STAR[id];else STAR[id]=Date.now();store.set('fon-star',JSON.stringify(STAR));updStarUI();if(VIEW.name==='home')renderNext();};
 window.__markDone=(id,on)=>{if(on)PROG[id]=1;else delete PROG[id];store.set('fon-progress',JSON.stringify(PROG));updProgUI(true);if(VIEW.name==='lesson'||VIEW.name==='quiz')fillNav();if(VIEW.name==='home')renderNext();};
 function updProgUI(){$$('.ll-mark[data-id]').forEach(b=>{const d=isDone(b.dataset.id);b.classList.toggle('on',d);b.setAttribute('aria-pressed',String(d));b.innerHTML=d?'<span aria-hidden="true">✓</span> Watched <span class="ll-undo">· undo</span>':'<span aria-hidden="true">○</span> Mark as watched';});$$('.ll-row[data-id]').forEach(r=>{const f=PROG[r.dataset.id]||0,done=f>=0.92;r.classList.toggle('done',done);
     $('.ll-bar i',r).style.width=(f*100).toFixed(0)+'%';$('.ll-pr',r).hidden=f<=0.02;$('.ll-state',r).textContent=done?'✓ Watched':f>0.02?`${Math.round(f*100)}% watched`:'';});
@@ -3220,20 +3415,26 @@ $$('.week').forEach(sec=>{const w=+sec.dataset.w,list=document.createElement('di
   [...sec.children].forEach(el=>{
     if(el.classList.contains('part')){const h=document.createElement('div');h.className='ll-part';h.innerHTML=`<span class="part-tag"></span><span class="ll-pt"></span><span class="when"></span>`;$('.part-tag',h).textContent=$('.part-tag',el).textContent;$('.ll-pt',h).textContent=$('h3',el).textContent;$('.when',h).textContent=($('.when',el)||{}).textContent||'';list.appendChild(h);}
     if(el.classList.contains('lesson')){const r=document.createElement('div');r.className='ll-row';r.dataset.id=el.id;
-      r.innerHTML=`<span class="ll-num"></span><span class="ll-main"><span class="ll-title"></span><span class="ll-meta"></span><span class="ll-pr"><span class="ll-bar"><i></i></span><span class="ll-state"></span></span><button type="button" class="ll-mark" data-id="${el.id}"></button></span><span class="ll-btns"><button type="button" class="btn ll-watch">${PLAYSVG}Watch</button><button type="button" class="btn ghost ll-read">Read</button></span>`;
+      r.innerHTML=`<span class="ll-num"></span><span class="ll-main"><span class="ll-title"></span><span class="ll-meta"></span><span class="ll-pr"><span class="ll-bar"><i></i></span><span class="ll-state"></span></span><span class="ll-flags"><button type="button" class="ll-mark" data-id="${el.id}"></button><button type="button" class="ll-star" data-id="${el.id}"></button></span></span><span class="ll-btns"><button type="button" class="btn ll-watch">${PLAYSVG}Watch</button><button type="button" class="btn ghost ll-read">Read</button></span>`;
       $('.ll-num',r).textContent=$('.lesson-num',el).textContent;$('.ll-title',r).textContent=$('h4',el).textContent;$('.ll-meta',r).textContent=mins(durOf(el));
-      $('.ll-mark',r).addEventListener('click',()=>__markDone(el.id,!isDone(el.id)));
+      $('.ll-mark',r).addEventListener('click',()=>__markDone(el.id,!isDone(el.id)));$('.ll-star',r).addEventListener('click',()=>__toggleStar(el.id));
       $('.ll-watch',r).addEventListener('click',()=>V.openAt(el));$('.ll-read',r).addEventListener('click',()=>go('lesson',{ls:el}));$('.ll-title',r).addEventListener('click',()=>go('lesson',{ls:el}));list.appendChild(r);}
     if(el.classList.contains('quiz-wrap')){const r=document.createElement('div');r.className='ll-row ll-quiz';r.innerHTML=`<span class="ll-num">?</span><span class="ll-main"><span class="ll-title">Week ${w} questions</span><span class="ll-meta">${QUIZ[w].length} multiple-choice questions with explanations</span></span><span class="ll-btns"><button type="button" class="btn">Start</button></span>`;$('button',r).addEventListener('click',()=>go('quiz'));r.querySelector('.ll-title').addEventListener('click',()=>go('quiz'));list.appendChild(r);}
   });
+  {const f=document.createElement('button');f.type='button';f.className='ll-filter';f.hidden=true;f.innerHTML='★ Show only important (<span>0</span>)';f.addEventListener('click',()=>{list.classList.toggle('only-star');f.setAttribute('aria-pressed',String(list.classList.contains('only-star')));});list.prepend(f);}
   $('.week-head',sec).after(list);const nav=document.createElement('nav');nav.className='lesson-nav';nav.setAttribute('aria-label','Lesson navigation');sec.appendChild(nav);});
 /* home: next steps + weak spots, practice cards */
 function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.lesson');
   const nextLs=all.find(l=>!isDone(l.id));const items=Object.values(WEAK).sort((a,b)=>b.ts-a.ts);
-  if(!nextLs&&!items.length){box.hidden=true;return;}box.hidden=false;
+  const stars=all.filter(l=>isStar(l.id)).sort((a,b)=>STAR[b.id]-STAR[a.id]);
+  if(!nextLs&&!items.length&&!stars.length){box.hidden=true;return;}box.hidden=false;
   const h=document.createElement('h3');h.textContent='Your next steps';box.appendChild(h);
   if(nextLs){const r=document.createElement('div');r.className='nx-row';const f=PROG[nextLs.id]||0;r.innerHTML=`<span class="nx-k">${f>0.02?'Continue':'Up next'}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>`;
     $('.nx-t',r).textContent=$('.lesson-num',nextLs).textContent+' '+$('h4',nextLs).textContent+(f>0.02?` · ${Math.round(f*100)}% watched`:'');const [bw,br]=$$('button',r);bw.addEventListener('click',()=>{go('week',{w:+nextLs.closest('.week').dataset.w});V.openAt(nextLs);});br.addEventListener('click',()=>go('lesson',{ls:nextLs}));box.appendChild(r);}
+  if(stars.length){const k=document.createElement('p');k.className='nx-sub';k.textContent=`★ Marked important: ${stars.length} lesson${stars.length>1?'s':''} to check again.`;box.appendChild(k);
+    stars.forEach(ls=>{const r=document.createElement('div');r.className='nx-row star';r.innerHTML=`<span class="nx-k">★ Week ${ls.closest('.week').dataset.w}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button><button type="button" class="btn ghost nx-unstar" title="Remove from important" aria-label="Remove from important">✕</button></span>`;
+      $('.nx-t',r).textContent=$('.lesson-num',ls).textContent+' '+$('h4',ls).textContent;const [bw,br,bx]=$$('button',r);
+      bw.addEventListener('click',()=>{go('week',{w:+ls.closest('.week').dataset.w});V.openAt(ls);});br.addEventListener('click',()=>go('lesson',{ls}));bx.addEventListener('click',()=>__toggleStar(ls.id));box.appendChild(r);});}
   if(items.length){const k=document.createElement('p');k.className='nx-sub';k.textContent=`To review: ${items.length} question${items.length>1?'s':''} you got wrong. They disappear once you get them right.`;box.appendChild(k);
     items.slice(0,6).forEach(it=>{const ls=document.getElementById(it.ls);const r=document.createElement('div');r.className='nx-row weak';r.innerHTML=`<span class="nx-k"></span><span class="nx-t"></span><span class="ll-btns"></span>`;$('.nx-k',r).textContent=it.kind;$('.nx-t',r).textContent=it.text;
       const bs=$('.ll-btns',r);if(it.tool){const b=document.createElement('button');b.type='button';b.className='btn';b.textContent='Practise again';b.addEventListener('click',()=>{go(it.tool);if(it.topic&&window.__calc)__calc.setTopic(it.topic);});bs.appendChild(b);}
@@ -3241,6 +3442,38 @@ function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.
 (()=>{const box=$('#home-tools');[['calc','Calculation drills','Unlimited L/R, delay, TDM, FDM, loss and throughput problems','calc'],['trace','Network tracing','Follow a request hop by hop: which addresses change?','route'],['keys','Keyword practice','Write what each term means, then reveal and compare. Or the other way round','layers'],['cheat','Cheat sheet','Every formula, port and layer on one page','book']].forEach(([v,t,d,icn])=>{
   const c=document.createElement('button');c.type='button';c.className='tool-card';c.innerHTML=`<svg class="ic" viewBox="0 0 160 160" aria-hidden="true">${IC[icn]}</svg><span class="tc-t"></span><span class="tc-d"></span>`;$('.tc-t',c).textContent=t;$('.tc-d',c).textContent=d;c.addEventListener('click',()=>go(v));box.appendChild(c);});})();
 window.__calc=initCalc();initTrace();
+/* ---------- "Your turn" questions inside lessons ---------- */
+(function(){const num=v=>parseFloat(String(v).replace(/,/g,'').trim());
+  function specOf(t){if(t.dataset.gen&&GEN[t.dataset.gen]){if(!t._gen)t._gen=GEN[t.dataset.gen].make();const g=t._gen;return {q:g.q,ans:g.ans,unit:g.unit,hint:'Use the four rules in order: your rate, transmission time, convert the setup time, then add.',steps:g.steps,gen:true};}
+    return {q:t.querySelector('.try-q').textContent,ans:num(t.dataset.ans),unit:t.dataset.unit||'',hint:t.dataset.hint||'',steps:(t.dataset.steps||'').split('|').filter(Boolean)};}
+  window.__mountTry=(box,t,o)=>{o=o||{};const sp=specOf(t);let tries=0,done=false;
+    box.innerHTML=`<p class="qc-k">${o.inVideo?'Your turn':'Try it'}</p>${o.inVideo||sp.gen?'<p class="try-text"></p>':''}<form class="cd-f try-f"><input inputmode="decimal" autocomplete="off" placeholder="your answer" aria-label="Your answer"><span class="cd-u"></span><button class="btn" type="submit">Check</button><button class="btn ghost try-show" type="button">Show me</button></form><div class="try-r" aria-live="polite"></div>`;
+    const tt=box.querySelector('.try-text');if(tt)tt.textContent=sp.q;box.querySelector('.cd-u').textContent=sp.unit;
+    const inp=box.querySelector('input'),res=box.querySelector('.try-r');
+    const fin=(good)=>{done=true;t.classList.add('solved');res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol>`;
+      res.querySelector('.cd-v').textContent=good?`Correct: ${nf(sp.ans)} ${sp.unit}`:`The answer is ${nf(sp.ans)} ${sp.unit}. Here's how:`;
+      sp.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;res.querySelector('.steps').appendChild(li);});
+      const nb=document.createElement('div');nb.className='cd-nb';
+      if(o.onDone){const c=document.createElement('button');c.type='button';c.className='btn';c.innerHTML=PLAYSVG+'Continue the lesson';c.addEventListener('click',()=>{const f=o.onDone;o.onDone=null;f();});nb.appendChild(c);setTimeout(()=>c.focus(),50);}
+      if(sp.gen){const n=document.createElement('button');n.type='button';n.className='btn ghost';n.textContent='Another problem';n.addEventListener('click',()=>{t._gen=null;window.__mountTry(box,t,o);});nb.appendChild(n);}
+      if(nb.children.length)res.appendChild(nb);};
+    box.querySelector('form').addEventListener('submit',e=>{e.preventDefault();if(done)return;const v=num(inp.value);if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
+      const good=Math.abs(v-sp.ans)<=Math.max(Math.abs(sp.ans)*0.01,1e-6);tries++;
+      if(good)return fin(true);
+      if(tries===1&&sp.hint){res.innerHTML='<p class="cd-v n">Not quite. Hint: <span></span></p><p class="try-again">Try again, or tap "Show me".</p>';res.querySelector('span').textContent=sp.hint;inp.select();return;}
+      fin(false);});
+    box.querySelector('.try-show').addEventListener('click',()=>{if(!done)fin(false);});
+    if(o.inVideo)setTimeout(()=>inp.focus({preventScroll:true}),60);
+    return {sp};};
+  $$('.try').forEach(t=>{const w=document.createElement('div');w.className='try-w';t.appendChild(w);window.__mountTry(w,t,{});});
+  window.__tryCancel=()=>{const ov=$('#video .v-check');if(ov)ov.hidden=true;$$('.try.waiting').forEach(t=>t.classList.remove('waiting'));};
+  window.__tryPause=(qEl,cont)=>{const t=qEl.closest('.try');
+    if(V.isOpen()){V.ask(t,cont);return;}
+    const w=t.querySelector('.try-w');t.classList.add('waiting');t.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
+    if(t.classList.contains('solved')){t._gen=null;}
+    window.__mountTry(w,t,{onDone:()=>{t.classList.remove('waiting');cont();}});
+    const inp=w.querySelector('input');setTimeout(()=>inp&&inp.focus({preventScroll:true}),400);};
+})();
 $$('[data-home]').forEach(b=>b.addEventListener('click',()=>go('home')));
 /* keyword practice: write, reveal, self-check (never auto-marked) */
 window.__keys=(function(){
@@ -3283,7 +3516,7 @@ window.__keys=(function(){
 (function(){const list=()=>[...$$('.fig .stage>svg'),$('#tr-svg')].filter(Boolean);
   list().forEach(s=>{const vb=(s.getAttribute('viewBox')||'').split(/[ ,]+/).map(Number);if(vb.length===4&&vb[2]/vb[3]>1.3){s.classList.add('wide');
     const host=s.parentElement;if(!host.nextElementSibling||!host.nextElementSibling.classList.contains('swipe')){const h=document.createElement('p');h.className='swipe';h.textContent='Swipe sideways to see the whole diagram';host.after(h);}}});})();
-updProgUI();
+updProgUI();updStarUI();
 $('#brand').addEventListener('click',()=>go('home'));
 $$('.tab').forEach(t=>t.addEventListener('click',()=>go('week',{w:+t.dataset.w})));
 /* route from the link */
