@@ -2034,8 +2034,8 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 </section>
 
 <section class="tool wrap" id="tool-units" aria-labelledby="un-h">
-  <header class="week-head"><p class="wk-label">Practice</p><h2 id="un-h">Units practice</h2><p>In the exam a number without the right unit loses marks. Convert units, pick the right unit for an answer, and catch the unit mistakes students make. When you calculate, you choose the unit yourself.</p></header>
-  <div class="cd-bar"><label for="un-mode">Type <select id="un-mode"><option value="all">Mixed</option><option value="conv">Convert</option><option value="full">Answer with a unit</option><option value="which">Which unit?</option><option value="oops">Spot the mistake</option></select></label><button type="button" class="btn ghost" id="un-new">New question</button><span id="un-score" class="mono"></span></div>
+  <header class="week-head"><p class="wk-label">Practice</p><h2 id="un-h">Units practice</h2><p>In the exam a number without the right unit loses marks. Convert units, pick the right unit for an answer, and catch the unit mistakes students make. When you calculate, you choose the unit yourself. Pick the weeks you have covered so far (Week 3 has no calculations).</p></header>
+  <div class="cd-bar"><label for="un-week">Weeks <select id="un-week"><option value="1">Week 1</option><option value="2">Week 2</option><option value="12">Weeks 1 and 2</option></select></label><label for="un-mode">Type <select id="un-mode"><option value="all">Mixed</option><option value="conv">Convert</option><option value="full">Answer with a unit</option><option value="which">Which unit?</option><option value="oops">Spot the mistake</option></select></label><button type="button" class="btn ghost" id="un-new">New question</button><span id="un-score" class="mono"></span></div>
   <div class="q cd-card" id="un-box"></div>
   <details class="un-rules"><summary>The unit rules</summary><ul>
     <li><b>Bytes → bits:</b> × 8. <b>Bits → bytes:</b> ÷ 8. Capital <b>B</b> is bytes, small <b>b</b> is bits.</li>
@@ -4190,7 +4190,10 @@ function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.
   const c=document.createElement('button');c.type='button';c.className='tool-card';c.innerHTML=`<svg class="ic" viewBox="0 0 160 160" aria-hidden="true">${IC[icn]}</svg><span class="tc-t"></span><span class="tc-d"></span>`;$('.tc-t',c).textContent=t;$('.tc-d',c).textContent=d;c.addEventListener('click',()=>go(v));box.appendChild(c);});})();
 window.__calc=initCalc();initTrace();
 /* ---------- units practice ---------- */
-function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),score=$('#un-score');let tot=0,ok=0;
+function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),wsel=$('#un-week'),score=$('#un-score');let tot=0,ok=0;
+  {const saved=store.get('fon-unweek');const seen2=$$('#week2 .lesson').some(l=>(PROG[l.id]||0)>0.05);wsel.value=saved||(seen2?'12':'1');}
+  const okW=w=>!w||wsel.value==='12'||String(w)===wsel.value;const ok2=()=>wsel.value!=='1';
+  const pw=a=>pick(a.filter(x=>okW(x.w)));
   const U={s:['time',1],ms:['time',1e-3],'μs':['time',1e-6],bits:['size',1],bytes:['size',8],bps:['rate',1],kbps:['rate',1e3],Mbps:['rate',1e6],Gbps:['rate',1e9],m:['dist',1],km:['dist',1e3],'packets/s':['pps',1]};
   const KIND={time:'a time, so it needs s, ms or μs',size:'a size, so it needs bits or bytes',rate:'a rate, so it needs bps, kbps, Mbps or Gbps',pps:'a count per second, so it needs packets/s'};
   const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
@@ -4199,47 +4202,47 @@ function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),score=$('#un-score
   const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
   /* 1. convert */
   const CONV=[
-    ()=>{const v=pick([1500,1000,500,12000,64,2500,8000]);return {q:`${fmt(v)} bytes = ? bits`,ans:v*8,unit:'bits',why:[`Bytes → bits: multiply by 8.`,`${fmt(v)} × 8 = ${fmt(v*8)} bits`]};},
-    ()=>{const v=pick([8000,96000,12000,4000,640000,16]);return {q:`${fmt(v)} bits = ? bytes`,ans:v/8,unit:'bytes',why:[`Bits → bytes: divide by 8.`,`${fmt(v)} ÷ 8 = ${fmt(v/8)} bytes`]};},
-    ()=>{const v=pick([1,2,5,10,1.5,100,6]);return {q:`${fmt(v)} Mbps = ? bps`,ans:v*1e6,unit:'bps',why:[`M means 1,000,000.`,`${fmt(v)} × 1,000,000 = ${fmt(v*1e6)} bps`]};},
-    ()=>{const v=pick([64,128,250,512,56]);return {q:`${fmt(v)} kbps = ? bps`,ans:v*1e3,unit:'bps',why:[`k means 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} bps`]};},
-    ()=>{const v=pick([1,10,2.5]);return {q:`${fmt(v)} Gbps = ? Mbps`,ans:v*1e3,unit:'Mbps',why:[`1 Gbps = 1,000 Mbps.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} Mbps`]};},
-    ()=>{const v=pick([250000,1536000,2000000,500000]);return {q:`${fmt(v)} bps = ? Mbps`,ans:v/1e6,unit:'Mbps',why:[`Divide by 1,000,000 to go from bps to Mbps.`,`${fmt(v)} ÷ 1,000,000 = ${fmt(v/1e6)} Mbps`]};},
-    ()=>{const v=pick([0.4,0.012,1.5,0.005,2]);return {q:`${fmt(v)} s = ? ms`,ans:v*1e3,unit:'ms',why:[`s → ms: multiply by 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} ms`]};},
-    ()=>{const v=pick([500,12,250,8,40]);return {q:`${fmt(v)} ms = ? s`,ans:v/1e3,unit:'s',why:[`ms → s: divide by 1,000.`,`${fmt(v)} ÷ 1,000 = ${fmt(v/1e3)} s`]};},
-    ()=>{const v=pick([2000,100,4800,250]);return {q:`${fmt(v)} km = ? m`,ans:v*1e3,unit:'m',why:[`km → m: multiply by 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} m`]};},
-    ()=>{const v=pick([1500,1000]),r=pick([1,2,10]);const bits=v*8;return {q:`${fmt(v)} bytes on a ${r} Mbps link. Write the size in bits and the rate in bps (type the rate).`,ans:r*1e6,unit:'bps',why:[`Size: ${fmt(v)} × 8 = ${fmt(bits)} bits.`,`Rate: ${r} × 1,000,000 = ${fmt(r*1e6)} bps.`]};},
+    Object.assign(()=>{const v=pick([1500,1000,500,12000,64,2500,8000]);return {q:`${fmt(v)} bytes = ? bits`,ans:v*8,unit:'bits',why:[`Bytes → bits: multiply by 8.`,`${fmt(v)} × 8 = ${fmt(v*8)} bits`]};},{w:2}),
+    Object.assign(()=>{const v=pick([8000,96000,12000,4000,640000,16]);return {q:`${fmt(v)} bits = ? bytes`,ans:v/8,unit:'bytes',why:[`Bits → bytes: divide by 8.`,`${fmt(v)} ÷ 8 = ${fmt(v/8)} bytes`]};},{w:2}),
+    Object.assign(()=>{const v=pick([1,2,5,10,1.5,100,6]);return {q:`${fmt(v)} Mbps = ? bps`,ans:v*1e6,unit:'bps',why:[`M means 1,000,000.`,`${fmt(v)} × 1,000,000 = ${fmt(v*1e6)} bps`]};},{w:1}),
+    Object.assign(()=>{const v=pick([64,128,250,512,56]);return {q:`${fmt(v)} kbps = ? bps`,ans:v*1e3,unit:'bps',why:[`k means 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} bps`]};},{w:1}),
+    Object.assign(()=>{const v=pick([1,10,2.5]);return {q:`${fmt(v)} Gbps = ? Mbps`,ans:v*1e3,unit:'Mbps',why:[`1 Gbps = 1,000 Mbps.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} Mbps`]};},{w:1}),
+    Object.assign(()=>{const v=pick([250000,1536000,2000000,500000]);return {q:`${fmt(v)} bps = ? Mbps`,ans:v/1e6,unit:'Mbps',why:[`Divide by 1,000,000 to go from bps to Mbps.`,`${fmt(v)} ÷ 1,000,000 = ${fmt(v/1e6)} Mbps`]};},{w:1}),
+    Object.assign(()=>{const v=pick([0.4,0.012,1.5,0.005,2]);return {q:`${fmt(v)} s = ? ms`,ans:v*1e3,unit:'ms',why:[`s → ms: multiply by 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} ms`]};},{w:1}),
+    Object.assign(()=>{const v=pick([500,12,250,8,40]);return {q:`${fmt(v)} ms = ? s`,ans:v/1e3,unit:'s',why:[`ms → s: divide by 1,000.`,`${fmt(v)} ÷ 1,000 = ${fmt(v/1e3)} s`]};},{w:1}),
+    Object.assign(()=>{const v=pick([2000,100,4800,250]);return {q:`${fmt(v)} km = ? m`,ans:v*1e3,unit:'m',why:[`km → m: multiply by 1,000.`,`${fmt(v)} × 1,000 = ${fmt(v*1e3)} m`]};},{w:2}),
+    Object.assign(()=>{const v=pick([1500,1000]),r=pick([1,2,10]);const bits=v*8;return {q:`${fmt(v)} bytes on a ${r} Mbps link. Write the size in bits and the rate in bps (type the rate).`,ans:r*1e6,unit:'bps',why:[`Size: ${fmt(v)} × 8 = ${fmt(bits)} bits.`,`Rate: ${r} × 1,000,000 = ${fmt(r*1e6)} bps.`]};},{w:2}),
   ];
   /* 2. full problem: number + unit */
   const FULL=[
-    ()=>{const L=pick([500,1000,1250,1500,2000]),R=pick([1,2,4,5,10]);const t=L*8/(R*1e6);return {q:`A ${fmt(L)}-byte packet is sent on a ${R} Mbps link. What is the transmission delay?`,base:t,kind:'time',work:[`L = ${fmt(L)} × 8 = ${fmt(L*8)} bits`,`R = ${R} Mbps = ${fmt(R*1e6)} bps`,`L ÷ R = ${fmt(L*8)} ÷ ${fmt(R*1e6)} = ${fmt(t)} s`]};},
-    ()=>{const d=pick([100,500,1000,2000,4000,5000]),t=d*1e3/2e8;return {q:`Two routers are ${fmt(d)} km apart. The signal travels at 2 × 10⁸ m/s. What is the propagation delay?`,base:t,kind:'time',work:[`d = ${fmt(d)} × 1,000 = ${fmt(d*1e3)} m`,`d ÷ s = ${fmt(d*1e3)} ÷ 200,000,000 = ${fmt(t)} s`]};},
-    ()=>{const R=pick([1,2,10,1.536]),n=pick([4,8,10,24]);const r=R*1e6/n;return {q:`A ${R} Mbps link is shared by ${n} circuits. What rate does each circuit get?`,base:r,kind:'rate',work:[`R = ${R} Mbps = ${fmt(R*1e6)} bps`,`${fmt(R*1e6)} ÷ ${n} = ${fmt(r)} bps`]};},
-    ()=>{const R=pick([1,2,4]),n=pick([4,8,10]),F=ri(2,9)*100000,S=pick([100,200,250,500]);const sr=R*1e6/n,t=S/1e3+F/sr;return {q:`TDM: ${fmt(F)} bits are sent on a ${R} Mbps link with ${n} slots per frame. Setup takes ${S} ms. How long until the file arrives?`,base:t,kind:'time',work:[`slot rate = ${fmt(R*1e6)} ÷ ${n} = ${fmt(sr)} bps`,`send time = ${fmt(F)} ÷ ${fmt(sr)} = ${fmt(F/sr)} s`,`setup = ${S} ms = ${fmt(S/1e3)} s (match the units before adding)`,`total = ${fmt(S/1e3)} + ${fmt(F/sr)} = ${fmt(t)} s`]};},
-    ()=>{const R=pick([1,10,100]),L=pick([1000,1250,500]);const pps=R*1e6/(L*8);return {q:`A ${R} Mbps link sends ${fmt(L)}-byte packets back to back. How many packets does it send each second?`,base:pps,kind:'pps',work:[`L = ${fmt(L)} × 8 = ${fmt(L*8)} bits`,`R ÷ L = ${fmt(R*1e6)} ÷ ${fmt(L*8)} = ${fmt(pps)} packets/s`]};},
-    ()=>{const F=pick([1,2,4,5]),a=pick([2,5,10]),b=pick([1,4,8]);const m=Math.min(a,b),t=F*8e6/(m*1e6);return {q:`A ${F} MB file (1 MB = 1,000,000 bytes) goes over two links: ${a} Mbps then ${b} Mbps. How long does the transfer take?`,base:t,kind:'time',work:[`bottleneck = min(${a}, ${b}) = ${m} Mbps = ${fmt(m*1e6)} bps`,`file = ${F} × 1,000,000 × 8 = ${fmt(F*8e6)} bits`,`time = ${fmt(F*8e6)} ÷ ${fmt(m*1e6)} = ${fmt(t)} s`]};},
-    ()=>{const N=pick([5,10,20,50]),r=pick([100,200,250,500]);const tot=N*r*1e3;return {q:`${N} users each send at ${r} kbps into the same router. What is the total arrival rate?`,base:tot,kind:'rate',work:[`N × r = ${N} × ${r} kbps = ${fmt(N*r)} kbps`,`= ${fmt(tot)} bps`]};},
+    Object.assign(()=>{const L=pick([500,1000,1250,1500,2000]),R=pick([1,2,4,5,10]);const t=L*8/(R*1e6);if(!ok2())return {q:`A ${fmt(L*8)}-bit packet is sent on a ${R} Mbps link. What is the transmission delay?`,base:t,kind:'time',work:[`L = ${fmt(L*8)} bits`,`R = ${R} Mbps = ${fmt(R*1e6)} bps`,`L ÷ R = ${fmt(L*8)} ÷ ${fmt(R*1e6)} = ${fmt(t)} s`]};return {q:`A ${fmt(L)}-byte packet is sent on a ${R} Mbps link. What is the transmission delay?`,base:t,kind:'time',work:[`L = ${fmt(L)} × 8 = ${fmt(L*8)} bits`,`R = ${R} Mbps = ${fmt(R*1e6)} bps`,`L ÷ R = ${fmt(L*8)} ÷ ${fmt(R*1e6)} = ${fmt(t)} s`]};},{w:0}),
+    Object.assign(()=>{const d=pick([100,500,1000,2000,4000,5000]),t=d*1e3/2e8;return {q:`Two routers are ${fmt(d)} km apart. The signal travels at 2 × 10⁸ m/s. What is the propagation delay?`,base:t,kind:'time',work:[`d = ${fmt(d)} × 1,000 = ${fmt(d*1e3)} m`,`d ÷ s = ${fmt(d*1e3)} ÷ 200,000,000 = ${fmt(t)} s`]};},{w:2}),
+    Object.assign(()=>{const R=pick([1,2,10,1.536]),n=pick([4,8,10,24]);const r=R*1e6/n;return {q:`A ${R} Mbps link is shared by ${n} circuits. What rate does each circuit get?`,base:r,kind:'rate',work:[`R = ${R} Mbps = ${fmt(R*1e6)} bps`,`${fmt(R*1e6)} ÷ ${n} = ${fmt(r)} bps`]};},{w:1}),
+    Object.assign(()=>{const R=pick([1,2,4]),n=pick([4,8,10]),F=ri(2,9)*100000,S=pick([100,200,250,500]);const sr=R*1e6/n,t=S/1e3+F/sr;return {q:`TDM: ${fmt(F)} bits are sent on a ${R} Mbps link with ${n} slots per frame. Setup takes ${S} ms. How long until the file arrives?`,base:t,kind:'time',work:[`slot rate = ${fmt(R*1e6)} ÷ ${n} = ${fmt(sr)} bps`,`send time = ${fmt(F)} ÷ ${fmt(sr)} = ${fmt(F/sr)} s`,`setup = ${S} ms = ${fmt(S/1e3)} s (match the units before adding)`,`total = ${fmt(S/1e3)} + ${fmt(F/sr)} = ${fmt(t)} s`]};},{w:1}),
+    Object.assign(()=>{const R=pick([1,10,100]),L=pick([1000,1250,500]);const pps=R*1e6/(L*8);return {q:`A ${R} Mbps link sends ${fmt(L)}-byte packets back to back. How many packets does it send each second?`,base:pps,kind:'pps',work:[`L = ${fmt(L)} × 8 = ${fmt(L*8)} bits`,`R ÷ L = ${fmt(R*1e6)} ÷ ${fmt(L*8)} = ${fmt(pps)} packets/s`]};},{w:2}),
+    Object.assign(()=>{const F=pick([1,2,4,5]),a=pick([2,5,10]),b=pick([1,4,8]);const m=Math.min(a,b),t=F*8e6/(m*1e6);return {q:`A ${F} MB file (1 MB = 1,000,000 bytes) goes over two links: ${a} Mbps then ${b} Mbps. How long does the transfer take?`,base:t,kind:'time',work:[`bottleneck = min(${a}, ${b}) = ${m} Mbps = ${fmt(m*1e6)} bps`,`file = ${F} × 1,000,000 × 8 = ${fmt(F*8e6)} bits`,`time = ${fmt(F*8e6)} ÷ ${fmt(m*1e6)} = ${fmt(t)} s`]};},{w:2}),
+    Object.assign(()=>{const N=pick([5,10,20,50]),r=pick([100,200,250,500]);const tot=N*r*1e3;return {q:`${N} users each send at ${r} kbps into the same router. What is the total arrival rate?`,base:tot,kind:'rate',work:[`N × r = ${N} × ${r} kbps = ${fmt(N*r)} kbps`,`= ${fmt(tot)} bps`]};},{w:1}),
   ];
   /* 3. which unit */
   const WHICH=[
-    ['Transmission delay = L ÷ R, with L in bits and R in bps. The answer is in…','seconds',['bits','bps','packets']],
-    ['Propagation delay = distance ÷ speed, with metres and m/s. The answer is in…','seconds',['metres','m/s','bps']],
-    ['Slot rate = link rate ÷ number of slots. The answer is in…','bps (a rate)',['seconds','bits','slots']],
-    ['Throughput of a path = the smallest link rate on it. The answer is in…','bps (a rate)',['seconds','bits','packets']],
-    ['Packets per second = R ÷ L, with R in bps and L in bits. The answer is in…','packets per second',['seconds','bps','bits']],
-    ['Arrival rate = number of senders × rate per sender. The answer is in…','bps (a rate)',['senders','seconds','bits']],
-    ['Nodal delay = queuing + processing + propagation + transmission. The answer is in…','seconds (all four are times)',['bps','bits','packets']],
-    ['A file size given as 12,000 B. The B means…','bytes',['bits','bauds','blocks']],
-    ['A link speed written as 6 Mbps. The b means…','bits',['bytes','blocks','bauds']],
-    ['A delay written as 30 ms. The ms means…','milliseconds (thousandths of a second)',['megaseconds','microseconds','minutes']],
+    ['Transmission delay = L ÷ R, with L in bits and R in bps. The answer is in…','seconds',['bits','bps','packets'],1],
+    ['Propagation delay = distance ÷ speed, with metres and m/s. The answer is in…','seconds',['metres','m/s','bps'],2],
+    ['Slot rate = link rate ÷ number of slots. The answer is in…','bps (a rate)',['seconds','bits','slots'],1],
+    ['Throughput of a path = the smallest link rate on it. The answer is in…','bps (a rate)',['seconds','bits','packets'],2],
+    ['Packets per second = R ÷ L, with R in bps and L in bits. The answer is in…','packets per second',['seconds','bps','bits'],2],
+    ['Arrival rate = number of senders × rate per sender. The answer is in…','bps (a rate)',['senders','seconds','bits'],1],
+    ['Nodal delay = queuing + processing + propagation + transmission. The answer is in…','seconds (all four are times)',['bps','bits','packets'],2],
+    ['A file size given as 12,000 B. The B means…','bytes',['bits','bauds','blocks'],2],
+    ['A link speed written as 6 Mbps. The b means…','bits',['bytes','blocks','bauds'],1],
+    ['A delay written as 30 ms. The ms means…','milliseconds (thousandths of a second)',['megaseconds','microseconds','minutes'],1],
   ];
   /* 4. spot the mistake */
   const OOPS=[
-    ()=>{const L=pick([1500,1000,500]),R=pick([1,2]);const wrong=L/(R*1e6),right=L*8/(R*1e6);return {q:`A student wrote: ${fmt(L)} bytes ÷ ${R} Mbps = ${fmt(wrong*1e3)} ms. What went wrong?`,a:`They didn't change bytes to bits. It should be ${fmt(L*8)} bits, so ${fmt(right*1e3)} ms.`,w:[`They should have divided by 8, not multiplied.`,`ms should be s, so the answer is ${fmt(wrong*1e3)} s.`,`Nothing, it is correct.`]};},
-    ()=>{const b=pick([12000,8000,24000]),R=pick([2,4]);const wrong=b/R,right=b/(R*1e6);return {q:`A student wrote: ${fmt(b)} bits ÷ ${R} Mbps = ${fmt(wrong)} s. What went wrong?`,a:`They used ${R} instead of ${fmt(R*1e6)} bps. The answer is ${fmt(right*1e3)} ms.`,w:[`They forgot to change bits to bytes.`,`Nothing, a ${fmt(b)}-bit packet takes that long.`,`They should have multiplied, not divided.`]};},
-    ()=>{const s=pick([200,250,500]),x=pick([0.5,1.2,2]);return {q:`A student wrote: setup ${s} ms + sending ${x} s = ${fmt(s+x)} s. What went wrong?`,a:`They added ms to s. ${s} ms = ${fmt(s/1e3)} s, so the total is ${fmt(s/1e3+x)} s.`,w:[`Setup time should be multiplied, not added.`,`Nothing, it is correct.`,`They should have changed s to bits.`]};},
-    ()=>{const d=pick([2000,1000,4000]);const wrong=d/2e8,right=d*1e3/2e8;return {q:`A student wrote: ${fmt(d)} km ÷ (2 × 10⁸ m/s) = ${fmt(wrong)} s. What went wrong?`,a:`They didn't change km to m. ${fmt(d)} km = ${fmt(d*1e3)} m, so the delay is ${fmt(right*1e3)} ms.`,w:[`The speed should be in km/h.`,`They should multiply distance by speed.`,`Nothing, it is correct.`]};},
-    ()=>{const v=pick([3,5,8]);return {q:`A student's final answer is just "${v}". The question asked for a transmission delay. What is missing?`,a:`The unit. "${v}" could be ${v} s or ${v} ms, which are very different. Write ${v} ms (or s).`,w:[`Nothing, the number is enough.`,`The formula name.`,`The word "delay".`]};},
+    Object.assign(()=>{const L=pick([1500,1000,500]),R=pick([1,2]);const wrong=L/(R*1e6),right=L*8/(R*1e6);return {q:`A student wrote: ${fmt(L)} bytes ÷ ${R} Mbps = ${fmt(wrong*1e3)} ms. What went wrong?`,a:`They didn't change bytes to bits. It should be ${fmt(L*8)} bits, so ${fmt(right*1e3)} ms.`,w:[`They should have divided by 8, not multiplied.`,`ms should be s, so the answer is ${fmt(wrong*1e3)} s.`,`Nothing, it is correct.`]};},{w:2}),
+    Object.assign(()=>{const b=pick([12000,8000,24000]),R=pick([2,4]);const wrong=b/R,right=b/(R*1e6);return {q:`A student wrote: ${fmt(b)} bits ÷ ${R} Mbps = ${fmt(wrong)} s. What went wrong?`,a:`They used ${R} instead of ${fmt(R*1e6)} bps. The answer is ${fmt(right*1e3)} ms.`,w:[`They forgot to change bits to bytes.`,`Nothing, a ${fmt(b)}-bit packet takes that long.`,`They should have multiplied, not divided.`]};},{w:1}),
+    Object.assign(()=>{const s=pick([200,250,500]),x=pick([0.5,1.2,2]);return {q:`A student wrote: setup ${s} ms + sending ${x} s = ${fmt(s+x)} s. What went wrong?`,a:`They added ms to s. ${s} ms = ${fmt(s/1e3)} s, so the total is ${fmt(s/1e3+x)} s.`,w:[`Setup time should be multiplied, not added.`,`Nothing, it is correct.`,`They should have changed s to bits.`]};},{w:1}),
+    Object.assign(()=>{const d=pick([2000,1000,4000]);const wrong=d/2e8,right=d*1e3/2e8;return {q:`A student wrote: ${fmt(d)} km ÷ (2 × 10⁸ m/s) = ${fmt(wrong)} s. What went wrong?`,a:`They didn't change km to m. ${fmt(d)} km = ${fmt(d*1e3)} m, so the delay is ${fmt(right*1e3)} ms.`,w:[`The speed should be in km/h.`,`They should multiply distance by speed.`,`Nothing, it is correct.`]};},{w:2}),
+    Object.assign(()=>{const v=pick([3,5,8]);return {q:`A student's final answer is just "${v}". The question asked for a transmission delay. What is missing?`,a:`The unit. "${v}" could be ${v} s or ${v} ms, which are very different. Write ${v} ms (or s).`,w:[`Nothing, the number is enough.`,`The formula name.`,`The word "delay".`]};},{w:1}),
   ];
   const UNITS=['s','ms','μs','bits','bytes','bps','kbps','Mbps','Gbps','packets/s'];
   const done=(good,id)=>{tot++;if(good){ok++;clearWeak('units');}else addWeak({id:'units',kind:'Units',text:'Units practice',ls:'w2-units',tool:'units'});score.textContent=`${ok} of ${tot} correct this session`;};
@@ -4247,13 +4250,13 @@ function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),score=$('#un-score
   const steps=(res,lines,cls)=>{const o=document.createElement('ol');o.className='steps';lines.forEach(s=>{const li=document.createElement('li');li.textContent=s;o.appendChild(li);});res.appendChild(o);};
   const verdict=(res,good,text)=>{const p=document.createElement('p');p.className='cd-v '+(good?'y':'n');p.textContent=text;res.appendChild(p);};
   function next(){const m=sel.value==='all'?pick(['conv','full','full','which','oops']):sel.value;
-    if(m==='conv'){const c=pick(CONV)();
+    if(m==='conv'){const c=pw(CONV)();
       box.innerHTML=`<p class="qc-k">Convert</p><p class="cd-q"></p><form class="cd-f"><label for="un-in" class="sr">Your answer</label><input id="un-in" inputmode="decimal" autocomplete="off" placeholder="your answer"><span class="cd-u"></span><button class="btn" type="submit">Check</button><button class="btn ghost un-show" type="button">Show me</button></form><div class="cd-r" aria-live="polite"></div>`;
       $('.cd-q',box).textContent=c.q;$('.cd-u',box).textContent=c.unit;const res=$('.cd-r',box),inp=$('#un-in',box);let fin=false;
       const show=good=>{fin=true;res.innerHTML='';verdict(res,good,good===true?`Correct: ${fmt(c.ans)} ${c.unit}`:`The answer is ${fmt(c.ans)} ${c.unit}.`);steps(res,c.why);tail(res);};
       $('.cd-f',box).addEventListener('submit',e=>{e.preventDefault();if(fin)return;const v=parseFloat(inp.value.replace(/,/g,''));if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}const g=Math.abs(v-c.ans)<=Math.abs(c.ans)*0.01+1e-9;done(g);show(g);});
       $('.un-show',box).addEventListener('click',()=>{if(fin)return;done(false);show(null);});inp.focus({preventScroll:true});return;}
-    if(m==='full'){const c=pick(FULL)();const [bv,bu]=best(c.base,c.kind);
+    if(m==='full'){const c=pw(FULL)();const [bv,bu]=best(c.base,c.kind);
       box.innerHTML=`<p class="qc-k">Answer with a unit</p><p class="cd-q"></p><form class="cd-f"><label for="un-in" class="sr">Your number</label><input id="un-in" inputmode="decimal" autocomplete="off" placeholder="number"><label for="un-u" class="sr">Unit</label><select id="un-u" class="un-sel"><option value="">unit?</option>${UNITS.map(u=>`<option>${u}</option>`).join('')}</select><button class="btn" type="submit">Check</button><button class="btn ghost un-show" type="button">Show me</button></form><div class="cd-r" aria-live="polite"></div>`;
       $('.cd-q',box).textContent=c.q;const res=$('.cd-r',box),inp=$('#un-in',box),us=$('#un-u',box);let fin=false;
       us.addEventListener('change',()=>us.classList.remove('need'));
@@ -4268,9 +4271,9 @@ function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),score=$('#un-score
       $('.un-show',box).addEventListener('click',()=>{if(fin)return;done(false);show(null,'Here is how it works out.');});inp.focus({preventScroll:true});return;}
     const mc=(kicker,q,right,wrongs,explain)=>{box.innerHTML=`<p class="qc-k"></p><p class="cd-q"></p><div class="un-opts"></div><div class="cd-r" aria-live="polite"></div>`;$('.qc-k',box).textContent=kicker;$('.cd-q',box).textContent=q;const os=$('.un-opts',box),res=$('.cd-r',box);let fin=false;
       shuffle([right,...wrongs]).forEach(t=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.addEventListener('click',()=>{if(fin)return;fin=true;const g=t===right;done(g);b.classList.add(g?'y':'n');$$('button',os).forEach(x=>{if(x.textContent===right)x.classList.add('y');x.disabled=true;});verdict(res,g,g?'Correct.':'Not quite. The right answer is highlighted.');if(explain){const p=document.createElement('p');p.className='un-work';p.textContent=explain;res.appendChild(p);}tail(res);});os.appendChild(b);});};
-    if(m==='which'){const [q,r,w]=pick(WHICH);mc('Which unit?',q,r,w);return;}
-    const c=pick(OOPS)();mc('Spot the mistake',c.q,c.a,c.w);}
-  sel.addEventListener('change',next);$('#un-new').addEventListener('click',next);next();}
+    if(m==='which'){const [q,r,w]=pick(WHICH.filter(x=>okW(x[3])));mc('Which unit?',q,r,w);return;}
+    const c=pw(OOPS)();mc('Spot the mistake',c.q,c.a,c.w);}
+  sel.addEventListener('change',next);wsel.addEventListener('change',()=>{store.set('fon-unweek',wsel.value);next();});$('#un-new').addEventListener('click',next);next();}
 initUnits();
 
 /* ---------- "Your turn" questions inside lessons ---------- */
