@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="d8f413af3c"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="d69c110133"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4509,16 +4509,23 @@ route({init:true});
 </script>
 <script>
 /* auto-update: compare this page's build stamp with the one on the server */
-(function(){var me=(document.querySelector('meta[name="build"]')||{}).content;if(!me||location.protocol.indexOf('http')!==0)return;
- var busy=false;function check(){if(busy)return;busy=true;
-  fetch(location.pathname+'?check='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-   var m=t.match(/<meta name="build" content="([^"]+)"/);busy=false;
-   if(!m||m[1]===me)return;var key='fon-upd-'+m[1];try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1');}catch(e){}
-   var n=document.createElement('div');n.textContent='Updating to the newest version…';n.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;background:#14212B;color:#fff;padding:10px 16px;border-radius:99px;font:600 14px system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)';document.body.appendChild(n);
-   fetch(location.pathname,{cache:'reload'}).catch(function(){}).then(function(){location.reload();});
-  }).catch(function(){busy=false;});}
- addEventListener('load',function(){setTimeout(check,800);});
- document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check();});
+(function(){var me=(document.querySelector('meta[name="build"]')||{}).content;if(!me)return;var web=location.protocol.indexOf('http')===0;
+ function toast(t){var n=document.getElementById('upd-toast');if(!n){n=document.createElement('div');n.id='upd-toast';n.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;background:#14212B;color:#fff;padding:10px 16px;border-radius:99px;font:600 14px system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3);max-width:90vw;text-align:center';document.body.appendChild(n);}n.textContent=t;clearTimeout(n._t);n._t=setTimeout(function(){n.remove();},3500);}
+ function go(){toast('Updating to the newest version…');fetch(location.pathname,{cache:'reload'}).catch(function(){}).then(function(){location.replace(location.pathname+'?v='+Date.now()+location.hash);});}
+ var busy=false;function check(manual){if(!web){if(manual)toast('Updates only work on the website.');return;}if(busy)return;busy=true;
+  fetch(location.pathname+'?check='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){busy=false;
+   var m=t.match(/<meta name="build" content="([0-9a-f]+)"/);if(!m){if(manual)toast('Could not reach the website. Try again in a moment.');return;}
+   if(m[1]===me){if(manual)toast('You have the newest version.');return;}
+   if(!manual){var key='fon-upd-'+m[1];try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1');}catch(e){}}
+   go();}).catch(function(){busy=false;if(manual)toast('No internet connection right now.');});}
+ /* version line on the home page */
+ function line(){var h=document.querySelector('.hero');if(!h||document.getElementById('upd-line'))return;var p=document.createElement('p');p.id='upd-line';p.style.cssText='margin:18px 0 0;font-size:.8rem;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap';
+  p.innerHTML='<span>Version <span style="font-family:var(--f-mono)">'+me.slice(0,6)+'</span></span>';var b=document.createElement('button');b.type='button';b.className='btn ghost';b.style.cssText='padding:4px 12px;font-size:.8rem';b.textContent='Check for updates';b.addEventListener('click',function(){check(true);});p.appendChild(b);h.appendChild(p);}
+ line();
+ /* clean the ?v= we add when updating */
+ if(/[?&]v=\d+/.test(location.search))try{history.replaceState(history.state,'',location.pathname+location.hash);}catch(e){}
+ addEventListener('load',function(){setTimeout(function(){check(false);},800);});
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check(false);});
 })();
 </script>
 
