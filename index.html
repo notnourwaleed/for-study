@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="0d52f7f1c6"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="2008d161ef"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3088,10 +3088,27 @@ SCN.tput=(g,ok)=>{const nx=layers(g,ok);
    3:(l,k)=>{title(l,'Bottleneck','the slowest link sets the pace');pipe(l,100,400,250,100);pipe(l,400,700,250,30);Ci(l,400,250,24,'hub');stream(l,[[100,250],[390,250]],k,{n:8,dur:1200,r:7});stream(l,[[410,250],[700,250]],k,{n:2,dur:1200,r:7,cls:'pkt2'});[0,1,2,3].forEach(i=>Ci(l,370-i*16,232+(i%2)*30,7,'pktb'));},
    4:(l,k)=>{title(l,'min(100, 10) = 10 Mbps');nd(l,70,250,'server',null,80);pipe(l,110,380,250,90);T(l,245,190,'Link A 100 Mbps','h3');Ci(l,400,250,22,'hub');pipe(l,420,690,250,24);T(l,555,190,'Link B 10 Mbps','h3 acc');nd(l,730,250,'laptop',null,80);
      stream(l,[[110,250],[380,250]],k,{n:7,dur:1200,r:7});stream(l,[[420,250],[690,250]],k,{n:1,dur:1200,r:7,cls:'pkt2'});chip(l,400,370,'end-to-end throughput = 10 Mbps','good',300);},
-   6:(l,k)=>{title(l,'Picture a road','wide motorway, narrow bridge, wide motorway');pipe(l,60,320,250,110);pipe(l,320,480,250,34);pipe(l,480,740,250,90);
-     T(l,190,170,'10 lanes','h3');T(l,400,195,'2-lane bridge','h3 acc');T(l,610,180,'8 lanes','h3');
-     stream(l,[[60,250],[290,250]],k,{n:9,dur:1300,r:8});[0,1,2,3,4,5,6].forEach(i=>Ci(l,304-Math.floor(i/3)*20,222+(i%3)*28,8,'pktb'));
-     stream(l,[[322,250],[740,250]],k,{n:2,dur:1300,r:8,cls:'pkt2'});T(l,190,350,'cars pile up before the bridge','sm');T(l,610,340,'mostly empty','sm');},
+   6:(l,k)=>{title(l,'Picture a road','10 lanes squeeze onto a 2-lane bridge');
+     const road=(x,y,w,n)=>{R(l,x,y,w,n*15,'pipe',6);for(let i=1;i<n;i++){const d=Ln(l,x+6,y+i*15,x+w-6,y+i*15,'lk');d.style.strokeWidth='1';d.style.strokeDasharray='7 9';d.style.opacity='.55';}};
+     road(36,175,294,10);road(330,235,140,2);road(470,190,294,8);
+     T(l,183,162,'10 lanes','h3');T(l,400,222,'2-lane bridge','h3 acc');T(l,617,177,'8 lanes','h3');
+     const cIn=T(l,183,352,'10 cars arrive each second','sm');T(l,400,352,'2 cross each second','sm acc');T(l,617,352,'only 2 leave each second','sm');
+     R(l,282,390,18,9,'pkt',2);T(l,308,399,'moving','sm','start');R(l,392,390,18,9,'pktb',2);T(l,418,399,'waiting in the jam','sm','start');
+     const cars=[],Q=[...Array(10)].map(()=>[]);let last=null,tS=0,tL=0,bl=0,full=false;
+     const mk=(x,y,cls)=>{const r=R(l,x-8,y-4.5,16,9,cls,2);return {el:r,x,y,set(){r.setAttribute('x',(this.x-8).toFixed(1));r.setAttribute('y',(this.y-4.5).toFixed(1));}};};
+     const loop=now=>{if(!k())return;if(last==null)last=now;const dt=Math.min(0.05,(now-last)/1000);last=now;tS+=dt;tL+=dt;
+       if(tS>=0.1){tS-=0.1;const ln=Math.floor(Math.random()*10);const inLane=cars.filter(c=>c.st==='in'&&c.lane===ln).length;
+         if(Q[ln].length+inLane<8){const c=mk(44,182.5+15*ln,'pkt');c.lane=ln;c.st='in';cars.push(c);}
+         else if(!full){full=true;cIn.textContent='jam full: new cars turned away';cIn.style.fill='var(--bad)';}}
+       if(tL>=0.5){tL-=0.5;let b=-1;Q.forEach((q,i)=>{if(q.length&&(b<0||q.length>Q[b].length))b=i;});
+         if(b>=0){const c=Q[b].shift();c.el.setAttribute('class','pkt');c.st='go';c.ty=bl?257.5:242.5;bl^=1;Q[b].forEach((o,j)=>{o.tx=320-j*18;});}}
+       for(let i=cars.length-1;i>=0;i--){const c=cars[i];
+         if(c.st==='in'){const front=320-Q[c.lane].length*18;c.x+=240*dt;if(c.x>=front){c.x=front;c.tx=front;c.st='q';Q[c.lane].push(c);c.el.setAttribute('class','pktb');}}
+         else if(c.st==='q'){if(c.x<c.tx)c.x=Math.min(c.tx,c.x+140*dt);}
+         else if(c.st==='go'){c.x+=210*dt;c.y+=(c.ty-c.y)*Math.min(1,dt*10);if(c.x>754){c.el.remove();cars.splice(i,1);continue;}}
+         c.set();}
+       requestAnimationFrame(loop);};
+     requestAnimationFrame(loop);},
    7:(l,k)=>{title(l,'10 → 2 → 8 Mbps','only 2 Mbps gets through');nd(l,50,250,'server',null,70);pipe(l,88,290,250,90);T(l,189,185,'10 Mbps','h3');
      Ci(l,312,250,22,'hub');pipe(l,334,486,250,24);T(l,410,205,'2 Mbps','h3 acc');Ci(l,508,250,22,'hub');pipe(l,530,712,250,72);T(l,621,195,'8 Mbps','h3');nd(l,752,250,'laptop',null,70);
      stream(l,[[88,250],[280,250]],k,{n:8,dur:1200,r:7});[0,1,2,3,4].forEach(i=>Ci(l,300-i*15,300+(i%2)*14,7,'pktb'));T(l,290,345,'queue at router A','sm');
