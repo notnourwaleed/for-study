@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="f63ea3968b"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4472,6 +4472,20 @@ addEventListener('popstate',()=>{if(V.isOpen()){V.close();return;}route({fromPop
   btn.addEventListener('click',async()=>{if(prompt){prompt.prompt();try{await prompt.userChoice;}catch(e){}prompt=null;return;}openGuide();guide.scrollIntoView({behavior:'smooth',block:'nearest'});});
 })();
 route({init:true});
+})();
+</script>
+<script>
+/* auto-update: compare this page's build stamp with the one on the server */
+(function(){var me=(document.querySelector('meta[name="build"]')||{}).content;if(!me||location.protocol.indexOf('http')!==0)return;
+ var busy=false;function check(){if(busy)return;busy=true;
+  fetch(location.pathname+'?check='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
+   var m=t.match(/<meta name="build" content="([^"]+)"/);busy=false;
+   if(!m||m[1]===me)return;var key='fon-upd-'+m[1];try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1');}catch(e){}
+   var n=document.createElement('div');n.textContent='Updating to the newest version…';n.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;background:#14212B;color:#fff;padding:10px 16px;border-radius:99px;font:600 14px system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)';document.body.appendChild(n);
+   fetch(location.pathname,{cache:'reload'}).catch(function(){}).then(function(){location.reload();});
+  }).catch(function(){busy=false;});}
+ addEventListener('load',function(){setTimeout(check,800);});
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check();});
 })();
 </script>
 
