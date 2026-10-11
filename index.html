@@ -765,6 +765,15 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .un-rules{margin-top:16px;max-width:760px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
 .un-rules summary{cursor:pointer;font-weight:700}
 .un-rules ul{margin:10px 0 4px;padding-left:1.2em;display:grid;gap:6px;line-height:1.45}
+
+.home-review{margin:22px 0 4px;max-width:1000px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--bad);border-radius:14px;padding:16px}
+.rv-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rv-head h3{font-family:var(--f-display);font-size:1.2rem;margin:0}
+.rv-n{color:var(--muted);font-size:.85rem}
+.rv-empty{margin:8px 0 0;color:var(--muted);font-size:.95rem}
+.rv-sub{margin-top:14px!important}.rv-sub b{color:var(--ink)}
+.rv-more{margin-top:10px}
+.home-next .nx-row:first-child{border-top:0;padding-top:0}
 </style>
 
 <header class="top">
@@ -786,6 +795,7 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
   <h1>Foundations of Networking</h1>
   <div class="pairs" aria-hidden="true"><span class="wo"></span><span class="o"></span><span class="wg"></span><span class="bl"></span><span class="wb"></span><span class="g"></span><span class="wbr"></span><span class="br"></span></div>
   <p class="lede">Pick a week, then pick a lesson. Watch it as a narrated video, or read it at your own pace.</p>
+  <div class="home-review" id="home-review"></div>
   <div class="home-next" id="home-next" hidden></div>
   <div class="home-weeks" id="home-weeks"></div>
   <h3 class="home-h">Practice</h3>
@@ -4172,20 +4182,33 @@ $$('.week').forEach(sec=>{const w=+sec.dataset.w,list=document.createElement('di
   $('.week-head',sec).after(list);const nav=document.createElement('nav');nav.className='lesson-nav';nav.setAttribute('aria-label','Lesson navigation');sec.appendChild(nav);});
 /* home: next steps + weak spots, practice cards */
 function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.lesson');
-  const nextLs=all.find(l=>!isDone(l.id));const items=Object.values(WEAK).sort((a,b)=>b.ts-a.ts);
-  const stars=all.filter(l=>isStar(l.id)).sort((a,b)=>STAR[b.id]-STAR[a.id]);
-  if(!nextLs&&!items.length&&!stars.length){box.hidden=true;return;}box.hidden=false;
-  const h=document.createElement('h3');h.textContent='Your next steps';box.appendChild(h);
-  if(nextLs){const r=document.createElement('div');r.className='nx-row';const f=PROG[nextLs.id]||0;r.innerHTML=`<span class="nx-k">${f>0.02?'Continue':'Up next'}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>`;
+  const nextLs=all.find(l=>lsKind(l)==='main'&&!isDone(l.id))||all.find(l=>!isDone(l.id));
+  if(nextLs){box.hidden=false;const r=document.createElement('div');r.className='nx-row';const f=PROG[nextLs.id]||0;r.innerHTML=`<span class="nx-k">${f>0.02?'Continue':'Up next'}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>`;
     $('.nx-t',r).textContent=$('.lesson-num',nextLs).textContent+' '+$('h4',nextLs).textContent+(f>0.02?` · ${Math.round(f*100)}% watched`:'');const [bw,br]=$$('button',r);bw.addEventListener('click',()=>{go('week',{w:+nextLs.closest('.week').dataset.w});V.openAt(nextLs);});br.addEventListener('click',()=>go('lesson',{ls:nextLs}));box.appendChild(r);}
-  if(stars.length){const k=document.createElement('p');k.className='nx-sub';k.textContent=`★ Marked important: ${stars.length} lesson${stars.length>1?'s':''} to check again.`;box.appendChild(k);
-    stars.forEach(ls=>{const r=document.createElement('div');r.className='nx-row star';r.innerHTML=`<span class="nx-k">★ Week ${ls.closest('.week').dataset.w}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button><button type="button" class="btn ghost nx-unstar" title="Remove from important" aria-label="Remove from important">✕</button></span>`;
-      $('.nx-t',r).textContent=$('.lesson-num',ls).textContent+' '+$('h4',ls).textContent;const [bw,br,bx]=$$('button',r);
-      bw.addEventListener('click',()=>{go('week',{w:+ls.closest('.week').dataset.w});V.openAt(ls);});br.addEventListener('click',()=>go('lesson',{ls}));bx.addEventListener('click',()=>__toggleStar(ls.id));box.appendChild(r);});}
-  if(items.length){const k=document.createElement('p');k.className='nx-sub';k.textContent=`To review: ${items.length} question${items.length>1?'s':''} you got wrong. They disappear once you get them right.`;box.appendChild(k);
-    items.slice(0,6).forEach(it=>{const ls=document.getElementById(it.ls);const r=document.createElement('div');r.className='nx-row weak';r.innerHTML=`<span class="nx-k"></span><span class="nx-t"></span><span class="ll-btns"></span>`;$('.nx-k',r).textContent=it.kind;$('.nx-t',r).textContent=it.text;
-      const bs=$('.ll-btns',r);if(it.tool){const b=document.createElement('button');b.type='button';b.className='btn';b.textContent='Practise again';b.addEventListener('click',()=>{go(it.tool);if(it.topic&&window.__calc)__calc.setTopic(it.topic);});bs.appendChild(b);}
-      if(ls){const b=document.createElement('button');b.type='button';b.className='btn ghost';b.textContent='Review '+$('.lesson-num',ls).textContent;b.addEventListener('click',()=>go('lesson',{ls}));bs.appendChild(b);}box.appendChild(r);});}}
+  else box.hidden=true;
+  renderReview();}
+let RV_ALL=false;
+function renderReview(){const box=$('#home-review');if(!box)return;const all=$$('.lesson');
+  const items=Object.values(WEAK).sort((a,b)=>b.ts-a.ts);const stars=all.filter(l=>isStar(l.id)).sort((a,b)=>STAR[b.id]-STAR[a.id]);
+  const btn=(bs,t,cls,fn,aria)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.innerHTML=t;if(aria){b.title=aria;b.setAttribute('aria-label',aria);}b.addEventListener('click',fn);bs.appendChild(b);return b;};
+  box.innerHTML=`<div class="rv-head"><h3>Review mistakes</h3><span class="rv-n mono"></span></div>`;
+  $('.rv-n',box).textContent=items.length||stars.length?`${items.length} mistake${items.length===1?'':'s'} · ${stars.length} to study`:'';
+  if(!items.length&&!stars.length){const e=document.createElement('p');e.className='rv-empty';e.textContent='Nothing here yet. Questions you get wrong, and lessons you mark ☆ important, collect here so you can go back to them.';box.appendChild(e);return;}
+  if(items.length){const k=document.createElement('p');k.className='nx-sub rv-sub';k.innerHTML='<b>Mistakes to fix</b> · each one leaves this list when you get it right';box.appendChild(k);
+    const shown=RV_ALL?items:items.slice(0,5);
+    shown.forEach(it=>{const ls=document.getElementById(it.ls);const r=document.createElement('div');r.className='nx-row weak';r.innerHTML=`<span class="nx-k"></span><span class="nx-t"></span><span class="ll-btns"></span>`;$('.nx-k',r).textContent=it.kind;$('.nx-t',r).textContent=it.text;
+      const bs=$('.ll-btns',r);
+      if(it.tool)btn(bs,'Practise again','btn',()=>{go(it.tool);if(it.topic&&window.__calc)__calc.setTopic(it.topic);});
+      else if(/^quiz-(\d)/.test(it.id))btn(bs,'Answer again','btn',()=>go('quiz',{w:+it.id.split('-')[1]}));
+      else if(ls)btn(bs,'Try again','btn',()=>{go('lesson',{ls});const q=it.qi!=null&&ls.querySelectorAll('.try')[it.qi];if(q)setTimeout(()=>q.scrollIntoView({block:'center'}),80);});
+      if(ls)btn(bs,'Review '+$('.lesson-num',ls).textContent,'btn ghost',()=>go('lesson',{ls}));
+      btn(bs,'✕','btn ghost nx-unstar',()=>{clearWeak(it.id);renderReview();},'Remove from the list');
+      box.appendChild(r);});
+    if(items.length>5){const m=document.createElement('button');m.type='button';m.className='ll-filter rv-more';m.textContent=RV_ALL?'Show fewer':`Show all ${items.length} mistakes`;m.addEventListener('click',()=>{RV_ALL=!RV_ALL;renderReview();});box.appendChild(m);}}
+  if(stars.length){const k=document.createElement('p');k.className='nx-sub rv-sub';k.innerHTML='<b>Need to study</b> · lessons you marked ★ important';box.appendChild(k);
+    stars.forEach(ls=>{const r=document.createElement('div');r.className='nx-row star';r.innerHTML=`<span class="nx-k">★ Week ${ls.closest('.week').dataset.w}</span><span class="nx-t"></span><span class="ll-btns"></span>`;
+      $('.nx-t',r).textContent=$('.lesson-num',ls).textContent+' '+$('h4',ls).textContent;const bs=$('.ll-btns',r);
+      btn(bs,PLAYSVG+'Watch','btn',()=>{go('week',{w:+ls.closest('.week').dataset.w});V.openAt(ls);});btn(bs,'Read','btn ghost',()=>go('lesson',{ls}));btn(bs,'✕','btn ghost nx-unstar',()=>__toggleStar(ls.id),'Remove from important');box.appendChild(r);});}}
 (()=>{const box=$('#home-tools');[['solve','How to solve','Step-by-step walkthroughs: each idea explained with a picture, then checked','check'],['calc','Calculation drills','Unlimited L/R, delay, TDM, FDM, loss and throughput problems','calc'],['trace','Network tracing','Follow a request hop by hop: which addresses change?','route'],['units','Units practice','Convert units, pick the right one and spot unit mistakes. Answers need a unit, like in the exam','units'],['build','Build the formula','Drag the terms and signs into place. It gets warmer as you get closer','calc'],['keys','Keyword practice','Write what each term means, then reveal and compare. Or the other way round','layers'],['cheat','Cheat sheet','Every formula, port and layer on one page','book']].forEach(([v,t,d,icn])=>{
   const c=document.createElement('button');c.type='button';c.className='tool-card';c.innerHTML=`<svg class="ic" viewBox="0 0 160 160" aria-hidden="true">${IC[icn]}</svg><span class="tc-t"></span><span class="tc-d"></span>`;$('.tc-t',c).textContent=t;$('.tc-d',c).textContent=d;c.addEventListener('click',()=>go(v));box.appendChild(c);});})();
 window.__calc=initCalc();initTrace();
@@ -4317,7 +4340,7 @@ initUnits();
       f.replaceWith(o);}
     const tt=box.querySelector('.try-text');if(tt)tt.textContent=sp.q;const cu=box.querySelector('.cd-u');if(cu)cu.textContent=sp.unit;
     const inp=box.querySelector('input')||{value:'',select(){},focus(){}},res=box.querySelector('.try-r');
-    const fin=(good)=>{done=true;t.classList.add('solved');res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol>`;
+    const fin=(good)=>{done=true;t.classList.add('solved');{const L=t.closest('.lesson');if(L&&!o.noWeak){const k=[...L.querySelectorAll('.try')].indexOf(t);const id='try-'+L.id+'-'+k;if(good)clearWeak(id);else addWeak({id,kind:'Lesson question',text:sp.q,ls:L.id,qi:k});}}res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol>`;
       res.querySelector('.cd-v').textContent=sp.eq?(good?`Correct: ${sp.ans}`:`The answer is: ${sp.ans}`):sp.mc?(good?`Correct: ${sp.ans}.`:`The answer is: ${sp.ans}.`):good?`Correct: ${nf(sp.ans)} ${sp.unit}`:`The answer is ${nf(sp.ans)} ${sp.unit}. Here's how:`;
       sp.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;res.querySelector('.steps').appendChild(li);});
       const nb=document.createElement('div');nb.className='cd-nb';
