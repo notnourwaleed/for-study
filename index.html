@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="2008d161ef"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="cbc96a551b"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -803,6 +803,8 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .tp-t{font:600 15px var(--f-display,system-ui);fill:var(--ink)}
 .tp-s{font:500 13px var(--f-sans,system-ui);fill:var(--muted)}
 .tp-acc{fill:var(--accent)}
+.vs .scene.out,.vs .lay.out{animation:scout .24s ease both;pointer-events:none}
+.vs .scene.after,.vs .lay.fin.after{animation:scin .42s ease .26s both}
 </style>
 
 <header class="top">
@@ -2446,7 +2448,7 @@ const V=(()=>{
   addEventListener('resize',()=>{if(open){cam=null;frame();}});
   function clearStage(){sceneTok++;stage.innerHTML='';sceneName=null;sceneObj=null;sceneG=null;lastKey='';cam=null;camBox=null;cancelAnimationFrame(camT);setVB(FULL);}
   function setBeat(k){if(!beats.length)return;let b=beats[0];for(const x of beats)if(x[0]<=k)b=x;const key=b[1]+'|'+b[2];if(key===lastKey)return;lastKey=key;
-    if(b[1]!==sceneName){if(sceneG){const o=sceneG;o.classList.add('out');setTimeout(()=>o.remove(),500);}const my=++sceneTok;sceneG=E('g',{class:'scene'},stage);sceneName=b[1];
+    if(b[1]!==sceneName){const had=!!sceneG;if(sceneG){const o=sceneG;o.classList.add('out');setTimeout(()=>o.remove(),300);}const my=++sceneTok;sceneG=E('g',{class:had?'scene after':'scene'},stage);sceneName=b[1];
       camBox=small()?preview(b[1]):null;cam=cam&&small()?cam:null;
       try{sceneObj=SCN[b[1]](sceneG,()=>open&&my===sceneTok);}catch(e){console.error('scene',b[1],e);sceneObj=null;}}
     try{if(sceneObj)sceneObj.step(b[2]);}catch(e){console.error('step',b,e);}
@@ -2625,7 +2627,7 @@ function xm(g,x,y,s){s=s||12;return Pt(g,`M${x-s} ${y-s}L${x+s} ${y+s}M${x+s} ${
 function tick(g,x,y,s){s=s||12;return Pt(g,`M${x-s} ${y}l${s*0.7} ${s*0.7}l${s*1.3}-${s*1.4}`,'tk');}
 function person(g,x,y,s){s=s||1;const p=G(g);Ci(p,x,y-40*s,17*s,'ps');Pt(p,`M${x-28*s} ${y+24*s}q0-44 ${28*s}-44q${28*s} 0 ${28*s} 44z`,'ps');return p;}
 function stream(g,pts,ok,o){o=o||{};const n=o.n||3,dur=o.dur||1400;for(let i=0;i<n;i++)setTimeout(()=>{(async()=>{while(ok()){await travel(g,pts,dur,ok,{r:o.r||7,cls:o.cls||'pkt'});if(o.once)break;await sleep(o.gap||150);}})();},i*dur/n+(o.delay||0));}
-function layers(g,ok){let cur=null,tok=0;return (fade)=>{if(cur){const o=cur;o.classList.add('out');setTimeout(()=>o.remove(),450);}tok++;const my=tok;cur=G(g,fade===false?'lay':'lay fin');return {g:cur,ok:()=>ok()&&my===tok};};}
+function layers(g,ok){let cur=null,tok=0;return (fade)=>{const had=!!cur;if(cur){const o=cur;o.classList.add('out');setTimeout(()=>o.remove(),300);}tok++;const my=tok;cur=G(g,fade===false?'lay':'lay fin'+(had?' after':''));return {g:cur,ok:()=>ok()&&my===tok};};}
 function wave(g,x1,x2,y,amp,per,cls,decay){let d='';for(let x=x1;x<=x2;x+=3){const a=decay?amp*(1-(x-x1)/(x2-x1)*decay):amp;d+=(d?'L':'M')+x+' '+(y+a*Math.sin((x-x1)/per*2*Math.PI)).toFixed(1);}return Pt(g,d,cls||'wv');}
 function bars(g,rows,o){o=o||{};const x=o.x||250,w=o.w||420,max=o.max||Math.max(...rows.map(r=>r[1])),y0=o.y||130,gap=o.gap||62;
   return rows.map((r,i)=>{const y=y0+i*gap;T(g,x-14,y+22,r[0],'t','end');R(g,x,y,w,32,'track',6);const b=R(g,x,y,0,32,r[2]||'fillA',6);const v=T(g,x+8,y+22,'','t vt','start');
@@ -3079,15 +3081,68 @@ SCN.loss=(g,ok)=>{const nx=layers(g,ok);
   };
   return {step(n){const {g:l,ok:k}=nx();S[n](l,k);}};};
 
+/* road-style flow simulator for throughput scenes: lanes = link speed, cars = packets */
+function roadSim(l,k,o){const H=o.H||14,yc=o.y||250,segs=o.segs,cs=o.speed||200,CW=16,CH=Math.min(9,H-5);
+  const lanesY=s=>{const top=yc-s.n*H/2;return [...Array(s.n)].map((_,i)=>top+H/2+i*H);};
+  segs.forEach((s,i)=>{s.ys=lanesY(s);const top=yc-s.n*H/2;R(l,s.x0,top,s.x1-s.x0,s.n*H,'pipe',Math.min(8,s.n*H/2));
+    for(let j=1;j<s.n;j++){const d=Ln(l,s.x0+6,top+j*H,s.x1-6,top+j*H,'lk');d.style.strokeWidth='1';d.style.strokeDasharray='7 9';d.style.opacity='.5';}
+    s.use=s.use||s.n;s.Q=s.ys.map(()=>[]);s.t=0;s.k=0;});
+  /* a joint is a bottleneck if the next road is slower than what can reach it */
+  let up=o.inRate;segs.forEach((s,i)=>{s.gate=i>0&&s.rate<up-1e-9;up=Math.min(up,s.rate);});
+  const cars=[];let tS=0,last=null,arrived=0,lost=0;
+  const mk=(x,y,cls)=>{const r=R(l,x-CW/2,y-CH/2,CW,CH,cls,2);return {el:r,x,y,ty:y,set(){r.setAttribute('x',(this.x-CW/2).toFixed(1));r.setAttribute('y',(this.y-CH/2).toFixed(1));}};};
+  const pickLane=s=>{s.k=(s.k+1+Math.floor(Math.random()*2))%s.use;return s.k;};
+  const loop=now=>{if(!k())return;if(last==null)last=now;const dt=Math.min(0.05,(now-last)/1000);last=now;tS+=dt;
+    const s0=segs[0];while(tS>=1/o.inRate){tS-=1/o.inRate;const ln=pickLane(s0);const c=mk(s0.x0+8,s0.ys[ln],'pkt');c.seg=0;c.lane=ln;c.st='go';cars.push(c);}
+    segs.forEach((s,i)=>{if(!s.gate)return;s.t+=dt;while(s.t>=1/s.rate){s.t-=1/s.rate;const P=segs[i-1];let b=-1;P.Q.forEach((q,j)=>{if(q.length&&(b<0||q.length>P.Q[b].length))b=j;});
+      if(b<0){s.t=Math.min(s.t,1/s.rate);break;}const c=P.Q[b].shift();P.Q[b].forEach((q,j)=>{q.tx=P.x1-10-j*18;});c.st='go';c.el.setAttribute('class','pkt');c.seg=i;c.lane=pickLane(s);c.ty=s.ys[c.lane];c.x=Math.max(c.x,s.x0+2);}});
+    for(let i=cars.length-1;i>=0;i--){const c=cars[i],s=segs[c.seg];
+      if(c.st==='go'){c.x+=cs*dt;c.y+=(c.ty-c.y)*Math.min(1,dt*10);
+        if(c.x>=s.x1-10){const nx=segs[c.seg+1];
+          if(!nx){c.el.remove();cars.splice(i,1);arrived++;o.onArrive&&o.onArrive(arrived);continue;}
+          if(nx.gate){const q=s.Q[c.lane],front=s.x1-10-q.length*18,max=Math.floor((s.x1-s.x0-30)/18);
+            if(q.length>=Math.min(max,o.qmax||7)){c.el.remove();cars.splice(i,1);lost++;o.onLost&&o.onLost(lost);continue;}
+            c.x=front;c.tx=front;c.st='q';q.push(c);c.el.setAttribute('class','pktb');}
+          else{c.seg++;c.lane=pickLane(nx);c.ty=nx.ys[c.lane];c.x=nx.x0+2;}}}
+      else if(c.st==='q'){if(c.x<c.tx)c.x=Math.min(c.tx,c.x+140*dt);}
+      c.set();}
+    requestAnimationFrame(loop);};
+  requestAnimationFrame(loop);}
+function legendCars(l,y,wait){const x=wait?282:352;R(l,x,y-9,18,9,'pkt',2);T(l,x+26,y,'packet moving','sm','start');if(wait){R(l,x+150,y-9,18,9,'pktb',2);T(l,x+176,y,'waiting in a queue','sm','start');}}
 SCN.tput=(g,ok)=>{const nx=layers(g,ok);
   const pipe=(l,x1,x2,y,h,cls)=>R(l,x1,y-h/2,x2-x1,h,cls||'pipe',h/2);
   const S={
-   0:(l,k)=>{title(l,'Throughput','data that actually arrives, per second');nd(l,110,250,'server',null,90);pipe(l,160,620,250,60);nd(l,690,250,'laptop',null,90);stream(l,[[160,250],[620,250]],k,{n:6,dur:1600,r:7});const c=T(l,400,350,'','eq eqa');let n=0;(async()=>{while(k()){n+=7;c.textContent=n+' packets received';await sleep(1000);}})();},
-   1:(l,k)=>{title(l,'Bandwidth vs throughput');pipe(l,120,680,200,90);T(l,400,140,'bandwidth: what the pipe could carry','h3');pipe(l,120,680,200,50,'pipeFill');T(l,400,290,'throughput: what actually flows','h3 acc');stream(l,[[120,200],[680,200]],k,{n:6,dur:1600,r:7});},
-   2:(l,k)=>{title(l,'Example');pipe(l,120,680,220,100);pipe(l,120,680,220,64,'pipeFill');T(l,700,160,'bandwidth 100 Mbps','h3','end');T(l,700,320,'throughput 65 Mbps','h3 acc','end');T(l,400,380,'congestion and delays eat the rest','sm');stream(l,[[120,220],[680,220]],k,{n:5,dur:1600,r:7});},
-   3:(l,k)=>{title(l,'Bottleneck','the slowest link sets the pace');pipe(l,100,400,250,100);pipe(l,400,700,250,30);Ci(l,400,250,24,'hub');stream(l,[[100,250],[390,250]],k,{n:8,dur:1200,r:7});stream(l,[[410,250],[700,250]],k,{n:2,dur:1200,r:7,cls:'pkt2'});[0,1,2,3].forEach(i=>Ci(l,370-i*16,232+(i%2)*30,7,'pktb'));},
-   4:(l,k)=>{title(l,'min(100, 10) = 10 Mbps');nd(l,70,250,'server',null,80);pipe(l,110,380,250,90);T(l,245,190,'Link A 100 Mbps','h3');Ci(l,400,250,22,'hub');pipe(l,420,690,250,24);T(l,555,190,'Link B 10 Mbps','h3 acc');nd(l,730,250,'laptop',null,80);
-     stream(l,[[110,250],[380,250]],k,{n:7,dur:1200,r:7});stream(l,[[420,250],[690,250]],k,{n:1,dur:1200,r:7,cls:'pkt2'});chip(l,400,370,'end-to-end throughput = 10 Mbps','good',300);},
+   0:(l,k)=>{title(l,'Throughput','the data that actually arrives, per second');nd(l,70,250,'server',null,76);nd(l,730,250,'laptop',null,76);
+     T(l,400,198,'a link','h3');const c=T(l,730,320,'0 arrived','h3 acc');const r=T(l,730,346,'','sm');let tf=0;
+     roadSim(l,k,{segs:[{x0:120,x1:680,n:6,rate:6}],inRate:6,onArrive:n=>{c.textContent=n+' arrived';const now=performance.now();if(n===1)tf=now;else if(now-tf>1500)r.textContent='≈ '+Math.round((n-1)/((now-tf)/1000))+' every second';}});
+     T(l,400,330,'count what reaches the end each second: that is the throughput','sm');legendCars(l,392);},
+   1:(l,k)=>{title(l,'Bandwidth vs throughput','what the link could carry vs what it carries');
+     roadSim(l,k,{segs:[{x0:110,x1:610,n:8,rate:5,use:5}],inRate:5,H:16});
+     const top=250-64,bot=250+64;Pt(l,`M628 ${top}h12v${bot-top}h-12`,'lk');T(l,652,244,'bandwidth','h3','start');T(l,652,266,'all 8 lanes','sm','start');
+     Pt(l,`M92 ${top}h-12v80h12`,'lkA');T(l,70,top+36,'throughput','h3 acc','end');T(l,70,top+58,'lanes in use','sm','end');
+     T(l,360,bot+26,'empty lanes: capacity nobody is using right now','sm');legendCars(l,392);},
+   2:(l,k)=>{title(l,'Example: 100 Mbps cable, 65 Mbps arrives','each lane = 10 Mbps');
+     roadSim(l,k,{segs:[{x0:110,x1:610,n:10,rate:6.5,use:7}],inRate:6.5,H:15});
+     const top=250-75,bot=250+75;Pt(l,`M628 ${top}h12v${bot-top}h-12`,'lk');T(l,652,244,'bandwidth','h3','start');T(l,652,266,'100 Mbps','sm','start');
+     Pt(l,`M92 ${top}h-12v${7*15-4}h12`,'lkA');T(l,70,top+40,'throughput','h3 acc','end');T(l,70,top+62,'65 Mbps','sm','end');
+     T(l,360,bot+26,'congestion and delays use up the rest','sm');legendCars(l,392);},
+   3:(l,k)=>{title(l,'Bottleneck','the slowest link sets the pace');nd(l,56,250,'server',null,64);nd(l,744,250,'laptop',null,64);
+     roadSim(l,k,{segs:[{x0:96,x1:392,n:8,rate:8},{x0:408,x1:704,n:2,rate:2}],inRate:8});Ci(l,400,250,13,'hub');
+     T(l,244,172,'fast link','h3');T(l,556,222,'slow link','h3 acc');T(l,244,330,'packets queue here','sm');T(l,556,290,'only 2 get through','sm');legendCars(l,392,true);},
+   4:(l,k)=>{title(l,'Link A 100 Mbps, then Link B 10 Mbps','one lane here = 10 Mbps');nd(l,52,250,'server',null,60);nd(l,748,250,'laptop',null,60);
+     roadSim(l,k,{segs:[{x0:88,x1:392,n:10,rate:10},{x0:408,x1:712,n:1,rate:1}],inRate:10,H:14});Ci(l,400,250,13,'hub');
+     T(l,240,165,'Link A: 100 Mbps','h3');T(l,560,228,'Link B: 10 Mbps','h3 acc');T(l,240,342,'the rest waits, then is dropped','sm');chip(l,400,392,'end-to-end throughput = 10 Mbps','good');},
+   7:(l,k)=>{title(l,'10 → 2 → 8 Mbps','only 2 Mbps gets through');nd(l,40,250,'server',null,56);nd(l,760,250,'laptop',null,56);
+     roadSim(l,k,{segs:[{x0:72,x1:290,n:10,rate:10},{x0:310,x1:490,n:2,rate:2},{x0:510,x1:728,n:8,rate:8}],inRate:10,H:14});
+     Ci(l,300,250,12,'hub');Ci(l,500,250,12,'hub');T(l,300,346,'router A','sm');T(l,500,346,'router B','sm');
+     T(l,181,165,'10 Mbps','h3');T(l,400,190,'2 Mbps','h3 acc');T(l,619,180,'8 Mbps','h3');
+     T(l,170,346,'packets queue','sm');T(l,630,322,'mostly idle','sm');chip(l,400,392,'min(10, 2, 8) = 2 Mbps','good');},
+   8:(l,k)=>{title(l,'How long does the file take?','4 MB over links of 10, 2 and 8 Mbps');
+     eqn(l,['size: 4 × 1,000,000 × 8 = 32,000,000 bits','rate: min(10, 2, 8) = 2,000,000 bps','time = 32,000,000 ÷ 2,000,000 = 16 s'],140,48);
+     const x0=130,w=540,n=16,bw=w/n;T(l,400,312,'2 Mb arrive each second','sm');const lab=T(l,400,392,'0 s · 0 of 32 Mb','h3 acc');
+     const bl=[...Array(n)].map((_,i)=>R(l,x0+i*bw+2,326,bw-4,34,'track',4));
+     (async()=>{await sleep(1600);while(k()){for(let i=0;i<n&&k();i++){bl[i].setAttribute('class','fillA');lab.textContent=(i+1)+' s · '+(2*(i+1))+' of 32 Mb';await sleep(330);}await sleep(1500);bl.forEach(b=>b.setAttribute('class','track'));}})();},
+   5:(l,k)=>{title(l,'What causes bottlenecks?');cards(l,[{icon:'cable',title:'Old cables',sub:'10/100 Mbps gear'},{icon:'wifi',title:'Weak Wi-Fi',sub:'interference'},{icon:'router',title:'Busy routers',sub:'too many flows'},{icon:'coins',title:'ISP limits',sub:'speed caps'},{icon:'cloud',title:'Cloud limits',sub:'egress caps'}],{h:220,y:120,is:80});},
    6:(l,k)=>{title(l,'Picture a road','10 lanes squeeze onto a 2-lane bridge');
      const road=(x,y,w,n)=>{R(l,x,y,w,n*15,'pipe',6);for(let i=1;i<n;i++){const d=Ln(l,x+6,y+i*15,x+w-6,y+i*15,'lk');d.style.strokeWidth='1';d.style.strokeDasharray='7 9';d.style.opacity='.55';}};
      road(36,175,294,10);road(330,235,140,2);road(470,190,294,8);
@@ -3109,13 +3164,6 @@ SCN.tput=(g,ok)=>{const nx=layers(g,ok);
          c.set();}
        requestAnimationFrame(loop);};
      requestAnimationFrame(loop);},
-   7:(l,k)=>{title(l,'10 → 2 → 8 Mbps','only 2 Mbps gets through');nd(l,50,250,'server',null,70);pipe(l,88,290,250,90);T(l,189,185,'10 Mbps','h3');
-     Ci(l,312,250,22,'hub');pipe(l,334,486,250,24);T(l,410,205,'2 Mbps','h3 acc');Ci(l,508,250,22,'hub');pipe(l,530,712,250,72);T(l,621,195,'8 Mbps','h3');nd(l,752,250,'laptop',null,70);
-     stream(l,[[88,250],[280,250]],k,{n:8,dur:1200,r:7});[0,1,2,3,4].forEach(i=>Ci(l,300-i*15,300+(i%2)*14,7,'pktb'));T(l,290,345,'queue at router A','sm');
-     stream(l,[[334,250],[712,250]],k,{n:2,dur:1200,r:7,cls:'pkt2'});T(l,621,310,'mostly idle','sm');chip(l,400,390,'min(10, 2, 8) = 2 Mbps','good',260);},
-   8:(l,k)=>{title(l,'How long does the file take?','4 MB over links of 10, 2 and 8 Mbps');
-     T(l,400,170,'size: 4 × 1,000,000 × 8 = 32,000,000 bits','eq');T(l,400,235,'rate: min(10, 2, 8) = 2 Mbps = 2,000,000 bps','eq');T(l,400,300,'time = 32,000,000 ÷ 2,000,000','eq');chip(l,400,370,'= 16 seconds','good',200);},
-   5:(l,k)=>{title(l,'What causes bottlenecks?');cards(l,[{icon:'cable',title:'Old cables',sub:'10/100 Mbps gear'},{icon:'wifi',title:'Weak Wi-Fi',sub:'interference'},{icon:'router',title:'Busy routers',sub:'too many flows'},{icon:'coins',title:'ISP limits',sub:'speed caps'},{icon:'cloud',title:'Cloud limits',sub:'egress caps'}],{h:220,y:120,is:80});}
   };
   return {step(n){const {g:l,ok:k}=nx();S[n](l,k);}};};
 
