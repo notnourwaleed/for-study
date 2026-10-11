@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="f63ea3968b"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="d8f413af3c"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -766,14 +766,34 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .un-rules summary{cursor:pointer;font-weight:700}
 .un-rules ul{margin:10px 0 4px;padding-left:1.2em;display:grid;gap:6px;line-height:1.45}
 
-.home-review{margin:22px 0 4px;max-width:1000px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--bad);border-radius:14px;padding:16px}
-.rv-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.rv-head h3{font-family:var(--f-display);font-size:1.2rem;margin:0}
-.rv-n{color:var(--muted);font-size:.85rem}
+.home-review{margin:22px 0 4px;max-width:1000px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden}
+.home-review.has{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.rv-toggle{display:flex;align-items:center;gap:10px;width:100%;font:inherit;color:var(--ink);background:none;border:0;padding:14px 16px;cursor:pointer;text-align:left}
+.rv-ic{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--muted)}
+.home-review.has .rv-ic{background:var(--bad)}
+.rv-tt{font-family:var(--f-display);font-weight:700;font-size:1.1rem}
+.rv-n{color:var(--muted);font-size:.82rem;margin-left:auto}
+.rv-badge{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:99px;background:var(--bad);color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.rv-badge[hidden]{display:none}
+.rv-car{flex:none;color:var(--muted);transition:transform .2s}
+.home-review.open .rv-car{transform:rotate(180deg)}
+.rv-body{padding:0 16px 14px}
+@media (max-width:560px){.rv-n{display:none}.rv-car{margin-left:auto}}
 .rv-empty{margin:8px 0 0;color:var(--muted);font-size:.95rem}
 .rv-sub{margin-top:14px!important}.rv-sub b{color:var(--ink)}
 .rv-more{margin-top:10px}
 .home-next .nx-row:first-child{border-top:0;padding-top:0}
+.home-next{border-top:5px solid var(--c,var(--line))}
+.home-next .nx-k{color:var(--accent)}
+.nx-prog{grid-column:1/-1;display:grid;gap:5px;margin-top:6px}
+.nx-pl{display:flex;justify-content:space-between;gap:10px;font-size:.84rem;color:var(--muted)}
+.nx-bar{display:block;height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-bottom:6px}
+.nx-bar i{display:block;height:100%;border-radius:99px;background:var(--accent);opacity:.55}
+.nx-bar.wk i{opacity:1}
+#wk-bar{position:relative;height:18px;background:var(--soft);border-top:1px solid var(--line)}
+#wk-bar[hidden]{display:none}
+#wk-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--c);opacity:.35;transition:width .4s}
+#wk-bar span{position:relative;display:block;font-size:.7rem;line-height:18px;padding:0 16px;color:var(--ink);font-weight:600;letter-spacing:.02em}
 </style>
 
 <header class="top">
@@ -4112,7 +4132,11 @@ const durOf=ls=>{const m=window.__AUDIO&&__AUDIO.lessons[ls.id];if(!m)return 0;c
 const mins=sec=>sec<60?'under 1 min':Math.round(sec/60)+' min';
 const VIEW={name:'home',w:1,ls:null};const TOOLN={calc:'Calculation drills',trace:'Network tracing',keys:'Keyword practice',build:'Build the formula',units:'Units practice',solve:'How to solve',cheat:'Cheat sheet'};
 const crumb=$('#crumb');
-function setCrumb(){crumb.innerHTML='';const add=(t,fn,cur)=>{if(crumb.querySelector(':not(.back-pill)'))crumb.append(' › ');const a=document.createElement(fn?'button':'span');a.textContent=t;a.className=cur?'cur':'';if(fn){a.type='button';a.addEventListener('click',fn);}crumb.appendChild(a);};
+window.wkBar=wkBar;function wkBar(){let b=document.getElementById('wk-bar');if(!b){b=document.createElement('div');b.id='wk-bar';b.innerHTML='<i></i><span class="mono"></span>';document.querySelector('header.top').appendChild(b);}
+  const on=['week','lesson','quiz'].includes(VIEW.name);b.hidden=!on;if(!on)return;const wk=document.getElementById('week'+VIEW.w);const ML=kindLessons(wk);
+  const f=ML.reduce((s,l)=>s+Math.min(1,PROG[l.id]||0),0)/Math.max(1,ML.length),dn=ML.filter(l=>isDone(l.id)).length;
+  b.style.setProperty('--c','var(--w'+VIEW.w+')');b.querySelector('i').style.width=(f*100).toFixed(1)+'%';b.querySelector('span').textContent=`Week ${VIEW.w} · ${dn}/${ML.length} lessons · ${Math.round(f*100)}%`;}
+function setCrumb(){wkBar();crumb.innerHTML='';const add=(t,fn,cur)=>{if(crumb.querySelector(':not(.back-pill)'))crumb.append(' › ');const a=document.createElement(fn?'button':'span');a.textContent=t;a.className=cur?'cur':'';if(fn){a.type='button';a.addEventListener('click',fn);}crumb.appendChild(a);};
   if(VIEW.name==='home')return;
   {const bk=document.createElement('button');bk.type='button';bk.className='back-pill';bk.innerHTML='<span aria-hidden="true">←</span> Back';bk.setAttribute('aria-label','Back');
    bk.addEventListener('click',()=>{const n=VIEW.name;if(n==='lesson'||n==='quiz')go('week',{w:VIEW.w});else go('home');});crumb.appendChild(bk);}
@@ -4150,14 +4174,14 @@ window.__follow=ls=>{if(VIEW.name==='lesson'&&ls!==VIEW.ls)go('lesson',{ls,fromN
 /* watched progress */
 const PROG=(()=>{let p={};try{p=JSON.parse(store.get('fon-progress')||'{}')||{};}catch(e){}return p;})();
 const isDone=id=>(PROG[id]||0)>=0.92;
-window.__setProg=(id,f)=>{f=Math.min(1,f);if(f<=(PROG[id]||0))return;const was=isDone(id);PROG[id]=f>=0.92?1:Math.round(f*100)/100;store.set('fon-progress',JSON.stringify(PROG));updProgUI(was!==isDone(id));};
+window.__setProg=(id,f)=>{f=Math.min(1,f);if(f<=(PROG[id]||0))return;const was=isDone(id);PROG[id]=f>=0.92?1:Math.round(f*100)/100;store.set('fon-progress',JSON.stringify(PROG));if(window.wkBar)try{wkBar();}catch(e){}updProgUI(was!==isDone(id));};
 const STAR=(()=>{try{return JSON.parse(store.get('fon-star')||'{}')||{};}catch(e){return{};}})();
 const isStar=id=>!!STAR[id];
 function updStarUI(){$$('.ll-star[data-id]').forEach(b=>{const s=isStar(b.dataset.id);b.classList.toggle('on',s);b.setAttribute('aria-pressed',String(s));b.innerHTML=s?'<span aria-hidden="true">★</span> Important':'<span aria-hidden="true">☆</span> Mark important';});
   $$('.ll-row[data-id]').forEach(r=>r.classList.toggle('star',isStar(r.dataset.id)));
   $$('.lesson-list').forEach(l=>{const n=$$('.ll-row.star',l).length,f=$('.ll-filter',l);if(f){f.hidden=!n&&!l.classList.contains('only-star');$('span',f).textContent=n;}if(!n)l.classList.remove('only-star');if(f)f.setAttribute('aria-pressed',String(l.classList.contains('only-star')));});}
 window.__toggleStar=id=>{if(STAR[id])delete STAR[id];else STAR[id]=Date.now();store.set('fon-star',JSON.stringify(STAR));updStarUI();if(VIEW.name==='home')renderNext();};
-window.__markDone=(id,on)=>{if(on)PROG[id]=1;else delete PROG[id];store.set('fon-progress',JSON.stringify(PROG));updProgUI(true);if(VIEW.name==='lesson'||VIEW.name==='quiz')fillNav();if(VIEW.name==='home')renderNext();};
+window.__markDone=(id,on)=>{if(on)PROG[id]=1;else delete PROG[id];store.set('fon-progress',JSON.stringify(PROG));try{wkBar();}catch(e){}updProgUI(true);if(VIEW.name==='lesson'||VIEW.name==='quiz')fillNav();if(VIEW.name==='home')renderNext();};
 function updProgUI(){$$('.ll-mark[data-id]').forEach(b=>{const d=isDone(b.dataset.id);b.classList.toggle('on',d);b.setAttribute('aria-pressed',String(d));b.innerHTML=d?'<span aria-hidden="true">✓</span> Watched <span class="ll-undo">· undo</span>':'<span aria-hidden="true">○</span> Mark as watched';});$$('.ll-row[data-id]').forEach(r=>{const f=PROG[r.dataset.id]||0,done=f>=0.92;r.classList.toggle('done',done);
     $('.ll-bar i',r).style.width=(f*100).toFixed(0)+'%';$('.ll-pr',r).hidden=f<=0.02;$('.ll-state',r).textContent=done?'✓ Watched':f>0.02?`${Math.round(f*100)}% watched`:'';});
   $$('.wk-card').forEach(c=>{const L=$$('.lesson',$('#week'+c.dataset.w)),n=L.filter(l=>isDone(l.id)).length;$('.wk-p',c).textContent=n?`${n} of ${L.length} watched`:'';$('.wk-pb i',c).style.width=(n/L.length*100)+'%';});}
@@ -4183,16 +4207,25 @@ $$('.week').forEach(sec=>{const w=+sec.dataset.w,list=document.createElement('di
 /* home: next steps + weak spots, practice cards */
 function renderNext(){const box=$('#home-next');box.innerHTML='';const all=$$('.lesson');
   const nextLs=all.find(l=>lsKind(l)==='main'&&!isDone(l.id))||all.find(l=>!isDone(l.id));
-  if(nextLs){box.hidden=false;const r=document.createElement('div');r.className='nx-row';const f=PROG[nextLs.id]||0;r.innerHTML=`<span class="nx-k">${f>0.02?'Continue':'Up next'}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>`;
-    $('.nx-t',r).textContent=$('.lesson-num',nextLs).textContent+' '+$('h4',nextLs).textContent+(f>0.02?` · ${Math.round(f*100)}% watched`:'');const [bw,br]=$$('button',r);bw.addEventListener('click',()=>{go('week',{w:+nextLs.closest('.week').dataset.w});V.openAt(nextLs);});br.addEventListener('click',()=>go('lesson',{ls:nextLs}));box.appendChild(r);}
+  if(nextLs){box.hidden=false;const wk=nextLs.closest('.week'),wn=+wk.dataset.w;box.style.setProperty('--accent','var(--w'+wn+')');box.style.setProperty('--c','var(--w'+wn+')');
+    const ML=kindLessons(wk),dn=ML.filter(l=>isDone(l.id)).length,pos=ML.indexOf(nextLs);
+    const wkp=ML.reduce((s,l)=>s+Math.min(1,PROG[l.id]||0),0)/Math.max(1,ML.length);
+    const r=document.createElement('div');r.className='nx-row';const f=PROG[nextLs.id]||0;r.innerHTML=`<span class="nx-k">${f>0.02?'Continue':'Up next'} · Week ${wn}</span><span class="nx-t"></span><span class="ll-btns"><button type="button" class="btn">${PLAYSVG}Watch</button><button type="button" class="btn ghost">Read</button></span>
+      <div class="nx-prog"><div class="nx-pl"><span>This lesson</span><span class="mono">${Math.round(f*100)}%</span></div><span class="nx-bar"><i style="width:${(f*100).toFixed(1)}%"></i></span>
+      <div class="nx-pl"><span>Week ${wn}: ${dn} of ${ML.length} lessons watched${pos>=0?` · you're on lesson ${pos+1}`:''}</span><span class="mono">${Math.round(wkp*100)}%</span></div><span class="nx-bar wk"><i style="width:${(wkp*100).toFixed(1)}%"></i></span></div>`;
+    $('.nx-t',r).textContent=$('.lesson-num',nextLs).textContent+' '+$('h4',nextLs).textContent;const [bw,br]=$$('button',r);bw.addEventListener('click',()=>{go('week',{w:+nextLs.closest('.week').dataset.w});V.openAt(nextLs);});br.addEventListener('click',()=>go('lesson',{ls:nextLs}));box.appendChild(r);}
   else box.hidden=true;
   renderReview();}
-let RV_ALL=false;
-function renderReview(){const box=$('#home-review');if(!box)return;const all=$$('.lesson');
+let RV_ALL=false,RV_OPEN=false;
+function renderReview(){let box=$('#home-review');if(!box)return;const all=$$('.lesson');
   const items=Object.values(WEAK).sort((a,b)=>b.ts-a.ts);const stars=all.filter(l=>isStar(l.id)).sort((a,b)=>STAR[b.id]-STAR[a.id]);
   const btn=(bs,t,cls,fn,aria)=>{const b=document.createElement('button');b.type='button';b.className=cls;b.innerHTML=t;if(aria){b.title=aria;b.setAttribute('aria-label',aria);}b.addEventListener('click',fn);bs.appendChild(b);return b;};
-  box.innerHTML=`<div class="rv-head"><h3>Review mistakes</h3><span class="rv-n mono"></span></div>`;
-  $('.rv-n',box).textContent=items.length||stars.length?`${items.length} mistake${items.length===1?'':'s'} · ${stars.length} to study`:'';
+  const total=items.length+stars.length;
+  box.innerHTML=`<button type="button" class="rv-toggle" aria-expanded="${RV_OPEN}" aria-controls="rv-body"><span class="rv-ic" aria-hidden="true">!</span><span class="rv-tt">Review mistakes</span><span class="rv-n mono"></span><span class="rv-badge"></span><span class="rv-car" aria-hidden="true">▾</span></button><div class="rv-body" id="rv-body"${RV_OPEN?'':' hidden'}></div>`;
+  $('.rv-n',box).textContent=total?`${items.length} mistake${items.length===1?'':'s'} · ${stars.length} to study`:'nothing yet';
+  const bd=$('.rv-badge',box);bd.textContent=total;bd.hidden=!total;box.classList.toggle('has',!!total);box.classList.toggle('open',RV_OPEN);
+  $('.rv-toggle',box).addEventListener('click',()=>{RV_OPEN=!RV_OPEN;renderReview();});
+  const outer=box;box=$('.rv-body',outer);
   if(!items.length&&!stars.length){const e=document.createElement('p');e.className='rv-empty';e.textContent='Nothing here yet. Questions you get wrong, and lessons you mark ☆ important, collect here so you can go back to them.';box.appendChild(e);return;}
   if(items.length){const k=document.createElement('p');k.className='nx-sub rv-sub';k.innerHTML='<b>Mistakes to fix</b> · each one leaves this list when you get it right';box.appendChild(k);
     const shown=RV_ALL?items:items.slice(0,5);
