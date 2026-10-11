@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="cbc96a551b"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="6e466aa4ca"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -805,6 +805,15 @@ footer{padding-block:30px;color:var(--muted);font-size:.85rem}
 .tp-acc{fill:var(--accent)}
 .vs .scene.out,.vs .lay.out{animation:scout .24s ease both;pointer-events:none}
 .vs .scene.after,.vs .lay.fin.after{animation:scin .42s ease .26s both}
+.why{margin:8px 0 12px}
+.why-btn{padding:6px 12px;font-size:.88rem}
+.why-btn span{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:.75rem;font-weight:800;margin-right:4px}
+.why-box{margin-top:10px;display:grid;gap:10px}
+.why-it{border-left:3px solid var(--accent);padding:4px 0 4px 12px}
+.why-step{margin:0 0 4px;font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+.why-x{margin:0 0 6px;line-height:1.5}
+.why-x b{color:var(--accent)}
+.vs .why-x,.vs .why-step{color:inherit}
 </style>
 
 <header class="top">
@@ -4171,7 +4180,7 @@ function initCalc(){const sec=$('#tool-calc'),sel=$('#cd-topic'),box=$('#cd-box'
     const res=$('.cd-r',box),inp=$('#cd-in',box);let answered=false;
     const steps=(good)=>{res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol><div class="cd-nb"><button type="button" class="btn cd-next">Next problem</button><button type="button" class="btn ghost cd-how">How to solve this type</button><button type="button" class="btn ghost cd-ls">Review the lesson</button></div>`;
       $('.cd-v',res).textContent=good===null?`Answer: ${nf(cur.ans)} ${cur.unit}`:good?`Correct: ${nf(cur.ans)} ${cur.unit}`:`Not quite. The answer is ${nf(cur.ans)} ${cur.unit}.`;
-      cur.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('.steps',res).appendChild(li);});
+      cur.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('.steps',res).appendChild(li);});if(window.__explain)__explain($('.steps',res),cur.steps,cur.q);
       $('.cd-next',res).addEventListener('click',next);$('.cd-ls',res).addEventListener('click',()=>go('lesson',{ls:document.getElementById(GEN[key].ls)}));{const hb=$('.cd-how',res);if(typeof SOLVE!=='undefined'&&SOLVE.has(key))hb.addEventListener('click',()=>SOLVE.run(key));else hb.remove();}$('.cd-next',res).focus();};
     $('.cd-f',box).addEventListener('submit',e=>{e.preventDefault();if(answered)return;const v=parseFloat(inp.value.replace(/,/g,'').trim());if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
       answered=true;const good=Math.abs(v-cur.ans)<=Math.max(Math.abs(cur.ans)*0.01,1e-6);tot++;if(good){ok++;clearWeak('calc-'+key);}else addWeak({id:'calc-'+key,kind:'Calculation',text:GEN[key].name,ls:GEN[key].ls,tool:'calc',topic:key});
@@ -4423,20 +4432,20 @@ function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),wsel=$('#un-week')
   const UNITS=['s','ms','μs','bits','bytes','bps','kbps','Mbps','Gbps','packets/s'];
   const done=(good,id)=>{tot++;if(good){ok++;clearWeak('units');}else addWeak({id:'units',kind:'Units',text:'Units practice',ls:'w2-units',tool:'units'});score.textContent=`${ok} of ${tot} correct this session`;};
   const tail=(res)=>{const d=document.createElement('div');d.className='cd-nb';d.innerHTML='<button type="button" class="btn cd-next">Next question</button>';res.appendChild(d);$('.cd-next',d).addEventListener('click',next);$('.cd-next',d).focus({preventScroll:true});};
-  const steps=(res,lines,cls)=>{const o=document.createElement('ol');o.className='steps';lines.forEach(s=>{const li=document.createElement('li');li.textContent=s;o.appendChild(li);});res.appendChild(o);};
+  const steps=(res,lines,ctx)=>{const o=document.createElement('ol');o.className='steps';lines.forEach(s=>{const li=document.createElement('li');li.textContent=s;o.appendChild(li);});res.appendChild(o);if(window.__explain)__explain(o,lines,ctx);};
   const verdict=(res,good,text)=>{const p=document.createElement('p');p.className='cd-v '+(good?'y':'n');p.textContent=text;res.appendChild(p);};
   function next(){const m=sel.value==='all'?pick(['conv','full','full','which','oops']):sel.value;
     if(m==='conv'){const c=pw(CONV)();
       box.innerHTML=`<p class="qc-k">Convert</p><p class="cd-q"></p><form class="cd-f"><label for="un-in" class="sr">Your answer</label><input id="un-in" inputmode="decimal" autocomplete="off" placeholder="your answer"><span class="cd-u"></span><button class="btn" type="submit">Check</button><button class="btn ghost un-show" type="button">Show me</button></form><div class="cd-r" aria-live="polite"></div>`;
       $('.cd-q',box).textContent=c.q;$('.cd-u',box).textContent=c.unit;const res=$('.cd-r',box),inp=$('#un-in',box);let fin=false;
-      const show=good=>{fin=true;res.innerHTML='';verdict(res,good,good===true?`Correct: ${fmt(c.ans)} ${c.unit}`:`The answer is ${fmt(c.ans)} ${c.unit}.`);steps(res,c.why);tail(res);};
+      const show=good=>{fin=true;res.innerHTML='';verdict(res,good,good===true?`Correct: ${fmt(c.ans)} ${c.unit}`:`The answer is ${fmt(c.ans)} ${c.unit}.`);steps(res,c.why,c.q);tail(res);};
       $('.cd-f',box).addEventListener('submit',e=>{e.preventDefault();if(fin)return;const v=parseFloat(inp.value.replace(/,/g,''));if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}const g=Math.abs(v-c.ans)<=Math.abs(c.ans)*0.01+1e-9;done(g);show(g);});
       $('.un-show',box).addEventListener('click',()=>{if(fin)return;done(false);show(null);});inp.focus({preventScroll:true});return;}
     if(m==='full'){const c=pw(FULL)();const [bv,bu]=best(c.base,c.kind);
       box.innerHTML=`<p class="qc-k">Answer with a unit</p><p class="cd-q"></p><form class="cd-f"><label for="un-in" class="sr">Your number</label><input id="un-in" inputmode="decimal" autocomplete="off" placeholder="number"><label for="un-u" class="sr">Unit</label><select id="un-u" class="un-sel"><option value="">unit?</option>${UNITS.map(u=>`<option>${u}</option>`).join('')}</select><button class="btn" type="submit">Check</button><button class="btn ghost un-show" type="button">Show me</button></form><div class="cd-r" aria-live="polite"></div>`;
       $('.cd-q',box).textContent=c.q;const res=$('.cd-r',box),inp=$('#un-in',box),us=$('#un-u',box);let fin=false;
       us.addEventListener('change',()=>us.classList.remove('need'));
-      const show=(good,msg)=>{fin=true;res.innerHTML='';verdict(res,good,msg);const w=document.createElement('p');w.className='un-work';w.textContent=`Answer: ${fmt(bv)} ${bu}`+(bu!=='s'&&c.kind==='time'?` (= ${fmt(c.base)} s)`:'');res.appendChild(w);steps(res,c.work);tail(res);};
+      const show=(good,msg)=>{fin=true;res.innerHTML='';verdict(res,good,msg);const w=document.createElement('p');w.className='un-work';w.textContent=`Answer: ${fmt(bv)} ${bu}`+(bu!=='s'&&c.kind==='time'?` (= ${fmt(c.base)} s)`:'');res.appendChild(w);steps(res,c.work,c.q);tail(res);};
       $('.cd-f',box).addEventListener('submit',e=>{e.preventDefault();if(fin)return;const v=parseFloat(inp.value.replace(/,/g,''));if(!isFinite(v)){res.innerHTML='<p class="cd-v n">Type a number first.</p>';return;}
         const u=us.value;if(!u){us.classList.add('need');res.innerHTML='<p class="cd-v n">Pick a unit too. In the exam, a number with no unit loses marks.</p>';us.focus();return;}
         const tol=x=>Math.abs(x-c.base)<=Math.abs(c.base)*0.01+1e-12;
@@ -4452,6 +4461,38 @@ function initUnits(){const box=$('#un-box'),sel=$('#un-mode'),wsel=$('#un-week')
   sel.addEventListener('change',next);wsel.addEventListener('change',()=>{store.set('fon-unweek',wsel.value);next();});$('#un-new').addEventListener('click',next);next();}
 initUnits();
 
+/* ---------- "Explain in more detail": why each conversion happens ---------- */
+const WHY=[
+ {id:'bytes',t:'Why × 8?',re:/×\s?8\b|\*\s?8\b/,x:'The size was given in bytes (B), but link speeds are measured in bits per second (b). One byte is 8 bits, so bytes × 8 = bits. Sizes and speeds must both use bits before you divide one by the other.'},
+ {id:'div8',t:'Why ÷ 8?',re:/(bits?|\d)\s*÷\s?8\b(?![\d,]).*(bytes|\bB\b)/,x:'This goes from bits back to bytes. 8 bits make one byte, so bits ÷ 8 = bytes.'},
+ {id:'giga',t:'Why a billion?',re:/Gbps|1,000,000,000|10⁹/,x:'G means giga, which is one billion (1,000,000,000). So 1 Gbps = 1,000,000,000 bits per second, or 1,000 Mbps.'},
+ {id:'mega',t:'Why 1,000,000?',re:/Mbps\s*=\s*[\d,.]+,000,000|\d,000,000(?!,)|10⁶/,cre:/\bMB\b|Mbps|megabit/,x:'M means mega, which is one million. So 2 MB = 2 × 1,000,000 bytes, and 4 Mbps = 4,000,000 bits per second. Writing the plain number puts everything in single bits, bytes and seconds, so the units cancel properly when you divide.'},
+ {id:'kilo',t:'Why 1,000 with k?',re:/kbps|\bkb\b|\bKB\b|kilobit/,cre:/kbps|kilobit/,x:'k means kilo, which is one thousand. So 250 kbps = 250 × 1,000 = 250,000 bits per second.'},
+ {id:'ms',t:'Why 1,000 with ms?',re:/\bms\b|millisecond/,x:'A millisecond (ms) is one thousandth of a second. Seconds × 1,000 = milliseconds, and milliseconds ÷ 1,000 = seconds. Before adding two times, make sure they are in the same unit.'},
+ {id:'us',t:'What is μs?',re:/μs|microsecond/,x:'A microsecond (μs) is one millionth of a second: 1 s = 1,000,000 μs.'},
+ {id:'km',t:'Why change km to m?',re:/\bkm\b/,x:'The signal speed is given in metres per second (m/s), so the distance must be in metres too. 1 km = 1,000 m, so km × 1,000 = m.'},
+ {id:'speed',t:'What is 2 × 10⁸?',re:/10⁸|200,000,000/,x:'2 × 10⁸ m/s is how fast a signal travels through a cable, about two-thirds of the speed of light. 10⁸ means a 1 followed by 8 zeros, so 2 × 10⁸ = 200,000,000 m/s.'},
+ {id:'min',t:'Why take the min?',re:/min\(/,x:'Data cannot arrive faster than the slowest link on the path lets it through. Faster links before it only build a queue, and faster links after it sit idle. So the end-to-end rate is the smallest one: the bottleneck.'},
+ {id:'slots',t:'Why divide by the slots?',re:/slot/i,x:'In TDM the users take turns on one link, one slot each per frame. Each user gets an equal share of the link, so one user\'s rate = link rate ÷ number of slots.'},
+ {id:'circ',t:'Why divide by the circuits?',re:/circuit/i,x:'The link is shared equally between its circuits, so each circuit gets link rate ÷ number of circuits.'},
+ {id:'setup',t:'Why add the setup time?',re:/setup/i,x:'In circuit switching the circuit must be reserved before any data moves. So the total time is the setup time plus the time to send the data. Change both to the same unit first.'},
+ {id:'time',t:'Why divide size by rate?',re:/bits?\s*÷|÷\s*[\d,.]+\s*(bps|bits per second)|÷\s*[\d,.]+\s*=\s*[\d,.]+\s*(s|ms)\b/,x:'Time = how much ÷ how fast. Bits ÷ bits-per-second leaves seconds, the same way 100 km ÷ 50 km per hour = 2 hours.'},
+ {id:'prop',t:'Why distance ÷ speed?',re:/m\s*÷|÷\s*200,000,000|÷\s*\(?2\s*×\s*10⁸/,x:'Propagation delay is how long the signal takes to travel the wire: distance ÷ speed, like travel time on a road. Metres ÷ metres per second leaves seconds.'},
+];
+function whyFor(steps,ctx){const seen=new Set(),out=[];const all=(ctx||'')+' '+steps.join(' ');
+  steps.forEach(s=>{const ws=WHY.filter(w=>!seen.has(w.id)&&w.re.test(s)&&!(w.id==='time'&&/10⁸|200,000,000|km|\bm\b|÷\s*1,?000\s*=/.test(s))&&!(w.id==='mega'&&/km|\bm\b|200,000,000|10⁸/.test(s))&&!(w.id==='mega'&&/1,000,000,000/.test(s)&&!/1,000,000(?!,)/.test(s.replace(/1,000,000,000/g,''))));
+    ws.forEach(w=>seen.add(w.id));if(ws.length)out.push({s,ws});});
+  /* units mentioned only in the question (e.g. "2 MB") still need explaining */
+  const conv=/,000\b/.test(steps.join(' '));const extra=conv?WHY.filter(w=>!seen.has(w.id)&&['mega','kilo','ms','km'].includes(w.id)&&(w.cre||w.re).test(ctx||'')):[];if(extra.length)out.unshift({s:'In the question',ws:extra});
+  return out;}
+window.__explain=(after,steps,ctx)=>{if(!after||!steps||!steps.length)return;const list=whyFor(steps,ctx);if(!list.length)return;
+  const wrap=document.createElement('div');wrap.className='why';const b=document.createElement('button');b.type='button';b.className='btn ghost why-btn';b.innerHTML='<span aria-hidden="true">?</span> Explain in more detail';b.setAttribute('aria-expanded','false');
+  const box=document.createElement('div');box.className='why-box';box.hidden=true;
+  list.forEach(({s,ws})=>{const it=document.createElement('div');it.className='why-it';const st=document.createElement('p');st.className='why-step';st.textContent=s;it.appendChild(st);
+    ws.forEach(w=>{const p=document.createElement('p');p.className='why-x';const bb=document.createElement('b');bb.textContent=w.t+' ';p.appendChild(bb);p.appendChild(document.createTextNode(w.x));it.appendChild(p);});box.appendChild(it);});
+  b.addEventListener('click',()=>{box.hidden=!box.hidden;b.setAttribute('aria-expanded',String(!box.hidden));b.innerHTML=box.hidden?'<span aria-hidden="true">?</span> Explain in more detail':'Hide the detail';});
+  wrap.append(b,box);after.after(wrap);};
+$$('.lesson ol.steps').forEach(ol=>{const host=ol.closest('.worked,.sol,details')||ol.parentElement;__explain(ol,[...ol.querySelectorAll('li')].map(li=>li.textContent.trim()),host.textContent);});
 /* ---------- "Your turn" questions inside lessons ---------- */
 (function(){const num=v=>parseFloat(String(v).replace(/,/g,'').trim());
   function specOf(t){if(t.dataset.eq){const e=JSON.parse(t.dataset.eq);return {q:t.querySelector('.try-q').textContent,eq:e,ans:e.lhs+' = '+e.answers[0].join(' '),unit:'',hint:'',steps:(t.dataset.steps||'').split('|').filter(Boolean)};}
@@ -4495,7 +4536,7 @@ initUnits();
     const inp=box.querySelector('input')||{value:'',select(){},focus(){}},res=box.querySelector('.try-r');
     const fin=(good)=>{done=true;t.classList.add('solved');{const L=t.closest('.lesson');if(L&&!o.noWeak){const k=[...L.querySelectorAll('.try')].indexOf(t);const id='try-'+L.id+'-'+k;if(good)clearWeak(id);else addWeak({id,kind:'Lesson question',text:sp.q,ls:L.id,qi:k});}}res.innerHTML=`<p class="cd-v ${good?'y':'n'}"></p><ol class="steps"></ol>`;
       res.querySelector('.cd-v').textContent=sp.eq?(good?`Correct: ${sp.ans}`:`The answer is: ${sp.ans}`):sp.mc?(good?`Correct: ${sp.ans}.`:`The answer is: ${sp.ans}.`):good?`Correct: ${nf(sp.ans)} ${sp.unit}`:`The answer is ${nf(sp.ans)} ${sp.unit}. Here's how:`;
-      sp.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;res.querySelector('.steps').appendChild(li);});
+      sp.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;res.querySelector('.steps').appendChild(li);});if(!sp.eq&&!sp.mc)window.__explain(res.querySelector('.steps'),sp.steps,sp.q);
       const nb=document.createElement('div');nb.className='cd-nb';
       if(o.onDone){const c=document.createElement('button');c.type='button';c.className='btn';c.innerHTML=PLAYSVG+'Continue the lesson';c.addEventListener('click',()=>{const f=o.onDone;o.onDone=null;f();});nb.appendChild(c);setTimeout(()=>c.focus(),50);}
       if(sp.gen){const n=document.createElement('button');n.type='button';n.className='btn ghost';n.textContent='Another problem';n.addEventListener('click',()=>{t._gen=null;window.__mountTry(box,t,o);});nb.appendChild(n);}
