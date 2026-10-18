@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="77b18c5e05"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="5687efb320"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3293,6 +3293,66 @@ SCN.trip=(g,ok)=>{const nx=layers(g,ok);
        st.textContent='sent… now the receiver unwraps';await sleep(1600);
        for(let i=els.length-1;i>=1&&k();i--){els[i].style.transition='opacity .4s';els[i].style.opacity='0';st.textContent='unwrap: '+W[i][0].split(' · ')[1];await sleep(900);}
        st.textContent='Google reads your request';await sleep(1800);}})();},
+   dns:(l,k)=>{title(l,'DNS: name → number','the network only understands numbers');stack(l,[7]);
+     const a=G(l);R(a,250,170,170,52,'bx',26);T(a,335,202,'google.com','h3');inn(a);nd(l,620,196,'server','DNS server',80,300);
+     (async()=>{await sleep(900);while(k()){await travel(l,[[420,196],[580,196]],900,k,{r:9});if(!k())return;await sleep(200);await travel(l,[[580,232],[420,300]],900,k,{r:9,cls:'pkt2'});
+       if(!l.querySelector('.ipans')){const b=G(l,'ipans');R(b,250,276,170,52,'fillA',26);const t=T(b,335,308,'142.250.x.x','h3');t.style.fill='var(--on-accent,#fff)';inn(b);}await sleep(2200);}})();},
+   http:(l,k)=>{title(l,'HTTP writes the request','the language of the web');stack(l,[7]);const box=R(l,260,140,480,190,'bx',12);
+     const L=['GET / HTTP/1.1','Host: google.com','→ please send me the home page'];(async()=>{for(let i=0;i<L.length&&k();i++){const t=T(l,284,186+i*48,'',i===2?'sm':'eq','start');t.style.fontSize=i===2?'15px':'21px';
+       for(let j=1;j<=L[i].length&&k();j++){t.textContent=L[i].slice(0,j);await sleep(45);}await sleep(300);}})();},
+   encrypt:(l,k)=>{title(l,'Layer 6: encrypt it','https: only Google can read it');stack(l,[6]);ic(l,'padlock',500,150,64);
+     const t=T(l,500,250,'GET / HTTP/1.1  Host: google.com','eq');t.style.fontSize='20px';const lab=T(l,500,300,'readable','sm');
+     (async()=>{const orig=t.textContent,ch='#$%&@!?*+=0123456789abcdefXYZ';await sleep(1400);while(k()){for(let s=0;s<=orig.length&&k();s+=2){t.textContent=[...orig].map((c,i)=>i<s&&c!==' '?ch[Math.floor(Math.random()*ch.length)]:c).join('');await sleep(40);}
+       lab.textContent='scrambled: anyone in between sees only this';await sleep(2600);t.textContent=orig;lab.textContent='Google decrypts it back';await sleep(1800);lab.textContent='readable';}})();},
+   compress:(l,k)=>{title(l,'Compress and agree on a format','smaller to send, same format both ends');stack(l,[6]);const bar=R(l,270,180,480,60,'fillA',10);const lab=T(l,510,218,'100%','h3');lab.style.fill='var(--on-accent,#fff)';
+     ['HTML','JPEG','PNG','ZIP'].forEach((f,i)=>inn(chip(l,330+i*120,320,f),600+i*200));
+     (async()=>{while(k()){bar.setAttribute('width',480);lab.textContent='100%';lab.setAttribute('x',510);await sleep(1200);for(let w=480;w>=260&&k();w-=10){bar.setAttribute('width',w);lab.setAttribute('x',270+w/2);lab.textContent=Math.round(w/4.8)+'%';await sleep(40);}await sleep(2200);}})();},
+   seal:(l,k)=>{title(l,'A translator who seals the letter','format · compress · encrypt');stack(l,[6]);
+     person(l,330,260,1);chip(l,330,150,'your format');person(l,680,260,1);chip(l,680,150,'their format');const t=G(l);R(t,450,210,110,70,'bx',8).style.fill='#E9C46A';ic(t,'padlock',505,245,40);inn(t,600);
+     stream(l,[[370,230],[640,230]],k,{n:2,dur:1800,r:7});T(l,505,320,'sealed: safe to send','sm');},
+   call:(l,k)=>{title(l,'Layer 5: like a phone call','dial · talk · hang up');stack(l,[5]);nd(l,320,220,'laptop','you',80);nd(l,700,220,'server','Google',80);
+     const ln=Pt(l,'M370 220H650','lk');const lab=T(l,510,325,'','h3 acc');
+     (async()=>{while(k()){ln.style.opacity='.25';ln.style.strokeDasharray='8 8';lab.textContent='1. dial: open the session';await sleep(1800);if(!k())return;ln.style.opacity='1';ln.style.strokeDasharray='';lab.textContent='2. talk: keep it going';
+       for(let i=0;i<3&&k();i++){await travel(l,[[370,220],[650,220]],700,k,{r:8});await travel(l,[[650,220],[370,220]],700,k,{r:8,cls:'pkt2'});}
+       lab.textContent='3. hang up: close it neatly';ln.style.opacity='.15';await sleep(1800);}})();},
+   chop:(l,k)=>{title(l,'Layer 4: chop it up and label it','numbered segments, each tagged with port 443');stack(l,[4]);
+     const whole=G(l);R(whole,270,150,480,54,'track',8);T(whole,510,184,'your request (too big for one piece)','t');
+     (async()=>{await sleep(1500);if(!k())return;whole.style.transition='opacity .4s';whole.style.opacity='.25';
+       for(let i=0;i<3&&k();i++){const c=G(l);const x=270+i*168;R(c,x,240,150,54,'fillA',8);const t=T(c,x+75,274,'segment #'+(i+1),'t');t.style.fill='var(--on-accent,#fff)';inn(c);await sleep(500);
+         const tg=G(l);const r=R(tg,x+40,306,70,30,'bx',15);r.style.fill='var(--w2)';const tt=T(tg,x+75,327,'443','sm');tt.style.fill='#0D1317';tt.style.fontWeight='700';inn(tg);await sleep(500);}
+       if(k())inn(T(l,510,380,'port 443 = the web server program, not the mail program','sm'));})();},
+   tcpudp:(l,k)=>{title(l,'TCP or UDP?','registered mail vs shouting across a room');stack(l,[4]);
+     T(l,270,150,'TCP: numbered, confirmed, resent if lost','t','start');T(l,270,300,'UDP: fast, nobody checks','t','start');
+     const lane=(y)=>{nd(l,300,y,'laptop',null,52);nd(l,720,y,'server',null,52);};lane(200);lane(350);
+     (async()=>{while(k()){for(let i=1;i<=3&&k();i++){const lost=i===2;await travel(l,[[330,200],[lost?520:690,200]],lost?600:1000,k,{r:8});
+         if(lost){const x=xm(l,525,200,10);await sleep(500);x.remove();const r=T(l,510,180,'lost: send again','sm');await travel(l,[[330,200],[690,200]],1000,k,{r:8});r.remove();}
+         const a=chip(l,520,236,'✓ ACK #'+i,'good');await travel(l,[[690,214],[330,214]],600,k,{r:5,cls:'pkt2'});a.remove();}await sleep(600);}})();
+     (async()=>{while(k()){for(let i=0;i<5&&k();i++){const lost=i===3;travel(l,[[330,350],[lost?540:690,350]],lost?380:600,k,{r:8});if(lost)setTimeout(()=>{if(!k())return;const x=xm(l,545,350,10);setTimeout(()=>x.remove(),700);},380);await sleep(260);}await sleep(1200);}})();},
+   apps:(l,k)=>{title(l,'Many apps, one computer','the port says which one gets the reply');stack(l,[4]);
+     const A=[['globe','browser','443'],['chat','WhatsApp','3478'],['gamepad','game','27015']];
+     A.forEach(([ic2,n,p],i)=>{const c=G(l);R(c,300+i*150,150,136,130,'bx',12);ic(c,ic2,368+i*150,200,56);T(c,368+i*150,256,n,'t');T(c,368+i*150,300,'port '+p,'sm');inn(c,i*200);});
+     (async()=>{await sleep(1200);while(k()){const c=chip(l,368,380,'reply → port 443','good');await travel(l,[[368,370],[368,285]],900,k,{r:9});c.remove();await sleep(1400);}})();},
+   flats:(l,k)=>{title(l,'Like a block of flats','IP address = the building · port = the flat');stack(l,[4]);
+     const B=G(l);R(B,440,110,220,280,'bx',8);T(B,550,104,'your laptop (IP address)','sm');
+     [['flat 443','browser'],['flat 25','email'],['flat 3478','WhatsApp']].forEach(([f,a],i)=>{const y=140+i*82;const d=R(B,470,y,160,62,'track',6);T(B,550,y+28,f,'t');T(B,550,y+48,a,'sm');if(i===0)d.classList.add('door443');});
+     (async()=>{while(k()){const e=G(l);const r=R(e,250,360,60,40,'bx',4);r.style.fill='#E9C46A';T(e,280,420,'reply','sm');await sleep(700);
+       e.style.transition='transform 1.2s ease';e.setAttribute('transform','translate(0,0)');e.style.transform='translate(190px,-10px)';await sleep(1300);e.style.transform='translate(250px,-220px)';await sleep(1300);
+       const d=l.querySelector('.door443');if(d){d.setAttribute('class','fillA');await sleep(1200);d.setAttribute('class','track door443');}e.remove();await sleep(500);}})();},
+   routers:(l,k)=>{title(l,'Hop by hop','each router reads the destination IP');stack(l,[3]);
+     const P=[[300,250],[420,190],[540,290],[660,200],[760,250]];P.slice(0,-1).forEach((p,i)=>Ln(l,p[0],p[1],P[i+1][0],P[i+1][1],'lk'));nd(l,290,250,'laptop',null,50);nd(l,770,250,'server',null,50);
+     P.slice(1,4).forEach(p=>Ci(l,p[0],p[1],18,'hub'));inn(chip(l,530,380,'to: Google · same IP all the way','good'),300);
+     (async()=>{await sleep(800);while(k()){for(let i=0;i<P.length-1&&k();i++){await travel(l,[P[i],P[i+1]],700,k,{r:9});if(i<3){const t=T(l,P[i+1][0],P[i+1][1]-30,'read IP','sm');await sleep(450);t.remove();}}await sleep(900);}})();},
+   ipv6:(l,k)=>{title(l,'IPv4 vs IPv6','32 bits vs 128 bits');stack(l,[3]);T(l,270,170,'IPv4 · 4 groups','t','start');T(l,270,280,'IPv6 · 8 groups','t','start');
+     const g4=['192','168','1','1'],g6=['2001','db8','0','0','0','ff00','42','8329'];
+     (async()=>{while(k()){const A=T(l,270,215,'','eq','start'),B=T(l,270,325,'','eq','start');A.style.fontSize=B.style.fontSize='22px';
+       for(let i=0;i<4&&k();i++){A.textContent=g4.slice(0,i+1).join('.');await sleep(350);}for(let i=0;i<8&&k();i++){B.textContent=g6.slice(0,i+1).join(':');await sleep(350);}
+       const c=chip(l,520,385,'far more addresses','good');await sleep(3200);A.remove();B.remove();c.remove();}})();},
+   csma:(l,k)=>{title(l,'Taking turns on shared Wi-Fi','listen before you talk');stack(l,[2]);ic(l,'wifi',520,140,60);
+     const D=[[330,300,'laptop'],[520,330,'phone'],[710,300,'laptop']];D.forEach(([x,y,i])=>nd(l,x,y,i,null,58));const lt=T(l,520,225,'','h3 acc');
+     (async()=>{while(k()){lt.textContent='listen: is anyone talking?';await sleep(1500);if(!k())return;lt.textContent='quiet, so one device talks';await travel(l,[[330,270],[520,170]],800,k,{r:8});await sleep(500);
+       lt.textContent='two talk at once: collision!';travel(l,[[330,270],[520,170]],700,k,{r:8});await travel(l,[[710,270],[520,170]],700,k,{r:8,cls:'pkt2'});const x=xm(l,520,170,14);await sleep(900);x.remove();
+       lt.textContent='both wait a random time, then retry';await sleep(1200);await travel(l,[[710,270],[520,170]],800,k,{r:8,cls:'pkt2'});await sleep(400);await travel(l,[[330,270],[520,170]],800,k,{r:8});await sleep(900);}})();},
+   ocx:(l,k)=>{title(l,'Working out an OC speed','OC-n = n × 51.8 Mbps');eqn(l,['OC-1 = 1 × 51.8 = 51.8 Mbps','OC-3 = 3 × 51.8 = 155.4 Mbps','OC-48 = 48 × 51.8 ≈ 2.5 Gbps','OC-768 = 768 × 51.8 ≈ 39.8 Gbps'],160,62);},
    intro:(l,k)=>{title(l,'One request, seven layers','you type google.com and press Enter');stack(l,[],0);
      [['your letter','the data'],['in an envelope','wrapped'],['with an address','IP address'],['onto a van','the wire']].forEach(([a,b],i)=>{const c=G(l);R(c,262,108+i*72,240,56,'bx',10);T(c,382,132+i*72,a,'t');T(c,382,154+i*72,b,'sm');
        if(i<3)Pt(c,`M382 ${164+i*72}v14`,'lkA');inn(c,500+i*500);});T(l,640,240,'each layer wraps it once more,','sm');T(l,640,262,'the receiver unwraps in reverse','sm');},
@@ -3428,13 +3488,14 @@ SCN.pres=(g,ok)=>{const nx=layers(g,ok);
    3:(l,k)=>{title(l,'HTTPS uses SSL/TLS');const c=G(l);R(c,150,140,500,220,'bx',14);R(c,150,140,500,44,'track',14);ic(c,'padlock',185,162,30);T(c,210,168,'https://bank.example','mono','start');R(c,180,210,200,20,'fillB',4);R(c,180,250,440,12,'segq',4);R(c,180,275,380,12,'segq',4);inn(c,0);},
    4:(l,k)=>{title(l,'End-to-end encryption','WhatsApp and Signal');nd(l,140,250,'phone','You',110);nd(l,660,250,'phone','Friend',110);ic(l,'server',400,250,70);T(l,400,310,"the server can't read it",'sm');ic(l,'padlock',270,200,44);ic(l,'padlock',530,200,44);stream(l,[[195,250],[605,250]],k,{n:3,dur:1800,cls:'pkt3'});},
    5:(l,k)=>{title(l,'Encryption names to know');['SSL/TLS','AES','DES','RSA'].forEach((t,i)=>chip(l,190+i*140,250,t,null,i*250));},
-   6:(l,k)=>{title(l,'Standard formats');cards(l,[{icon:'browser',title:'HTML · XML · CSS',sub:'web pages'},{icon:'file',title:'PNG · JPEG · GIF',sub:'images'}],{w:300,h:240,y:110});}
+   6:(l,k)=>{title(l,'Standard formats','both sides read the same format');const cs=cards(l,[{icon:'browser',title:'HTML · XML · CSS',sub:'web pages'},{icon:'file',title:'PNG · JPEG · GIF',sub:'images'}],{w:300,h:240,y:110});(async()=>{await sleep(1200);let i=0;while(k()){setHi(cs,[i]);i=(i+1)%cs.length;await sleep(2200);}})();}
   };
   return {step(n){const {g:l,ok:k}=nx();S[n](l,k);}};};
 
 SCN.session=(g,ok)=>{const nx=layers(g,ok);
   const S={
-   0:(l,k)=>{title(l,'Layer 5: Session','open, keep alive, close');['open','active','close'].forEach((t,i)=>{const c=G(l);R(c,90+i*220,180,180,90,i===1?'fillA':'bx',14);T(c,180+i*220,232,t,i===1?'ct':'h3');inn(c,i*400);if(i<2)Pt(l,`M${275+i*220} 225h30`,'lk arrow');});},
+   0:(l,k)=>{title(l,'Layer 5: Session','open, keep alive, close');['open','active','close'].forEach((t,i)=>{const c=G(l);R(c,90+i*220,180,180,90,i===1?'fillA':'bx',14);T(c,180+i*220,232,t,i===1?'ct':'h3');inn(c,i*400);if(i<2)Pt(l,`M${275+i*220} 225h30`,'lk arrow');});const bx=[...l.querySelectorAll('rect')].slice(-3);const lab=T(l,400,330,'','sm');
+     (async()=>{await sleep(1400);const W=['set up the session','keep it active and in sync','close it properly'];let i=0;while(k()){bx.forEach((r,j)=>r.setAttribute('class',j===i?'fillA':'bx'));lab.textContent=W[i];i=(i+1)%3;await sleep(2000);}})();},
    1:(l,k)=>{title(l,'Which way can data flow?');['Simplex','Half-duplex','Full-duplex'].forEach((t,i)=>chip(l,400,170+i*70,t,'dark',i*250));},
    2:(l,k)=>{title(l,'Simplex','one way only');nd(l,150,250,'keyboard','Keyboard',120);nd(l,650,250,'desktop','Computer',110);Ln(l,215,250,590,250,'lkA');stream(l,[[215,250],[590,250]],k,{n:3,dur:1300});},
    3:(l,k)=>{title(l,'Half-duplex','both ways, taking turns');nd(l,150,250,'walkie','',110);nd(l,650,250,'walkie','',110);Ln(l,215,250,590,250,'lk');
@@ -3526,7 +3587,9 @@ SCN.phys=(g,ok)=>{const nx=layers(g,ok);
    0:(l,k)=>{title(l,'Layer 1: Physical','raw bits as signals');let d='M120 150';[1,0,1,1,0,1,0,0,1,1].forEach((b,i)=>{d+=`V${b?120:170}H${120+(i+1)*50}`;});T(l,100,150,'electrical','sm','end');Pt(l,d,'lky');
      [1,0,1,1,0,1,0,0,1,1].forEach((b,i)=>{if(b)inn(Ci(l,145+i*50,250,14,'lightdot'),i*120);});T(l,100,255,'light','sm','end');wave(l,120,620,350,22,40,'wv flow');T(l,100,355,'radio','sm','end');},
    1:(l,k)=>{title(l,'Twisted-pair copper','cheapest, most common · twisted to cancel interference');const a=[],b=[];for(let x=100;x<=700;x+=4){const ph=(x-100)/50*2*Math.PI;a.push([x,240+18*Math.sin(ph)]);b.push([x,240-18*Math.sin(ph)]);}
-     Pt(l,'M'+a.map(p=>p.join(' ')).join('L'),'wire1');Pt(l,'M'+b.map(p=>p.join(' ')).join('L'),'wire2');stream(l,a,k,{n:2,dur:2400,r:6});T(l,400,320,'two insulated copper wires, about 1 mm thick','sm');},
+     const w1=Pt(l,'M'+a.map(p=>p.join(' ')).join('L'),'wire1'),w2=Pt(l,'M'+b.map(p=>p.join(' ')).join('L'),'wire2');stream(l,a,k,{n:5,dur:1800,r:6});T(l,400,320,'two insulated copper wires, about 1 mm thick','sm');
+     const nz=T(l,400,170,'','sm');(async()=>{let ph=0;while(k()){ph+=0.12;const A=[],B=[];for(let x=100;x<=700;x+=4){const s=Math.sin((x-100)/50*2*Math.PI-ph);A.push(x+' '+(240+18*s).toFixed(1));B.push(x+' '+(240-18*s).toFixed(1));}w1.setAttribute('d','M'+A.join('L'));w2.setAttribute('d','M'+B.join('L'));
+       nz.textContent=Math.floor(ph/6)%2?'interference hits both wires equally, so it cancels out':'twisting the pair keeps the noise out';await sleep(50);}})();},
    2:(l,k)=>{title(l,'UTP in building LANs');bars(l,[['slowest',10,'fillB','10 Mbps'],['fastest',10000,'fillA','10 Gbps']],{x:220,w:440,max:10000,y:180,gap:80});T(l,400,380,'depends on wire thickness and distance','sm');},
    3:(l,k)=>{title(l,'Coaxial cable','two conductors, one inside the other');ic(l,'coax',230,250,200);R(l,380,215,340,70,'bx',35);Ln(l,390,250,710,250,'wire1');stream(l,[[390,250],[710,250]],k,{n:3,dur:1400,r:6});},
    4:(l,k)=>{title(l,'Coax: cable TV');nd(l,250,250,'coax',null,140);Ln(l,320,250,500,250,'wire1');nd(l,580,250,'tv',null,140);stream(l,[[320,250],[500,250]],k,{n:3,dur:1000});},
@@ -3614,18 +3677,18 @@ const BEATS={
  'w2-compare':[[0,'compare',0],[3,'compare',1],[6,'compare',2],[10,'compare',3],[13,'compare',4],[16,'compare',5],[19,'compare',6]],
  'w2-units':[[0,'units',0],[3,'units',1],[6,'units',2],[7,'units',3],[10,'units',4],[11,'units',5],[14,'units',6],[15,'units',7],[16,'units',8],[19,'units',9],[21,'units',10],[22,'units',11],[24,'units',12],[26,'units',13],[28,'units',14],[31,'units',15]],
  'w2-exercises':[...Array(46).keys()].map(k=>[k,'ex',k]),
- 'w3-osi':[[0,'trip','seven'],[3,'trip','browser'],[5,'trip','letter'],[8,'trip','wrap'],[9,'osi',0],[11,'osi',1],[13,'osi',2],[15,'osi',3],[17,'osi',4],[18,'osi',5],[21,'osi',6],[22,'trip',7]],
- 'w3-app':[[0,'trip',7],[6,'app',0],[8,'app',1],[10,'app',2],[11,'app',3],[13,'app',4],[15,'app',5],[17,'app',6],[19,'app',7],[21,'app',8],[23,'app',9],[25,'app',10],[27,'app',11],[31,'trip',7]],
- 'w3-pres':[[0,'trip',6],[6,'pres',0],[9,'pres',1],[12,'pres',2],[14,'pres',3],[15,'pres',4],[16,'pres',5],[17,'pres',6],[19,'trip',6]],
- 'w3-session':[[0,'trip',5],[5,'session',0],[7,'session',1],[8,'session',2],[10,'session',3],[12,'session',4],[14,'trip',5]],
- 'w3-transport':[[0,'trip',4],[9,'transport',0],[11,'transport',1],[12,'transport',2],[14,'transport',3],[16,'transport',4],[18,'transport',5],[22,'transport',6],[23,'transport',7],[24,'transport',8],[25,'transport',9],[26,'transport',10],[27,'transport',11],[28,'transport',12],[29,'transport',16],[30,'transport',17],[31,'transport',18],[32,'transport',19],[33,'transport',20],[34,'transport',21],[35,'transport',22],[39,'transport',23],[40,'trip',4]],
- 'w3-ports':[[0,'trip','ports'],[5,'ports',0],[6,'ports',1],[7,'ports',2],[8,'ports',3],[9,'ports',4],[10,'ports',5],[11,'ports',6],[12,'ports',7],[15,'ports',8],[17,'ports',9],[18,'ports',10],[20,'trip','ports']],
- 'w3-network':[[0,'trip',3],[6,'netl',0],[8,'netl',1],[10,'netl',2],[11,'netl',3],[13,'netl',4],[14,'netl',5],[17,'netl',6],[19,'netl',7],[21,'netl',8],[22,'trip',3]],
- 'w3-datalink':[[0,'trip',2],[8,'dl',0],[10,'dl',1],[13,'dl',2],[15,'dl',3],[16,'dl',4],[17,'dl',5],[19,'dl',6],[21,'dl',7],[22,'dl',8],[23,'dl',9],[28,'dl',10],[30,'trip',2]],
- 'w3-physical':[[0,'trip',1],[4,'phys',0],[7,'phys',1],[10,'phys',2],[11,'phys',3],[14,'phys',4],[15,'phys',5],[17,'phys',6],[18,'phys',7],[22,'trip','up']],
+ 'w3-osi':[[0,'trip','seven'],[3,'trip','browser'],[5,'trip','letter'],[8,'trip','wrap'],[9,'osi',0],[11,'osi',1],[13,'osi',2],[15,'osi',3],[17,'osi',4],[18,'osi',5],[19,'trip','seven'],[20,'osi',2],[21,'osi',6],[22,'trip',7]],
+ 'w3-app':[[0,'trip',7],[3,'trip','dns'],[4,'trip','http'],[5,'trip',7],[6,'app',0],[8,'app',1],[10,'app',2],[11,'app',3],[13,'app',4],[15,'app',5],[17,'app',6],[19,'app',7],[21,'app',8],[23,'app',9],[25,'app',10],[27,'app',11],[31,'trip',7]],
+ 'w3-pres':[[0,'trip','encrypt'],[4,'trip','compress'],[5,'trip','seal'],[6,'pres',0],[9,'pres',1],[12,'pres',2],[14,'pres',3],[15,'pres',4],[16,'pres',5],[17,'pres',6],[19,'trip',6]],
+ 'w3-session':[[0,'trip',5],[2,'trip','call'],[5,'session',0],[7,'session',1],[8,'session',2],[10,'session',3],[12,'session',4],[14,'trip',5]],
+ 'w3-transport':[[0,'trip',4],[2,'trip','chop'],[5,'trip','tcpudp'],[8,'trip',4],[9,'transport',0],[11,'transport',1],[12,'transport',2],[14,'transport',3],[16,'transport',4],[18,'transport',5],[22,'transport',6],[23,'transport',7],[24,'transport',8],[25,'transport',9],[26,'transport',10],[27,'transport',11],[28,'transport',12],[29,'transport',16],[30,'transport',17],[31,'transport',18],[32,'transport',19],[33,'transport',20],[34,'transport',21],[35,'transport',22],[39,'transport',23],[40,'trip',4]],
+ 'w3-ports':[[0,'trip','ports'],[2,'trip','apps'],[3,'trip','flats'],[5,'ports',0],[6,'ports',1],[7,'ports',2],[8,'ports',3],[9,'ports',4],[10,'ports',5],[11,'ports',6],[12,'ports',7],[14,'trip','apps'],[15,'ports',8],[17,'ports',9],[18,'ports',10],[20,'trip','ports']],
+ 'w3-network':[[0,'trip',3],[4,'trip','routers'],[6,'netl',0],[8,'netl',1],[10,'netl',2],[11,'netl',3],[13,'netl',4],[14,'netl',5],[17,'netl',6],[18,'trip','ipv6'],[19,'netl',7],[21,'netl',8],[22,'trip',3]],
+ 'w3-datalink':[[0,'trip',2],[2,'trip','hop'],[5,'trip','csma'],[8,'dl',0],[10,'dl',1],[13,'dl',2],[15,'dl',3],[16,'dl',4],[17,'dl',5],[19,'dl',6],[21,'dl',7],[22,'dl',8],[23,'dl',9],[26,'trip','csma'],[28,'dl',10],[30,'trip',2]],
+ 'w3-physical':[[0,'trip',1],[4,'phys',0],[7,'phys',1],[10,'phys',2],[11,'phys',3],[14,'phys',4],[15,'phys',5],[17,'phys',6],[18,'phys',7],[21,'trip','ocx'],[22,'trip','up']],
  'w3-topo':[[0,'topo','bus'],[5,'topo','star'],[8,'topo','ring'],[11,'topo','mesh']],
- 'w3-encap':[[0,'trip','intro'],[4,'encap',0],[7,'encap',4],[8,'encap',5],[9,'encap',6],[10,'encap',7],[11,'encap',8],[12,'encap',9],[13,'encap',10],[14,'encap',11],[15,'encap',12],[18,'trip','hop'],[22,'trip','up']],
- 'w3-tcpip':[[0,'trip','up'],[4,'tcpip',0],[6,'tcpip',1],[9,'tcpip',2],[12,'tcpip',3],[15,'tcpip',4],[18,'tcpip',0]]
+ 'w3-encap':[[0,'trip','wrap'],[4,'encap',0],[7,'encap',4],[8,'encap',5],[9,'encap',6],[10,'encap',7],[11,'encap',8],[12,'encap',9],[13,'encap',10],[14,'encap',11],[15,'encap',12],[18,'trip','hop'],[22,'trip','up']],
+ 'w3-tcpip':[[0,'trip','seven'],[4,'tcpip',0],[6,'tcpip',1],[9,'tcpip',2],[12,'tcpip',3],[15,'tcpip',4],[18,'tcpip',0]]
 };
 
 /* ---------- glossary: terms shown on screen, tap for an explanation ---------- */
