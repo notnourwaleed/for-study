@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="abfe2287c6"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="77b18c5e05"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3264,6 +3264,35 @@ SCN.trip=(g,ok)=>{const nx=layers(g,ok);
     parts.forEach((p,i)=>{out[p[0]+(i)]=blk(l,x,p[1],p[0],p[2],p[3],o.anim===false?null:(parts.length-1-i)*0+(i===0&&o.newHdr?250:null));x+=p[1]+4;});
     const unit={7:'data',6:'data',5:'data',4:'segment',3:'packet',2:'frame',1:'bits'}[lv];T(l,512,330,'unit: '+unit,'h3 acc');return out;};
   const S={
+   seven:(l,k)=>{title(l,'Why layers? The seven OSI layers','one big job split into seven small ones');const N=['Physical','Data Link','Network','Transport','Session','Presentation','Application'];
+     (async()=>{for(let i=0;i<7&&k();i++){const c=G(l);const y=380-i*44;R(c,250,y,300,38,'fillA',8);const t=T(c,400,y+25,(i+1)+' · '+N[i],'t');t.style.fill='var(--on-accent,#fff)';t.style.fontWeight='700';inn(c);await sleep(380);}
+       if(k())inn(T(l,620,250,'each layer: one job','sm','start'),200);})();},
+   browser:(l,k)=>{title(l,'One request, seven layers','follow it all week');const bar=R(l,180,120,440,56,'bx',28);const tx=T(l,214,155,'','h3','start');ic(l,'globe',650,148,44);
+     const jobs=G(l);const enter=G(l);
+     (async()=>{const s='google.com';for(let i=1;i<=s.length&&k();i++){tx.textContent=s.slice(0,i)+'|';await sleep(160);}tx.textContent=s;if(!k())return;
+       chip(enter,400,214,'Enter ⏎','good');await sleep(900);if(!k())return;T(jobs,400,262,'seven jobs before Google even sees it','sm');
+       for(let i=0;i<7&&k();i++){const n=7-i,x=106+i*84;const c=G(jobs);R(c,x,282,76,64,'fillA',10);const a=T(c,x+38,310,String(n),'h2');a.style.fill='var(--on-accent,#fff)';const b=T(c,x+38,334,['Application','Presentation','Session','Transport','Network','Data Link','Physical'][i],'sm');b.style.fill='var(--on-accent,#fff)';b.style.fontSize='11px';inn(c);await sleep(420);}})();},
+   letter:(l,k)=>{title(l,'Like posting a letter','each step adds a little more');
+     const X=[40,230,420,610],Y=150,Wd=150,Hd=150;
+     const letter=(g,x,y,s)=>{const r=R(g,x,y,70*s,54*s,'bx',4);r.style.fill='#F4F1EA';r.style.stroke='#B9B2A3';[0,1,2].forEach(i=>{const ln=Ln(g,x+10*s,y+14*s+i*12*s,x+60*s-(i===2?20*s:0),y+14*s+i*12*s,'lk');ln.style.stroke='#8A949B';ln.style.strokeWidth='2.5';});};
+     const envelope=(g,x,y,addr)=>{const r=R(g,x,y,96,64,'bx',4);r.style.fill='#E9C46A';r.style.stroke='#8a6a1f';const v=Pt(g,`M${x} ${y+2}L${x+48} ${y+34}L${x+96} ${y+2}`,'lk');v.style.stroke='#8a6a1f';v.style.strokeWidth='2';
+       if(addr){[['to: Google',0],['142.250.x.x',1]].forEach(([t,i])=>{const a=T(g,x+48,y+50+i*0,t,'sm');});const a=g.lastChild;a.textContent='to: Google';a.style.fill='#3b2a05';a.style.fontWeight='700';a.style.fontSize='12px';}};
+     const panels=[['1. write it',(g,x)=>letter(g,x+40,Y+40,1)],['2. into an envelope',(g,x)=>{letter(g,x+52,Y+22,.6);envelope(g,x+27,Y+52,false);}],['3. add the address',(g,x)=>envelope(g,x+27,Y+46,true)],
+       ['4. van takes it',(g,x)=>{const v=G(g);v.classList.add('van');R(v,x+14,Y+58,86,44,'fillA',8);R(v,x+100,Y+70,30,32,'bx',5);Ci(v,x+36,Y+106,10,'bx');Ci(v,x+108,Y+106,10,'bx');const e=R(v,x+30,Y+66,40,26,'bx',3);e.style.fill='#E9C46A';e.style.stroke='#8a6a1f';
+         (async()=>{let d=0;while(k()){d=(d+2)%24;v.setAttribute('transform',`translate(${d-12},0)`);await sleep(60);}})();}]];
+     (async()=>{for(let i=0;i<4&&k();i++){const g=G(l);const x=X[i];R(g,x,Y,Wd,Hd,'bx',14);panels[i][1](g,x);T(g,x+Wd/2,Y+Hd+28,panels[i][0],'t');
+         if(i<3)Pt(g,`M${x+Wd+6} ${Y+Hd/2}h28`,'lkA');inn(g);await sleep(1500);}
+       if(k())inn(T(l,400,390,'the receiver opens it in the opposite order','sm'),200);})();},
+   wrap:(l,k)=>{title(l,'Each wrapper is a layer','wrapped going down, unwrapped in reverse');
+     const W=[['your request','var(--w3)'],['6 · encrypted','#5B8DEF'],['4 · ports','var(--w2)'],['3 · IP address','var(--w1)'],['2 · MAC address','#8B6BD6']];
+     const holder=G(l);const st=T(l,400,420,'','h3 acc');
+     (async()=>{while(k()){holder.innerHTML='';const els=[];
+       for(let i=0;i<W.length&&k();i++){const w=150+i*90,h=60+i*52,x=400-w/2,y=245-h/2;const g2=E('g',{},holder);holder.insertBefore(g2,holder.firstChild);
+         const r=R(g2,x,y,w,h,'bx',10);r.style.fill='none';r.style.stroke=W[i][1];r.style.strokeWidth='4';const t=T(g2,i?x+12:400,i?y+20:250,W[i][0],i?'sm':'h3',i?'start':'middle');t.style.fill=W[i][1];if(i)t.style.fontWeight='700';inn(g2);els.push(g2);
+         st.textContent=i?'wrap: '+W[i][0].split(' · ')[1]:'your request';await sleep(1100);}
+       st.textContent='sent… now the receiver unwraps';await sleep(1600);
+       for(let i=els.length-1;i>=1&&k();i--){els[i].style.transition='opacity .4s';els[i].style.opacity='0';st.textContent='unwrap: '+W[i][0].split(' · ')[1];await sleep(900);}
+       st.textContent='Google reads your request';await sleep(1800);}})();},
    intro:(l,k)=>{title(l,'One request, seven layers','you type google.com and press Enter');stack(l,[],0);
      [['your letter','the data'],['in an envelope','wrapped'],['with an address','IP address'],['onto a van','the wire']].forEach(([a,b],i)=>{const c=G(l);R(c,262,108+i*72,240,56,'bx',10);T(c,382,132+i*72,a,'t');T(c,382,154+i*72,b,'sm');
        if(i<3)Pt(c,`M382 ${164+i*72}v14`,'lkA');inn(c,500+i*500);});T(l,640,240,'each layer wraps it once more,','sm');T(l,640,262,'the receiver unwraps in reverse','sm');},
@@ -3585,7 +3614,7 @@ const BEATS={
  'w2-compare':[[0,'compare',0],[3,'compare',1],[6,'compare',2],[10,'compare',3],[13,'compare',4],[16,'compare',5],[19,'compare',6]],
  'w2-units':[[0,'units',0],[3,'units',1],[6,'units',2],[7,'units',3],[10,'units',4],[11,'units',5],[14,'units',6],[15,'units',7],[16,'units',8],[19,'units',9],[21,'units',10],[22,'units',11],[24,'units',12],[26,'units',13],[28,'units',14],[31,'units',15]],
  'w2-exercises':[...Array(46).keys()].map(k=>[k,'ex',k]),
- 'w3-osi':[[0,'trip','intro'],[9,'osi',0],[11,'osi',1],[13,'osi',2],[15,'osi',3],[17,'osi',4],[18,'osi',5],[21,'osi',6],[22,'trip',7]],
+ 'w3-osi':[[0,'trip','seven'],[3,'trip','browser'],[5,'trip','letter'],[8,'trip','wrap'],[9,'osi',0],[11,'osi',1],[13,'osi',2],[15,'osi',3],[17,'osi',4],[18,'osi',5],[21,'osi',6],[22,'trip',7]],
  'w3-app':[[0,'trip',7],[6,'app',0],[8,'app',1],[10,'app',2],[11,'app',3],[13,'app',4],[15,'app',5],[17,'app',6],[19,'app',7],[21,'app',8],[23,'app',9],[25,'app',10],[27,'app',11],[31,'trip',7]],
  'w3-pres':[[0,'trip',6],[6,'pres',0],[9,'pres',1],[12,'pres',2],[14,'pres',3],[15,'pres',4],[16,'pres',5],[17,'pres',6],[19,'trip',6]],
  'w3-session':[[0,'trip',5],[5,'session',0],[7,'session',1],[8,'session',2],[10,'session',3],[12,'session',4],[14,'trip',5]],
