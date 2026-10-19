@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="5ae1a35044"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="82d6ec4b22"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5169,8 +5169,10 @@ function initOSI(){const box=$('#op-box'),score=$('#op-score'),modes=$$('#op-mod
 initOSI();
 /* ===== Mini exam game ===== */
 window.__exam=(()=>{const root=$('#ex');if(!root)return null;
-  const TIME={tf:12,port:10,layer:12,mcq:30,unit:25,order:40,calc:90};
-  const TNAME={tf:'True or false',port:'Port',layer:'Which layer?',mcq:'Question',unit:'Units',order:'Put in order',calc:'Calculate'};
+  const TIME={tf:12,port:10,layer:12,mcq:30,sum:45,calcm:90,unit:25,order:40,calc:120};
+  /* week-bank questions that need working out: quick sums vs multi-step */
+  const CALCQ={'1-7':'sum','2-3':'sum','2-5':'sum','2-10':'sum','2-13':'sum','1-8':'calcm','1-10':'calcm','2-1':'calcm','2-2':'calcm','2-7':'calcm','2-9':'calcm','2-11':'calcm','2-12':'calcm'};
+  const TNAME={tf:'True or false',port:'Port',layer:'Which layer?',mcq:'Question',sum:'Quick sum',calcm:'Calculation',unit:'Units',order:'Put in order',calc:'Typed calc'};
   const N=10;
   const rnd=a=>a[Math.floor(Math.random()*a.length)];
   const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -5182,7 +5184,7 @@ window.__exam=(()=>{const root=$('#ex');if(!root)return null;
   const remember=id=>{seen.push(id);while(seen.length>24)seen.shift();store.set('fon-exseen',JSON.stringify(seen));};
   function mcq(w){const L=QUIZ[w].map((q,i)=>({q,i,id:'q'+w+'-'+i}));const fresh=L.filter(x=>!seen.includes(x.id));const pick=rnd(fresh.length?fresh:L);remember(pick.id);
     const Q=pick.q;const keep=Q.o.some(o=>/above|both|none of/i.test(o));const idx=keep?Q.o.map((_,i)=>i):shuffle(Q.o.map((_,i)=>i));
-    return {type:'mcq',w,q:Q.q,opts:idx.map(i=>Q.o[i]),ans:idx.indexOf(Q.a),why:Q.e};}
+    return {type:CALCQ[w+'-'+pick.i]||'mcq',w,q:Q.q,opts:idx.map(i=>Q.o[i]),ans:idx.indexOf(Q.a),why:Q.e};}
   const TF=[
     [1,'A hub sends each frame only to the device it is addressed to.',false,'A hub copies every frame to every port. A switch is the one that sends it only to the right port.'],
     [1,'Circuit switching keeps the line reserved for the whole call, even when nobody is talking.',true,'The resources are booked for the call from start to end, used or not.'],
@@ -5293,7 +5295,7 @@ window.__exam=(()=>{const root=$('#ex');if(!root)return null;
   function startScreen(){playing(false);stopClock();SND.stop();G=null;
     const b=best();
     root.innerHTML=`<div class="ex-screen"><p class="ex-title">MINI EXAM</p><p class="ex-sub">10 questions from all three weeks. Each one has its own clock. Get one wrong, or run out of time, and it's game over. The last question is a calculation: type the number and pick the unit.</p>
-      <ul class="ex-rules">${['tf','port','layer','unit','mcq','order','calc'].map(k=>`<li>${TNAME[k]}<b>${TIME[k]}s</b></li>`).join('')}</ul>
+      <ul class="ex-rules">${['tf','port','layer','unit','mcq','order','sum','calcm','calc'].map(k=>`<li>${TNAME[k]}<b>${TIME[k]}s</b></li>`).join('')}</ul>
       <div class="ex-stats">${b.reach?`<div><b>Q${b.reach}</b><span>furthest reached</span></div>`:''}${b.wins?`<div><b>${b.wins}</b><span>times cleared</span></div><div><b>${b.score}</b><span>best score</span></div>`:''}</div>
       <button type="button" class="ex-go ex-big" id="ex-start">▶ Start</button>
       <div class="ex-btns"><button type="button" class="ex-mute" aria-pressed="${SND.muted()}">${SND.muted()?'🔇<span class="mt"> Sound off</span>':'🔊<span class="mt"> Sound on</span>'}</button></div>
