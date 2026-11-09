@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="5f1420c51a"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><title>Foundations of Networking</title><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon-32.png"><meta name="theme-color" content="#14212B"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Networking"><meta name="build" content="693b30775d"></head><body>
 <title>Foundations of Networking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3561,6 +3561,7 @@ body[data-view="final"]{--bg:#F1F4F5;--surface:#FFFFFF;--ink:#14212B;--muted:#56
 .pt-row .fx-in{background:#fff;color:#111;border:1px solid #8E979F;border-radius:2px;padding:4px 6px;font-size:.92rem}
 .pt-mini{font-family:var(--f-mono);font-size:.85rem;margin-top:6px}
 .fx-mockbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;position:sticky;top:64px;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);padding:8px 0;margin-bottom:10px;border-bottom:1px solid var(--line)}
+.fx-foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;max-width:900px;margin:-4px 0 24px}.fx-foot .btn{padding:10px 18px}
 .fx-timer{font-weight:700}.fx-mockend{margin:10px 0 24px}.fx-sum{max-width:900px;margin-bottom:16px}
 @media (max-width:560px){
  .fx-nav{margin-bottom:14px}
@@ -3585,6 +3586,7 @@ body[data-view="final"]{--bg:#F1F4F5;--surface:#FFFFFF;--ink:#14212B;--muted:#56
  .fx-ftbl .fx-in{width:100%;padding:7px 8px}
  .fx-graph .gbw{font-size:15px}.fx-graph .gw{font-size:15px}.fx-graph .gl{font-size:17px}
  .fx-mockbar{top:52px}
+ .fx-foot{flex-direction:column-reverse;align-items:stretch}.fx-foot .btn{justify-content:center;white-space:normal}
 }
 </style>
 <section class="tool wrap" id="tool-final" aria-labelledby="fx-h">
@@ -5435,7 +5437,7 @@ SCN.w4assign=scene45(b=>{
   const dItems=[['changes over time',''],['clients, home networks',''],['+ easy, no conflicts, efficient','good'],['− the address can change','bad']].map((t,i)=>{const c=b.m(chip(dyn,215,312+i*0,t[0],t[1]||'dark'));c.style.display='none';return c;});
   const sItems=[['never changes',''],['servers, printers, routers, IoT',''],['+ predictable, easy to manage','good'],['− manual, risk of conflicts','bad']].map((t,i)=>{const c=b.m(chip(st,585,312,t[0],t[1]||'dark'));c.style.display='none';return c;});
   const onlyItem=(arr,i)=>{[...dItems,...sItems].forEach(c=>c.style.display='none');if(arr)arr[i].style.display='';};
-  const pr=b.v('printer');ic(pr,'printer',400,230,130);const pcs=[[130,140],[130,330],[670,140],[670,330]];pcs.forEach(p=>{ic(pr,'desktop',p[0],p[1],70);Pt(pr,`M${p[0]+40} ${p[1]}L${340} 230`,'lk');});const prIp=b.m(pill(pr,400,330,'192.168.1.50 · static','var(--w2)',null,14));const prQ=T(pr,400,120,'static or dynamic?','h3 acc');
+  const pr=b.v('printer');ic(pr,'printer',400,230,130);const pcs=[[130,140],[130,330],[670,140],[670,330]];pcs.forEach(p=>{ic(pr,'desktop',p[0],p[1],70);Pt(pr,`M${p[0]<400?p[0]+40:p[0]-40} ${p[1]}L${p[0]<400?335:465} 230`,'lk');});const prIp=b.m(pill(pr,400,330,'192.168.1.50 · static','var(--w2)',null,14));const prQ=T(pr,400,120,'static or dynamic?','h3 acc');
   const lab=b.v('lab');[[150,'router','Router','192.168.1.1 · static'],[400,'server','Server-PT','192.168.1.2 · static'],[650,'desktop','PC0, PC1','from DHCP']].forEach((d,i)=>{const c=b.m(G(lab),1);nd(c,d[0],210,d[1],null,96);T(c,d[0],285,d[2],'h3');pill(c,d[0],330,d[3],i<2?'var(--w2)':NETC,null,13);});
   return {
    intro:(k)=>{b.show('two');b.t('Static and dynamic addresses');onlyItem();b.focus();},
@@ -5451,7 +5453,7 @@ SCN.w4assign=scene45(b=>{
    stUse:(k)=>{b.show('two');b.t('Static: who uses it?');onlyItem(sItems,1);b.focus(sItems[1]);},
    stPro:(k)=>{b.show('two');b.t('Static: pros');onlyItem(sItems,2);b.focus(sItems[2]);},
    stCon:(k)=>{b.show('two');b.t('Static: cons');onlyItem(sItems,3);b.focus(sItems[3]);},
-   why:(k,fx)=>{b.show('printer');b.t('Others must find it at the same address');prQ.style.display='none';b.focus(prIp);loop(k,async()=>{await Promise.all(pcs.map((p,i)=>sleep(i*200).then(()=>travel(fx,[[p[0]+40,p[1]],[340,230]],900,k,{r:7}))));await sleep(400);});},
+   why:(k,fx)=>{b.show('printer');b.t('Others must find it at the same address');prQ.style.display='none';b.focus(prIp);loop(k,async()=>{await Promise.all(pcs.map((p,i)=>sleep(i*200).then(()=>travel(fx,[[p[0]<400?p[0]+40:p[0]-40,p[1]],[p[0]<400?335:465,230]],900,k,{r:7}))));await sleep(400);});},
    lab:(k)=>{b.show('lab');b.t('In Lab 4');b.focus();},
    q:(k)=>{b.show('printer');b.t('The office printer');prQ.style.display='';b.focus();prIp.style.opacity='0';},
    sum:(k)=>{b.show('two');b.t('In one line');prIp.style.opacity='';onlyItem();b.focus(dyn,st);},
@@ -9152,13 +9154,20 @@ function render(){clearInterval(tick);box.innerHTML='';cur=[];topicL.hidden=mode
   if(mode==='mock'){var bar=h('div',{class:'fx-mockbar'});var tm=h('span',{class:'fx-timer mono',text:'0:00'});var mk=h('button',{type:'button',class:'btn',text:'Mark the whole exam'});bar.appendChild(h('span',{text:'Mock exam · all five questions · '}));bar.appendChild(tm);bar.appendChild(mk);box.appendChild(bar);
     var sum=h('div',{class:'fx-sum',hidden:''});box.appendChild(sum);
     ['q1','q2','q3','q4','q5'].forEach(function(k){var q=gen(k);cur.push(q);box.appendChild(q.el);});
-    var mk2=h('button',{type:'button',class:'btn',text:'Mark the whole exam'});var end=h('div',{class:'fx-mockend'},[mk2]);box.appendChild(end);
+    var mk2=h('button',{type:'button',class:'btn',text:'Mark the whole exam'});var nm=h('button',{type:'button',class:'btn ghost',text:'↻ New mock exam'});nm.addEventListener('click',function(){render();toTop();});var end=h('div',{class:'fx-mockend fx-foot'},[mk2,nm]);box.appendChild(end);
     t0=Date.now();tick=setInterval(function(){var s=Math.floor((Date.now()-t0)/1000);tm.textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2);},1000);
     function markAll(){clearInterval(tick);var g=0,t=0,rows=[];cur.forEach(function(q){var qg=0;q.parts.forEach(function(p){qg+=p.check().got;});q.onMark();g+=qg;t+=q.total;rows.push('<tr><td>Question '+q.num+'</td><td>'+qg+' / '+q.total+'</td></tr>');});
       var pc=Math.round(100*g/t);sum.hidden=false;sum.innerHTML='<p class="fx-v '+(pc>=70?'y':'n')+'">Total: '+g+' / '+t+' ('+pc+'%) in '+tm.textContent+'</p><div class="tbl"><table><tbody>'+rows.join('')+'</tbody></table></div><p class="fx-note">Every part you lost marks on now shows its worked answer. Scroll down to read them.</p>';
       sum.scrollIntoView({behavior:'smooth',block:'start'});var best=+(store.get('fon-fx-best')||0);if(pc>best)store.set('fon-fx-best',String(pc));showBest();}
     mk.addEventListener('click',markAll);mk2.addEventListener('click',markAll);showBest();return;}
-  var q=gen(mode);cur=[q];box.appendChild(q.el);}
+  var q=gen(mode);cur=[q];box.appendChild(q.el);
+  var order=['q1','q2','q3','q4','q5','mock'],names={q1:'Question 1: Configure',q2:'Question 2: IP settings',q3:'Question 3: Mixed',q4:'Question 4: Fragmentation',q5:'Question 5: Services',mock:'Full mock exam'};
+  var nx=order[order.indexOf(mode)+1];var foot=h('div',{class:'fx-foot'});
+  var again=h('button',{type:'button',class:'btn ghost',text:'↻ Another one like this'});again.addEventListener('click',function(){render();toTop();});foot.appendChild(again);
+  if(nx){var nb=h('button',{type:'button',class:'btn',text:'Next: '+names[nx]+' →'});nb.addEventListener('click',function(){switchTo(nx);toTop();});foot.appendChild(nb);}
+  box.appendChild(foot);}
+function toTop(){var t=$('#fx-modes',sec)||sec;var y=t.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
+function switchTo(m){var t=modeBtns.filter(function(x){return x.dataset.m===m;})[0];if(t)t.click();}
 function showBest(){var b=store.get('fon-fx-best');score.textContent=b?'Best mock: '+b+'%':'';}
 modeBtns.forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.m;store.set('fon-fx-mode',mode);modeBtns.forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});render();});});
 newB.addEventListener('click',function(){render();sec.scrollIntoView({behavior:'smooth',block:'start'});});
